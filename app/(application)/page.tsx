@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { columns } from "../components/columns";
-import { DataTable } from "../components/data-table";
+import { columns } from "../../components/columns";
+import { DataTable } from "../../components/data-table";
 import OverallProgress from "@/components/overallProgress";
 import ProjectWorkload from "@/components/projectWorkload";
 import projectList from "@/data/projectList.json";

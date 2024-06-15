@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { inter } from "@/font/font";
-import "./globals.css";
+import "../globals.css";
 import NavBar from "@/components/layout/navBar";
 import Header from "@/components/layout/header";
 import Main from "@/components/layout/main";

@@ -91,3 +91,10 @@ export function DataTable<TData, TValue>({ columns, data, className }: DataTable
     </div>
   );
 }
+
+
+// [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Odiasesamuel&layout=compact&theme=vision-friendly-dark)](https://github.com/anuraghazra/github-readme-stats)
+
+// [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Odiasesamuel&layout=compact)](https://github.com/Odiasesamuel/github-readme-stats)
+
+// [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Odiasesamuel&layout=compact&theme=vision-friendly-dark)](https://github.com/Odiasesamuel/github-readme-stats)
