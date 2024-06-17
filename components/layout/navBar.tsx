@@ -38,7 +38,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
           </span>
         </div>
         <nav className="ml-4 flex flex-col gap-3 mb-[300px]">
-          <NavLink activeIcon={dashboardIconActive} notActiveIcon={dashboardIconNotActive} href="/" alt="dashboard icon">
+          <NavLink activeIcon={dashboardIconActive} notActiveIcon={dashboardIconNotActive} href="/dashboard" alt="dashboard icon">
             Dashboard
           </NavLink>
           <NavLink activeIcon={projectIconAcvtive} notActiveIcon={projectIconNotActive} href="/project" alt="project icon">
