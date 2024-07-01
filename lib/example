@@ -1,0 +1,74 @@
+const sql = require("better-sqlite3");
+
+const db = sql("project.db");
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS metric (
+    month TEXT PRIMARY KEY,
+    total_revenue INTEGER,
+    project INTEGER,
+    time INTEGER,
+    resource INTEGER
+  );
+
+  INSERT INTO metric VALUES('current_month', 5300989, 95, 1022, 101);
+  INSERT INTO metric VALUES('previous_month', 5200989, 100, 1300, 120);
+`);
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS project (
+    project_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_name TEXT,
+    project_manager TEXT,
+    due_date DATE,
+    status TEXT,
+    progress INTEGER
+);
+
+INSERT INTO project (project_name, project_manager, due_date, status, progress)
+VALUES 
+    ('Nesla Web Application', 'Alice Johnson', '2024-08-17', 'On going', 50),
+    ('Datascale AI App', 'John Doe', '2024-04-25', 'Delayed', 50);
+
+`);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS progress(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    total_project INTEGER,
+    completed_project INTEGER,
+    delayed_project INTEGER,
+    ongoing_project INTEGER
+  );
+
+  INSERT INTO progress ('total_project', 'completed_project', 'delayed_project', 'ongoing_project')
+  VALUES
+  (95, 26, 35, 20);
+`);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS task_list(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task TEXT,
+    checked TEXT,
+    approval TEXT
+  );
+
+  INSERT INTO task_list ('task', 'checked', 'approval')
+  VALUES
+  ('Create a user flow of social application design', 'Yes', 'Approved')
+`);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS project_workload (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    employee_name TEXT,
+    no_of_project INTEGER
+  );
+
+  INSERT INTO project_workload('employee_name', 'no_of_project')
+  VALUES
+  ('Sam', 7)
+`);
+
+export default db

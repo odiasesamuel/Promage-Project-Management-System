@@ -1,4 +1,5 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import Metrics from "@/components/metrics";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { columns } from "../../../components/columns";
 import { DataTable } from "../../../components/data-table";
@@ -6,15 +7,6 @@ import OverallProgress from "@/components/overallProgress";
 import ProjectWorkload from "@/components/projectWorkload";
 import projectList from "@/data/projectList.json";
 import TaskList from "@/components/taskList";
-import revenueIcon from "@/assets/Frame 1171275857.svg";
-import projectIcon from "@/assets/Frame 1171275856.svg";
-import timespentIcon from "@/assets/Frame 1171275859.svg";
-import resourceIcon from "@/assets/Frame 1171275858.svg";
-import incrementArrow from "@/assets/incrementArrow.svg";
-import decrementArrow from "@/assets/decrementArrow.svg";
-
-import Link from "next/link";
-import Image from "next/image";
 
 const Home = () => {
   const data = projectList;
@@ -22,75 +14,7 @@ const Home = () => {
   return (
     <div className="text-black">
       <h3 className="scroll-m-20 text-xl font-semibold tracking-tight my-5">Overview</h3>
-      <div className="flex justify-between">
-        <Card className="w-[24%] h-[200px] bg-[#F2EAE5]">
-          <CardHeader className="pt-4 pb-2">
-            <CardDescription>
-              <Image src={revenueIcon} alt="revenue icon" />
-              <p className="mt-4">Total revenue</p>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-semibold mb-3">$53,00989</p>
-            <div className="flex gap-x-1">
-              <Image src={incrementArrow} alt="increment arrow" />
-              <p className="text-xs">12% increase from last month</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="w-[24%] h-[200px] bg-[#F2EAE5]">
-          <CardHeader className="pt-4 pb-2">
-            <CardDescription>
-              <Image src={projectIcon} alt="project icon" />
-              <p className="mt-4">Projects</p>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-semibold mb-3">
-              95<span className="text-base ml-1">/100</span>
-            </p>
-
-            <div className="flex gap-x-1">
-              <Image src={decrementArrow} alt="increment arrow" />
-              <p className="text-xs">10% decrease from last month</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="w-[24%] h-[200px] bg-[#F2EAE5]">
-          <CardHeader className="pt-4 pb-2">
-            <CardDescription>
-              <Image src={timespentIcon} alt="revenue icon" />
-              <p className="mt-4">Time spent</p>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-semibold mb-3">
-              1022<span className="text-base ml-1">/1300</span>
-            </p>
-            <div className="flex gap-x-1">
-              <Image src={incrementArrow} alt="increment arrow" />
-              <p className="text-xs">8% increase from last month</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="w-[24%] h-[200px] bg-[#F2EAE5]">
-          <CardHeader className="pt-4 pb-2">
-            <CardDescription>
-              <Image src={resourceIcon} alt="revenue icon" />
-              <p className="mt-4">Resources</p>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-semibold mb-3">
-              101<span className="text-base ml-1">/120</span>
-            </p>
-            <div className="flex gap-x-1">
-              <Image src={incrementArrow} alt="increment arrow" />
-              <p className="text-xs">2% increase from last month</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <Metrics />
       <div className="flex justify-between my-6">
         <Card className="w-[64%] bg-[#F2EAE5]">
           <CardContent>
