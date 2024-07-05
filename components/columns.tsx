@@ -17,7 +17,7 @@ export type Payment = {
   projectManager: string;
   dueDate: string;
   status: string;
-  progress: string;
+  progress: number;
 };
 
 export const columns: ColumnDef<Payment>[] = [
@@ -73,10 +73,7 @@ export const columns: ColumnDef<Payment>[] = [
     accessorKey: "progress",
     header: "Progress",
     cell: ({ row }) => {
-      const perString = row.getValue("progress") as string;
-      const percentageArr = perString.split("");
-      percentageArr.pop();
-      const percentage = +percentageArr.join("");
+      const percentage = row.getValue("progress") as number;
 
       const status = row.getValue("status");
       let pathColor = "";

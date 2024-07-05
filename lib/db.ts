@@ -14,10 +14,10 @@ db.exec(`
 
 db.exec(`
 CREATE TABLE IF NOT EXISTS project (
-    project_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    project_name TEXT,
-    project_manager TEXT,
-    due_date DATE,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    projectManager TEXT,
+    dueDate DATE,
     status TEXT,
     progress INTEGER
 );

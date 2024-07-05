@@ -1,8 +1,7 @@
 const sql = require("better-sqlite3");
-
 const db = sql("project.db");
-
-db.exec(`
+db.exec(
+  `
   CREATE TABLE IF NOT EXISTS metric (
     month TEXT PRIMARY KEY,
     total_revenue INTEGER,
@@ -13,26 +12,31 @@ db.exec(`
 
   INSERT INTO metric VALUES('current_month', 5300989, 95, 1022, 101);
   INSERT INTO metric VALUES('previous_month', 5200989, 100, 1300, 120);
-`);
-
-db.exec(`
+`
+);
+db.exec(
+  `
 CREATE TABLE IF NOT EXISTS project (
-    project_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    project_name TEXT,
-    project_manager TEXT,
-    due_date DATE,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    projectManager TEXT,
+    dueDate DATE,
     status TEXT,
     progress INTEGER
 );
 
-INSERT INTO project (project_name, project_manager, due_date, status, progress)
+INSERT INTO project (name, projectManager, dueDate, status, progress)
 VALUES 
-    ('Nesla Web Application', 'Alice Johnson', '2024-08-17', 'On going', 50),
-    ('Datascale AI App', 'John Doe', '2024-04-25', 'Delayed', 50);
+    ('Nesla Web Application', 'Alice Johnson', '2024-08-17', 'On going', 85),
+    ('Fintech Mobile App', 'Jane Smith', '2024-05-15', 'Completed', 20),
+    ('E-commerce Platform', 'Peter Eke', '2024-01-12', 'At risk', 100),
+    ('HMS Project', 'Samuel Eke', '2024-01-20', 'On going', 100),
+    ('Datascale AI App', 'John Doe', '2024-04-25', 'Delayed', 45);
 
-`);
-
-db.exec(`
+`
+);
+db.exec(
+  `
   CREATE TABLE IF NOT EXISTS progress(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     total_project INTEGER,
@@ -44,9 +48,10 @@ db.exec(`
   INSERT INTO progress ('total_project', 'completed_project', 'delayed_project', 'ongoing_project')
   VALUES
   (95, 26, 35, 20);
-`);
-
-db.exec(`
+`
+);
+db.exec(
+  `
   CREATE TABLE IF NOT EXISTS task_list(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     task TEXT,
@@ -56,10 +61,15 @@ db.exec(`
 
   INSERT INTO task_list ('task', 'checked', 'approval')
   VALUES
-  ('Create a user flow of social application design', 'Yes', 'Approved')
-`);
-
-db.exec(`
+  ('Create a user flow of social application design', 'Yes', 'Approved'),
+  ('Implement user authentication with OAuth2', 'No', 'In review'),
+  ('Design database schema for user profiles', 'Yes', 'Approved'),
+  ('Develop REST API endpoints for user management', 'Yes', 'In review'),
+  ('Write unit tests for authentication module', 'No', 'On going');
+`
+);
+db.exec(
+  `
   CREATE TABLE IF NOT EXISTS project_workload (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     employee_name TEXT,
@@ -68,7 +78,13 @@ db.exec(`
 
   INSERT INTO project_workload('employee_name', 'no_of_project')
   VALUES
-  ('Sam', 7)
-`);
-
-export default db
+  ('Sam', 7),
+  ('Alex', 5),
+  ('Jordan', 3),
+  ('Taylor', 10),
+  ('Casey', 6),
+  ('Jamie', 4),
+  ('Morgan', 9);
+`
+);
+export default db;

@@ -1,7 +1,15 @@
 import projectWorkload from "@/data/projectWorkload.json";
+import { getProjectWorkLoad } from "@/lib/dashboard";
+
+type ProjectWorkloadData = {
+  id: number;
+  employee_name: string;
+  no_of_project: number;
+};
 
 const ProjectWorkload: React.FC<{}> = () => {
-  const data = projectWorkload;
+  const data: ProjectWorkloadData[] = getProjectWorkLoad();
+  console.log(data);
   const maxProjects = data.reduce((max, employee) => (employee.no_of_project > max ? employee.no_of_project : max), -Infinity);
 
   return (
@@ -11,7 +19,7 @@ const ProjectWorkload: React.FC<{}> = () => {
 
         return (
           <div className="w-[13%] flex flex-col items-center justify-end" key={employee.id}>
-            <div className={`w-[35px] h-[35px] rounded-full border ${employee.no_of_project=== maxProjects ? "border-[#E65F2B] bg-[#E65F2B]" : "border-[#060606] bg-[#060606]"} flex items-center justify-center`}>
+            <div className={`w-[35px] h-[35px] rounded-full border ${employee.no_of_project === maxProjects ? "border-[#E65F2B] bg-[#E65F2B]" : "border-[#060606] bg-[#060606]"} flex items-center justify-center`}>
               <span className="text-white text-sm">{employee.no_of_project}</span>
             </div>
             {Array.from({ length: noCircle }).map((_, index) => (
@@ -26,19 +34,3 @@ const ProjectWorkload: React.FC<{}> = () => {
 };
 
 export default ProjectWorkload;
-
-{
-  /* <div className="w-[35px] h-[35px] rounded-full border border-[#060606]"></div> */
-}
-
-{
-  /* <div className="w-[35px] h-[35px] rounded-full border border-[#060606] bg-[#060606] flex items-center justify-center">
-          <span className="text-white text-sm">06</span>
-    </div> */
-}
-
-{
-  /* <div className="w-[35px] h-[35px] rounded-full border border-[#E65F2B] bg-[#E65F2B] flex items-center justify-center">
-          <span className="text-white text-sm">10</span>
-    </div> */
-}

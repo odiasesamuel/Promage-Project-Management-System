@@ -3,8 +3,21 @@
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-const OverallProgress: React.FC<{}> = () => {
-  const percentage = 66;
+type ProgressData = {
+  id: number;
+  total_project: number;
+  completed_project: number;
+  delayed_project: number;
+  ongoing_project: number;
+};
+
+type OverallProgressType = {
+  progress: ProgressData[];
+};
+
+const OverallProgress: React.FC<OverallProgressType> = ({ progress }) => {
+  const { total_project, completed_project, delayed_project, ongoing_project } = progress[0];
+  const percentage = Math.round((completed_project / total_project) * 100);
   return (
     <div className="relative">
       <CircularProgressbarWithChildren
@@ -27,19 +40,19 @@ const OverallProgress: React.FC<{}> = () => {
       </CircularProgressbarWithChildren>
       <div className="absolute top-[150px] w-full flex items-center justify-between mt-6">
         <div className="h-[100px] w-[23%] text-center">
-          <p className="font-semibold text-xl">95</p>
+          <p className="font-semibold text-xl">{total_project}</p>
           <p className="text-[0.73rem] text-[#9A9A9A]">Total projects</p>
         </div>
         <div className="h-[100px] w-[23%] text-center">
-          <p className="font-semibold text-xl text-[#1A932E]">26</p>
+          <p className="font-semibold text-xl text-[#1A932E]">{completed_project}</p>
           <p className="text-[0.73rem] text-[#9A9A9A]">Completed</p>
         </div>
         <div className="h-[100px] w-[23%] text-center">
-          <p className="font-semibold text-xl text-[#DFA510]">35</p>
+          <p className="font-semibold text-xl text-[#DFA510]">{delayed_project}</p>
           <p className="text-[0.73rem] text-[#9A9A9A]">Delayed</p>
         </div>
         <div className="h-[100px] w-[23%] text-center">
-          <p className="font-semibold text-xl text-[#E65F2B]">95</p>
+          <p className="font-semibold text-xl text-[#E65F2B]">{ongoing_project}</p>
           <p className="text-[0.73rem] text-[#9A9A9A]">On going</p>
         </div>
       </div>

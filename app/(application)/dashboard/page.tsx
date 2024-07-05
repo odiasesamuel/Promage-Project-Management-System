@@ -7,9 +7,13 @@ import OverallProgress from "@/components/overallProgress";
 import ProjectWorkload from "@/components/projectWorkload";
 import projectList from "@/data/projectList.json";
 import TaskList from "@/components/taskList";
+import { getProjectSummary, getProgress, getTaskList } from "@/lib/dashboard";
 
 const Home = () => {
-  const data = projectList;
+  // const data = projectList;
+  const projectList_db = getProjectSummary();
+  const progress = getProgress();
+  const taskList = getTaskList();
 
   return (
     <div className="text-black">
@@ -18,7 +22,7 @@ const Home = () => {
       <div className="flex justify-between my-6">
         <Card className="w-[64%] bg-[#F2EAE5]">
           <CardContent>
-            <DataTable columns={columns} data={data} className="" />
+            <DataTable columns={columns} data={projectList_db} className="" />
           </CardContent>
         </Card>
         <Card className="w-[34%] h-[330px] bg-[#F2EAE5]">
@@ -26,7 +30,7 @@ const Home = () => {
             <CardTitle>Overall Progress</CardTitle>
           </CardHeader>
           <CardContent className="px-3">
-            <OverallProgress />
+            <OverallProgress progress={progress} />
           </CardContent>
         </Card>
       </div>
@@ -57,7 +61,7 @@ const Home = () => {
               </TabsList>
               <TabsContent value="all">All tab</TabsContent>
               <TabsContent value="important" className="mt-3">
-                <TaskList />
+                <TaskList data={taskList} />
               </TabsContent>
               <TabsContent value="note">Note tab</TabsContent>
               <TabsContent value="link">link tab</TabsContent>

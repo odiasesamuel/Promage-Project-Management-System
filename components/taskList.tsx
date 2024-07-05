@@ -6,8 +6,18 @@ import { Badge, BadgeProps } from "./ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
-const TaskList: React.FC<{}> = () => {
-  const data = taskList;
+type TaskList = {
+  id: number;
+  task: string;
+  checked: string;
+  approval: string;
+};
+
+type TasklistProps = {
+  data: TaskList[];
+};
+
+const TaskList: React.FC<TasklistProps> = ({ data }) => {
   const rowsPerPage = 5;
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(rowsPerPage);
@@ -30,8 +40,8 @@ const TaskList: React.FC<{}> = () => {
 
         return (
           <li className="flex items-center mb-3 w-[85%]" key={id}>
-            <Checkbox id={id} defaultChecked={checked === "Yes"} />
-            <label htmlFor={id} className="ml-2 text-sm">
+            <Checkbox id={`${id}`} defaultChecked={checked === "Yes"} />
+            <label htmlFor={`${id}`} className="ml-2 text-sm">
               {task}
             </label>
             <Badge variant={variant} className="ml-auto">

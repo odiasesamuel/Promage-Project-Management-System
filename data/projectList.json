@@ -5,7 +5,7 @@
       "projectManager": "Alice Johnson",
       "dueDate": "2024-08-17",
       "status": "On going",
-      "progress": "85%"
+      "progress": 85
     },
     {
       "id": "3f7e47a7-253b-4df8-b6cd-9c4a7a3c25e6",
@@ -13,7 +13,7 @@
       "projectManager": "John Doe",
       "dueDate": "2023-04-25",
       "status": "Delayed",
-      "progress": "45%"
+      "progress": 45
     },
     {
       "id": "9c5e6b8f-3f9d-4e68-b0d2-d3f7a7c29b3a",
@@ -21,7 +21,7 @@
       "projectManager": "Jane Smith",
       "dueDate": "2024-10-13",
       "status": "Completed",
-      "progress": "100%"
+      "progress": 100
     },
     {
       "id": "7d8e9a4b-2e4d-49b8-b9d2-e5f7a8b39c3b",
@@ -29,7 +29,7 @@
       "projectManager": "Peter Eke",
       "dueDate": "2023-06-21",
       "status": "At risk",
-      "progress": "60%"
+      "progress": 60
     },
     {
       "id": "5e9e4b7f-1a2d-4d4b-a9d2-d6f7a9c49d3c",
@@ -37,7 +37,7 @@
       "projectManager": "Samuel Eke",
       "dueDate": "2024-11-30",
       "status": "On going",
-      "progress": "70%"
+      "progress": 70
     }
   ]
   
