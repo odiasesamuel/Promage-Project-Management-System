@@ -5,7 +5,7 @@ import { useRouter, redirect } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { authFormSchema } from "@/lib/authFormSchema";
+import { authFormSchema } from "@/lib/formSchema";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";

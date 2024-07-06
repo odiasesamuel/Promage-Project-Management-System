@@ -9,7 +9,6 @@ type ProjectWorkloadData = {
 
 const ProjectWorkload: React.FC<{}> = () => {
   const data: ProjectWorkloadData[] = getProjectWorkLoad();
-  console.log(data);
   const maxProjects = data.reduce((max, employee) => (employee.no_of_project > max ? employee.no_of_project : max), -Infinity);
 
   return (

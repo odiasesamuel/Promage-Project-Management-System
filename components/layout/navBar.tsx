@@ -1,5 +1,6 @@
 import Image from "next/image";
 import NavLink from "../navLink";
+import CreatNewProject from "../creatNewProject";
 import logoIcon from "@/assets/logo.svg";
 import newProjectIcon from "@/assets/crosss.svg";
 import dashboardIconActive from "@/assets/dashboard.svg";
@@ -31,12 +32,14 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
             <Image src={sidebarBavArrow} alt="navigation sidebar icon" />
           </div>
         </div>
-        <div className="bg-white w-[85%] h-[50px] ml-4 mt-16 mb-12 rounded-full flex items-center">
-          <Image src={newProjectIcon} alt="new project icon" className="mx-2" />
-          <span className="text-sm text-black">
-            Create new <br /> project
-          </span>
-        </div>
+        <CreatNewProject>
+          <div className="bg-white w-[85%] h-[50px] ml-4 mt-16 mb-12 rounded-full flex items-center cursor-pointer">
+            <Image src={newProjectIcon} alt="new project icon" className="mx-2" />
+            <span className="text-sm text-black">
+              Create new <br /> project
+            </span>
+          </div>
+        </CreatNewProject>
         <nav className="ml-4 flex flex-col gap-3 mb-[300px]">
           <NavLink activeIcon={dashboardIconActive} notActiveIcon={dashboardIconNotActive} href="/dashboard" alt="dashboard icon">
             Dashboard
