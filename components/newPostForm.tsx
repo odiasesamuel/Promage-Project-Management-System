@@ -44,7 +44,7 @@ export function NewPostForm({ setOpen }: NewPostFormProps) {
         variant: "destructive",
         title: "Error",
         description: "Failed to create project. Please try again.",
-        duration: 2000,
+        duration: 3000,
       });
     }
   }
