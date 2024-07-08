@@ -15,23 +15,38 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createNewProject } from "@/actions/project";
+import { useToast } from "@/components/ui/use-toast";
 
 type NewPostFormProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
-
 
 export function NewPostForm({ setOpen }: NewPostFormProps) {
   const form = useForm<z.infer<typeof createNewProjectSchema>>({
     resolver: zodResolver(createNewProjectSchema),
   });
 
+  const { toast } = useToast();
   async function onSubmit(values: z.infer<typeof createNewProjectSchema>) {
-    await createNewProject({
-      ...values,
-      dueDate: values.dueDate.toISOString(),
-    });
-    setOpen(false);
+    try {
+      await createNewProject({
+        ...values,
+        dueDate: values.dueDate.toISOString(),
+      });
+      setOpen(false);
+      toast({
+        title: "Project created successfully",
+        description: "Your project has been created.",
+      });
+    } catch (error) {
+      setOpen(false);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to create project. Please try again.",
+        duration: 2000,
+      });
+    }
   }
 
   function revenueValidation(e: React.FormEvent<HTMLInputElement>) {
