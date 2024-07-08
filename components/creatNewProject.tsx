@@ -1,36 +1,27 @@
-import { Copy } from "lucide-react";
+"use client";
 
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import NewPostForm from "./newPostForm";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import newProjectIcon from "@/assets/crosss.svg";
+import { useState } from "react";
 
 type CreatNewProjectProps = {
   children: React.ReactNode;
 };
 
 const CreatNewProject: React.FC<CreatNewProjectProps> = ({ children }) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle>Create a new project</DialogTitle>
-          {/* <DialogDescription>Anyone who has this link will be able to view this.</DialogDescription> */}
         </DialogHeader>
         <div className="flex items-center space-x-2">
-            <NewPostForm />
+          <NewPostForm setOpen={setOpen} />
         </div>
-        {/* <DialogFooter className="sm:justify-start">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Close
-            </Button>
-          </DialogClose>
-        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

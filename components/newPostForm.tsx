@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter, redirect } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,22 +14,40 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createNewProject } from "@/actions/project";
 
-export function NewPostForm() {
-  const router = useRouter();
-  // 1. Define your form.
+type NewPostFormProps = {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+
+export function NewPostForm({ setOpen }: NewPostFormProps) {
   const form = useForm<z.infer<typeof createNewProjectSchema>>({
     resolver: zodResolver(createNewProjectSchema),
-    // defaultValues: {
-    //   projectName: "HMS",
-    // },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof createNewProjectSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof createNewProjectSchema>) {
+    await createNewProject({
+      ...values,
+      dueDate: values.dueDate.toISOString(),
+    });
+    setOpen(false);
+  }
+
+  function revenueValidation(e: React.FormEvent<HTMLInputElement>) {
+    const value = e.currentTarget.value;
+    const regex = /^[0-9]*$/;
+    if (!regex.test(value)) {
+      e.currentTarget.value = value.replace(/[^0-9]/g, "");
+    }
+  }
+
+  function progressValidation(e: React.FormEvent<HTMLInputElement>) {
+    const inputValue = e.currentTarget.value;
+    const regex = /^(100|[1-9]?[0-9])$/;
+    if (!regex.test(inputValue)) {
+      e.currentTarget.value = "";
+    }
   }
 
   return (
@@ -49,7 +66,6 @@ export function NewPostForm() {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="projectManager"
@@ -63,21 +79,19 @@ export function NewPostForm() {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="revenue"
           render={({ field }) => (
             <FormItem className="text-black w-[48%]">
-              <FormLabel>Revenue</FormLabel>
+              <FormLabel>Revenue in dollars</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="60000000" {...field} className="p-3" />
+                <Input placeholder="60000000" {...field} className="p-3" onInput={revenueValidation} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="status"
@@ -91,7 +105,6 @@ export function NewPostForm() {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="progress"
@@ -99,13 +112,12 @@ export function NewPostForm() {
             <FormItem className="text-black w-[48%]">
               <FormLabel>Progress</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="70%" {...field} className="p-3" />
+                <Input placeholder="70%" {...field} className="p-3" onInput={progressValidation} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="dueDate"
@@ -122,14 +134,13 @@ export function NewPostForm() {
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent side="top" className="w-auto p-0 pointer-events-auto" align="start">
-                  <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus  />
+                  <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
                 </PopoverContent>
               </Popover>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="revenue"
@@ -137,13 +148,12 @@ export function NewPostForm() {
             <FormItem className="text-black w-[48%]">
               <FormLabel>Revenue</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="60000000" {...field} className="p-3" />
+                <Input placeholder="60000000" {...field} className="p-3" onInput={revenueValidation} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <Button type="submit" className="w-full">
           Create Project
         </Button>

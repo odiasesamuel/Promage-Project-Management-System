@@ -8,16 +8,21 @@ const authFormSchema = z.object({
 const createNewProjectSchema = z.object({
   projectName: z.string().min(1, { message: "Project name is required" }),
   projectManager: z.string().min(1, { message: "Project manager is required" }),
-  revenue: z.number().positive({ message: "Revenue must be a positive number" }),
+  revenue: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Revenue must be a positive number",
+    }),
   status: z.enum(["Completed", "On going", "Delayed", "At risk"], { message: "Invalid status" }),
-  progress: z.number().positive({ message: "Progress must be from 1-100" }),
+  progress: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 1 && val <= 100, {
+      message: "Progress must be from 1 to 100",
+    }),
   dueDate: z.date({
     required_error: "A Due date for the project is required.",
   }),
-  // description: z.string().min(1, { message: "Description is required" }),
-  // startDate: z.string().refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
-  // endDate: z.string().refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
-  // teamMembers: z.array(z.string().min(1)).nonempty({ message: "At least one team member is required" }),
 });
-
 export { authFormSchema, createNewProjectSchema };

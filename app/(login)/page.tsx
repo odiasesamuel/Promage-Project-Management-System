@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter, redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -30,7 +30,6 @@ export function AuthPage() {
     console.log(values);
     if (values.email === "test@gmail.com" && values.password === "testtest") {
       router.push("/dashboard");
-      // redirect("/dashboard")
     }
   }
 
