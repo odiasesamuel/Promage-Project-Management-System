@@ -10,6 +10,8 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -85,11 +87,21 @@ export function NewPostForm({ setOpen }: NewPostFormProps) {
           control={form.control}
           name="projectManager"
           render={({ field }) => (
-            <FormItem className="text-black w-[48%]">
+            <FormItem className="w-[48%]">
               <FormLabel>Project Manager</FormLabel>
-              <FormControl>
-                <Input placeholder="Samuel Adegoke" {...field} className="p-3" />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Samuel Adegoke" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="Kunle Owolabi">Kunle Owolabi</SelectItem>
+                  <SelectItem value="Samuel Adegoke">Samuel Adegoke</SelectItem>
+                  <SelectItem value="Ogechi Williams">Ogechi Williams</SelectItem>
+                  <SelectItem value="Lois Stephen">Lois Stephen</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -107,19 +119,31 @@ export function NewPostForm({ setOpen }: NewPostFormProps) {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="status"
           render={({ field }) => (
-            <FormItem className="text-black w-[48%]">
+            <FormItem className="w-[48%]">
               <FormLabel>Status</FormLabel>
-              <FormControl>
-                <Input placeholder="Completed, On going, Delayed, At risk" {...field} className="p-3" />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="On going" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="Completed">Completed</SelectItem>
+                  <SelectItem value="On going">On going</SelectItem>
+                  <SelectItem value="Delayed">Delayed</SelectItem>
+                  <SelectItem value="At risk">At risk</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="progress"
