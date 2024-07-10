@@ -1,8 +1,8 @@
 import db from "./db";
 import { ValueType } from "@/actions/project";
 
-export const storeNewProject = (values: ValueType) => {
-  // throw new Error("Failed to create new project");
+export const storeNewProject = async (values: ValueType) => {
+  // throw new Error("Failed to create new project"); // stimulate error
   const stmtInsert = db.prepare(`
     INSERT INTO project (name, projectManager, dueDate, status, progress)
     VALUES (?, ?, ?, ?, ?)`);
@@ -45,6 +45,8 @@ export const storeNewProject = (values: ValueType) => {
       stmtUpdateStats.run();
     }
   }
+
+  // await new Promise((resolve) => setTimeout(resolve, 10000)); // stimulate loading
 
   return result;
 };
