@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const authFormSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
- c: z.string().min(8, { message: "Password must be at least 8 characters long" }),
+  employee_id: z.string().length(6, { message: "Employee ID must be 6 characters long" }),
 });
 
 const createNewProjectSchema = z.object({

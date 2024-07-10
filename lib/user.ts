@@ -1,5 +1,6 @@
 import db from "./db";
 
-export function geEmployeeByEmail(email) {
-  return db.prepare('SELECT * FROM employee WHERE email = ?').get(email);
-}
+export const geEmployeeByEmail = (email: string) => {
+
+  return db.prepare("SELECT * FROM employee WHERE employee_email = ?").get(email);
+};

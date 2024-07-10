@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useState } from "react";
 import { authFormSchema } from "@/lib/formSchema";
 import { login } from "@/actions/auth-action";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import logoIcon from "@/assets/logo.svg";
 
@@ -25,11 +26,18 @@ export function AuthPage() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof authFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-    login(values);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  async function onSubmit(values: z.infer<typeof authFormSchema>) {
+    setIsLoading(true);
+    const result = await login(values);
+    setIsLoading(false);
+    if (!result.success) {
+      setErrorMessage(result.message || "An unknown error occurred");
+    } else {
+      setErrorMessage("");
+      // Redirect or perform other actions on successful login
+    }
   }
 
   return (
@@ -58,17 +66,17 @@ export function AuthPage() {
           name="employee_id"
           render={({ field }) => (
             <FormItem className="text-black">
-              <FormLabel>Employee ID</FormLabel>
+              <FormLabel errorMessage={!isLoading && errorMessage}>Employee ID</FormLabel>
               <FormControl>
                 <Input placeholder="45673" {...field} className="p-3" />
               </FormControl>
-              <FormMessage />
+              <FormMessage>{!isLoading && errorMessage}</FormMessage>
             </FormItem>
           )}
         />
 
         <Button type="submit" className="w-full">
-          Sign in
+          {isLoading ? "Signing in..." : "Sign in"}
         </Button>
       </form>
     </Form>
