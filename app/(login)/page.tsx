@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { authFormSchema } from "@/lib/formSchema";
+import { login } from "@/actions/auth-action";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -19,7 +20,7 @@ export function AuthPage() {
     resolver: zodResolver(authFormSchema),
     defaultValues: {
       email: "",
-      password: "",
+      employee_id: "",
     },
   });
 
@@ -28,9 +29,7 @@ export function AuthPage() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-    if (values.email === "test@gmail.com" && values.password === "testtest") {
-      router.push("/dashboard");
-    }
+    login(values);
   }
 
   return (
@@ -56,12 +55,12 @@ export function AuthPage() {
 
         <FormField
           control={form.control}
-          name="password"
+          name="employee_id"
           render={({ field }) => (
             <FormItem className="text-black">
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Employee ID</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="********" {...field} className="p-3" />
+                <Input placeholder="45673" {...field} className="p-3" />
               </FormControl>
               <FormMessage />
             </FormItem>
