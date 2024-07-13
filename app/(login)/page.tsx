@@ -36,7 +36,7 @@ export function AuthPage() {
       setErrorMessage(result.message || "An unknown error occurred");
     } else {
       setErrorMessage("");
-      // Redirect or perform other actions on successful login
+      router.push("/dashboard");
     }
   }
 

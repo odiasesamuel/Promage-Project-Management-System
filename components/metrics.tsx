@@ -8,11 +8,16 @@ import resourceIcon from "@/assets/Frame 1171275858.svg";
 import incrementArrow from "@/assets/incrementArrow.svg";
 import decrementArrow from "@/assets/decrementArrow.svg";
 
-const Metrics: React.FC<{}> = async () => {
-  const metrics = getMetrics();
+type MetricsProps = {
+  organisation_id: string;
+};
+
+const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
+  const metrics = await getMetrics(organisation_id);
+  console.log(metrics);
   // Or using route handlers
-//   const response = await fetch('http://localhost:3000/api/metrics');
-//   const metricsRouteHandler = await response.json();
+  //   const response = await fetch('http://localhost:3000/api/metrics');
+  //   const metricsRouteHandler = await response.json();
 
   const formatCurrency = (number: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -78,7 +83,7 @@ const Metrics: React.FC<{}> = async () => {
           <div className="flex gap-x-1">
             <Image src={projectArrow} alt="arrow" />
             <p className="text-xs">
-              {monthProjectPercentage}% {currentMonthProject > previousMonthProject ? "increase" : "decrease"} from last month
+              {monthProjectPercentage.toFixed(2)}% {currentMonthProject > previousMonthProject ? "increase" : "decrease"} from last month
             </p>
           </div>
         </CardContent>

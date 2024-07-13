@@ -8,17 +8,29 @@ import ProjectWorkload from "@/components/projectWorkload";
 import projectList from "@/data/projectList.json";
 import TaskList from "@/components/taskList";
 import { getProjectSummary, getProgress, getTaskList } from "@/lib/dashboard";
+import { redirect } from "next/navigation";
+import { verifyAuth } from "@/lib/auth";
+import { getEmployeeByEmployeeId } from "@/lib/employee";
+import { EmployeeDetailsType } from "@/actions/auth-action";
 
-const Home = () => {
+const Home = async () => {
+  const result = await verifyAuth();
+  if (!result.user) {
+    return redirect("/");
+  }
+  const employeeDetails: EmployeeDetailsType = getEmployeeByEmployeeId(result.user.id);
   // const data = projectList;
+  const employee_id = employeeDetails.id;
+  const organisation_id = employeeDetails.organization_id;
   const projectList_db = getProjectSummary();
   const progress = getProgress();
   const taskList = getTaskList();
+  // console.log(employeeDetails);
 
   return (
     <div className="text-black">
       <h3 className="scroll-m-20 text-xl font-semibold tracking-tight my-5">Overview</h3>
-      <Metrics />
+      <Metrics organisation_id={organisation_id} />
       <div className="flex justify-between my-6">
         <Card className="w-[64%] bg-[#F2EAE5]">
           <CardContent>
