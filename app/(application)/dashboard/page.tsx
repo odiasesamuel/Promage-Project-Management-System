@@ -1,17 +1,18 @@
 import Metrics from "@/components/metrics";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { columns } from "../../../components/columns";
+import { columns, ProjectListType } from "../../../components/columns";
 import { DataTable } from "../../../components/data-table";
 import OverallProgress from "@/components/overallProgress";
 import ProjectWorkload from "@/components/projectWorkload";
-import projectList from "@/data/projectList.json";
 import TaskList from "@/components/taskList";
 import { getProjectSummary, getProgress, getTaskList } from "@/lib/dashboard";
 import { redirect } from "next/navigation";
 import { verifyAuth } from "@/lib/auth";
 import { getEmployeeByEmployeeId } from "@/lib/employee";
 import { EmployeeDetailsType } from "@/actions/auth-action";
+import { ProgressDataType } from "@/components/overallProgress";
+import { TaskListType } from "@/components/taskList";
 
 const Home = async () => {
   const result = await verifyAuth();
@@ -19,13 +20,12 @@ const Home = async () => {
     return redirect("/");
   }
   const employeeDetails: EmployeeDetailsType = getEmployeeByEmployeeId(result.user.id);
-  // const data = projectList;
-  const employee_id = employeeDetails.id;
   const organisation_id = employeeDetails.organization_id;
-  const projectList_db = getProjectSummary();
-  const progress = getProgress();
-  const taskList = getTaskList();
-  // console.log(employeeDetails);
+  const employee_id = employeeDetails.id;
+
+  const projectList: ProjectListType[] = getProjectSummary(organisation_id);
+  const progress: ProgressDataType[] = getProgress(organisation_id);
+  const taskList: TaskListType[] = getTaskList(employee_id);
 
   return (
     <div className="text-black">
@@ -34,7 +34,7 @@ const Home = async () => {
       <div className="flex justify-between my-6">
         <Card className="w-[64%] bg-[#F2EAE5]">
           <CardContent>
-            <DataTable columns={columns} data={projectList_db} className="" />
+            <DataTable columns={columns} data={projectList} className="" />
           </CardContent>
         </Card>
         <Card className="w-[34%] h-[330px] bg-[#F2EAE5]">
@@ -85,7 +85,7 @@ const Home = async () => {
             <CardTitle>Project Workload</CardTitle>
           </CardHeader>
           <CardContent className="px-3">
-            <ProjectWorkload />
+            <ProjectWorkload organisation_id={organisation_id} />
           </CardContent>
         </Card>
       </div>

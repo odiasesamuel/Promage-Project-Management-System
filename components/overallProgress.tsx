@@ -3,7 +3,7 @@
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-type ProgressData = {
+export type ProgressDataType = {
   id: number;
   total_project: number;
   completed_project: number;
@@ -12,7 +12,7 @@ type ProgressData = {
 };
 
 type OverallProgressType = {
-  progress: ProgressData[];
+  progress: ProgressDataType[];
 };
 
 const OverallProgress: React.FC<OverallProgressType> = ({ progress }) => {

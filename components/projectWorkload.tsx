@@ -1,20 +1,28 @@
 import projectWorkload from "@/data/projectWorkload.json";
 import { getProjectWorkLoad } from "@/lib/dashboard";
 
-type ProjectWorkloadData = {
+type ProjectWorkloadDataType = {
   id: number;
+  organization_id: string;
+  employee_id: string;
   employee_name: string;
   no_of_project: number;
 };
 
-const ProjectWorkload: React.FC<{}> = () => {
-  const data: ProjectWorkloadData[] = getProjectWorkLoad();
+type ProjectWorkloadProps = {
+  organisation_id: string;
+};
+
+const ProjectWorkload: React.FC<ProjectWorkloadProps> = ({ organisation_id }) => {
+  const data: ProjectWorkloadDataType[] = getProjectWorkLoad(organisation_id);
   const maxProjects = data.reduce((max, employee) => (employee.no_of_project > max ? employee.no_of_project : max), -Infinity);
 
   return (
     <div className="flex justify-between min-h-[230px] flex-wrap gap-y-3">
       {data.map((employee) => {
         const noCircle = employee.no_of_project % 2 === 0 ? Math.floor(employee.no_of_project / 2) - 1 : Math.floor(employee.no_of_project / 2);
+        const employeeName = employee.employee_name.split(" ");
+        const firstName = employeeName[0];
 
         return (
           <div className="w-[13%] flex flex-col items-center justify-end" key={employee.id}>
@@ -24,7 +32,7 @@ const ProjectWorkload: React.FC<{}> = () => {
             {Array.from({ length: noCircle }).map((_, index) => (
               <div className="w-[35px] h-[35px] rounded-full border border-[#060606]" key={index}></div>
             ))}
-            <span className="mt-2 text-xs text-[#9A9A9A]">{employee.employee_name}</span>
+            <span className="mt-2 text-xs text-[#9A9A9A]">{firstName}</span>
           </div>
         );
       })}

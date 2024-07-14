@@ -6,15 +6,17 @@ import { Badge, BadgeProps } from "./ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
-type TaskList = {
-  id: number;
-  task: string;
+export type TaskListType = {
+  task_id: number;
+  organization_id: string;
+  assigned_to: string;
+  description: string;
   checked: string;
   approval: string;
 };
 
 type TasklistProps = {
-  data: TaskList[];
+  data: TaskListType[];
 };
 
 const TaskList: React.FC<TasklistProps> = ({ data }) => {
@@ -35,14 +37,14 @@ const TaskList: React.FC<TasklistProps> = ({ data }) => {
 
   return (
     <ul>
-      {data.slice(startIndex, endIndex).map(({ id, task, checked, approval }) => {
+      {data.slice(startIndex, endIndex).map(({ task_id, description, checked, approval }) => {
         const variant: BadgeProps["variant"] = approval === "Approved" ? "success" : approval === "In review" ? "danger" : approval === "On going" ? "onGoing" : "onGoing";
 
         return (
-          <li className="flex items-center mb-3 w-[85%]" key={id}>
-            <Checkbox id={`${id}`} defaultChecked={checked === "Yes"} />
-            <label htmlFor={`${id}`} className="ml-2 text-sm">
-              {task}
+          <li className="flex items-center mb-3 w-[85%]" key={task_id}>
+            <Checkbox id={`${task_id}`} defaultChecked={checked === "Yes"} />
+            <label htmlFor={`${task_id}`} className="ml-2 text-sm">
+              {description}
             </label>
             <Badge variant={variant} className="ml-auto">
               {approval}

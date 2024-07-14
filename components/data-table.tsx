@@ -18,11 +18,11 @@ export function DataTable<TData, TValue>({ columns, data, className }: DataTable
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
 
   const customFilterFunction = (row: any, columnId: string, filterValue: string) => {
-    const name = row.original.name.toLowerCase();
-    const projectManager = row.original.projectManager.toLowerCase();
+    const projectName = row.original.project_name.toLowerCase();
+    const projectManager = row.original.project_manager.toLowerCase();
     const searchValue = filterValue.toLowerCase();
 
-    return name.includes(searchValue) || projectManager.includes(searchValue);
+    return projectName.includes(searchValue) || projectManager.includes(searchValue);
   };
 
   const table = useReactTable({
@@ -91,10 +91,3 @@ export function DataTable<TData, TValue>({ columns, data, className }: DataTable
     </div>
   );
 }
-
-
-// [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Odiasesamuel&layout=compact&theme=vision-friendly-dark)](https://github.com/anuraghazra/github-readme-stats)
-
-// [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Odiasesamuel&layout=compact)](https://github.com/Odiasesamuel/github-readme-stats)
-
-// [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Odiasesamuel&layout=compact&theme=vision-friendly-dark)](https://github.com/Odiasesamuel/github-readme-stats)

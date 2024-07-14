@@ -12,9 +12,18 @@ type MetricsProps = {
   organisation_id: string;
 };
 
+type Metrics = {
+  metric_id: number;
+  organization_id: string;
+  month: string;
+  total_revenue: number;
+  project: number;
+  time: number;
+  resource: number;
+};
+
 const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
-  const metrics = await getMetrics(organisation_id);
-  console.log(metrics);
+  const metrics: Metrics[] = getMetrics(organisation_id);
   // Or using route handlers
   //   const response = await fetch('http://localhost:3000/api/metrics');
   //   const metricsRouteHandler = await response.json();
