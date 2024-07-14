@@ -13,7 +13,7 @@ export type ValueType = {
 
 export type EmployeeDetailsType = {
   id: string;
-  organization_id: string;
+  organisation_id: string;
   employee_name: string;
   employee_email: string;
 };

@@ -20,7 +20,7 @@ const Home = async () => {
     return redirect("/");
   }
   const employeeDetails: EmployeeDetailsType = getEmployeeByEmployeeId(result.user.id);
-  const organisation_id = employeeDetails.organization_id;
+  const organisation_id = employeeDetails.organisation_id;
   const employee_id = employeeDetails.id;
 
   const projectList: ProjectListType[] = getProjectSummary(organisation_id);

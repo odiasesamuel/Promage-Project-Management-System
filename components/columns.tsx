@@ -12,13 +12,13 @@ import { Badge, BadgeProps } from "@/components/ui/badge";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type ProjectListType = {
-  project_id: number,
-  organization_id: string,
-  project_name: string,
-  project_manager: string,
-  due_date: string,
-  status: string,
-  progress: number
+  project_id: number;
+  organisation_id: string;
+  project_name: string;
+  project_manager: string;
+  due_date: string;
+  status: string;
+  progress: number;
 };
 
 export const columns: ColumnDef<ProjectListType>[] = [

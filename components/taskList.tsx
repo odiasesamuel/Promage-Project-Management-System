@@ -8,7 +8,7 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 
 export type TaskListType = {
   task_id: number;
-  organization_id: string;
+  organisation_id: string;
   assigned_to: string;
   description: string;
   checked: string;

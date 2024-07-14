@@ -14,7 +14,7 @@ type MetricsProps = {
 
 type Metrics = {
   metric_id: number;
-  organization_id: string;
+  organisation_id: string;
   month: string;
   total_revenue: number;
   project: number;

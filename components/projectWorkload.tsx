@@ -3,7 +3,7 @@ import { getProjectWorkLoad } from "@/lib/dashboard";
 
 type ProjectWorkloadDataType = {
   id: number;
-  organization_id: string;
+  organisation_id: string;
   employee_id: string;
   employee_name: string;
   no_of_project: number;
