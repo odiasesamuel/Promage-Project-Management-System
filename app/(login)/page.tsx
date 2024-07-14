@@ -66,7 +66,7 @@ export function AuthPage() {
           name="employee_id"
           render={({ field }) => (
             <FormItem className="text-black">
-              <FormLabel errorMessage={!isLoading && errorMessage}>Employee ID</FormLabel>
+              <FormLabel errormessage={!isLoading && errorMessage}>Employee ID</FormLabel>
               <FormControl>
                 <Input placeholder="45673" {...field} className="p-3" />
               </FormControl>
