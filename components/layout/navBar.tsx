@@ -16,6 +16,8 @@ import resourceMgtIconNotActive from "@/assets/resourceMgt.svg";
 import usersIconActive from "@/assets/usersactive.svg";
 import usersIconNotActive from "@/assets/users.svg";
 import sidebarBavArrow from "@/assets/arrow.svg";
+import LogoutConfirmation from "../logoutConfirmation";
+import { LogOut } from "lucide-react";
 
 type NavBarProps = {
   className?: string;
@@ -24,7 +26,7 @@ type NavBarProps = {
 const NavBar: React.FC<NavBarProps> = ({ className }) => {
   return (
     <>
-      <div className={className}>
+      <div className={`${className} relative`}>
         <div className="flex items-center ml-4 mt-8 relative">
           <Image src={logoIcon} alt="Logo of promage" priority />
           <h1 className="ml-1 text-2xl font-medium text-[#F1F1F1]">Promage</h1>
@@ -40,7 +42,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
             </span>
           </div>
         </CreatNewProject>
-        <nav className="ml-4 flex flex-col gap-3 mb-[300px]">
+        <nav className="ml-4 flex flex-col gap-3">
           <NavLink activeIcon={dashboardIconActive} notActiveIcon={dashboardIconNotActive} href="/dashboard" alt="dashboard icon">
             Dashboard
           </NavLink>
@@ -59,6 +61,12 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
           <NavLink activeIcon={usersIconActive} notActiveIcon={usersIconNotActive} href="/users" alt="time log icon">
             Users
           </NavLink>
+          <LogoutConfirmation>
+            <div className="ml-4 flex items-center gap-2 absolute bottom-10 cursor-pointer">
+              <LogOut />
+              <span className="text-[#F1F1F1] text-sm">Sign out</span>
+            </div>
+          </LogoutConfirmation>
         </nav>
       </div>
     </>

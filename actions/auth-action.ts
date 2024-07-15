@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { getEmployeeByEmail } from "@/lib/employee";
-import { createAuthSession } from "@/lib/auth";
+import { createAuthSession, destroySession } from "@/lib/auth";
 
 export type ValueType = {
   email: string;
@@ -33,8 +33,13 @@ export const login = async (values: ValueType) => {
 
     await createAuthSession(existingUser.id);
 
-    return { success: true, employeeDetails: existingUser };
+    return { success: true, message: null };
   } catch (error) {
     return { success: false, message: (error as Error).message || "An unknown error occurred" };
   }
+};
+
+export const signout = async () => {
+  await destroySession();
+  return { success: true };
 };
