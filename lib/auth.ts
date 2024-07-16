@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { Lucia } from "lucia";
 import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
 import db from "./db";
+import cron from "node-cron";
 
 const adapter = new BetterSqlite3Adapter(db, {
   user: "employee",
@@ -71,3 +72,9 @@ export const destroySession = async () => {
   const sessionCookie = lucia.createBlankSessionCookie();
   cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 };
+
+const deleteExpiredSessions = () => {
+  lucia.deleteExpiredSessions();
+};
+
+cron.schedule("0 0 1 * *", deleteExpiredSessions);
