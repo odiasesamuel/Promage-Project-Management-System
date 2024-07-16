@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const authFormSchema = z.object({
+const signInFormSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   employee_id: z.string().length(6, { message: "Employee ID must be 6 characters long" }),
 });
@@ -25,4 +25,4 @@ const createNewProjectSchema = z.object({
     required_error: "A Due date for the project is required.",
   }),
 });
-export { authFormSchema, createNewProjectSchema };
+export { signInFormSchema, createNewProjectSchema };
