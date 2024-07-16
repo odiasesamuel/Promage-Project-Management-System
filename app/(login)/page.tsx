@@ -1,19 +1,19 @@
-"use client";
-
+import Link from "next/link";
 import SignInForm from "@/components/signInForm";
 import SignUpForm from "@/components/signUpForm";
 import Image from "next/image";
 import logoIcon from "@/assets/logo.svg";
-import { useState } from "react";
 
-export function AuthPage() {
-  const [mode, setMode] = useState("signin");
-  const changeModeToSignupHandler = () => {
-    setMode("signup");
-  };
-  const changeModeToSigninHandler = () => {
-    setMode("signin");
-  };
+type SearchParams = {
+  [key: string]: string | string[] | undefined;
+};
+
+type AuthPageProps = {
+  searchParams: SearchParams;
+};
+
+export function AuthPage({ searchParams }: AuthPageProps) {
+  const mode = searchParams.mode || "signin";
 
   return (
     <>
@@ -27,17 +27,17 @@ export function AuthPage() {
         {mode === "signin" && (
           <p className="text-black text-sm mt-6">
             Don't have an account?
-            <span className="text-[#E65F2B] cursor-pointer underline underline-offset-4 ml-1" onClick={changeModeToSignupHandler}>
+            <Link href="/?mode=signup" className="text-[#E65F2B] cursor-pointer underline underline-offset-4 ml-1">
               Sign up your organization
-            </span>
+            </Link>
           </p>
         )}
         {mode === "signup" && (
           <p className="text-black text-sm mt-6">
             Already part of an organization?
-            <span className="text-[#E65F2B] cursor-pointer underline underline-offset-4 ml-1" onClick={changeModeToSigninHandler}>
+            <Link href="/?mode=signin" className="text-[#E65F2B] cursor-pointer underline underline-offset-4 ml-1">
               Sign in
-            </span>
+            </Link>
           </p>
         )}
       </div>
