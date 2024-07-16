@@ -5,6 +5,11 @@ const signInFormSchema = z.object({
   employee_id: z.string().length(6, { message: "Employee ID must be 6 characters long" }),
 });
 
+const signUpFormSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  employee_id: z.string().length(6, { message: "Employee ID must be 6 characters long" }),
+});
+
 const createNewProjectSchema = z.object({
   projectName: z.string().min(1, { message: "Project name is required" }),
   projectManager: z.string().min(1, { message: "Project manager is required" }),
@@ -25,4 +30,5 @@ const createNewProjectSchema = z.object({
     required_error: "A Due date for the project is required.",
   }),
 });
-export { signInFormSchema, createNewProjectSchema };
+
+export { signInFormSchema, signUpFormSchema, createNewProjectSchema };
