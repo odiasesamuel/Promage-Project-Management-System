@@ -6,8 +6,37 @@ const signInFormSchema = z.object({
 });
 
 const signUpFormSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  employee_id: z.string().length(6, { message: "Employee ID must be 6 characters long" }),
+  organisation_name: z.string().min(1, { message: "Organisation name is required" }),
+  organisation_email: z.string().email({ message: "Invalid email address" }),
+  administrator_name: z.string().min(1, { message: "Administrator name is required" }),
+  administrator_email: z.string().email({ message: "Invalid email address" }),
+  employee_name: z.string().min(1, { message: "Employee name is required" }),
+  employee_email: z.string().email({ message: "Invalid email address" }),
+  job_title: z.string().min(1, { message: "Job title is required" }),
+  last_month_revenue: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Revenue must be a positive number",
+    }),
+  last_month_project: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Project must be a positive number",
+    }),
+  last_month_time: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Project must be a positive number",
+    }),
+  last_month_resources: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Project must be a positive number",
+    }),
 });
 
 const createNewProjectSchema = z.object({

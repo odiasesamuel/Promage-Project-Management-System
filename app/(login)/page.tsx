@@ -1,6 +1,6 @@
 import Link from "next/link";
-import SignInForm from "@/components/signInForm";
-import SignUpForm from "@/components/signUpForm";
+import SignInForm from "@/components/form/signInForm";
+import SignUpForm from "@/components/form/signUpForm";
 import Image from "next/image";
 import logoIcon from "@/assets/logo.svg";
 
