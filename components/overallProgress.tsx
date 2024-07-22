@@ -18,7 +18,6 @@ type OverallProgressType = {
 const OverallProgress: React.FC<OverallProgressType> = ({ progress }) => {
   const { total_project, completed_project, delayed_project, ongoing_project } = progress[0];
   const percentage = total_project === 0 ? 0 : Math.round((completed_project / total_project) * 100);
-  console.log(total_project, completed_project, delayed_project, ongoing_project);
   return (
     <div className="relative">
       <CircularProgressbarWithChildren

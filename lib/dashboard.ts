@@ -1,7 +1,7 @@
 import db from "./db";
 import { MetricSignUpDetailsType } from "@/actions/auth-action";
 import { getQuarter, getPreviousQuarter } from "@/utils/dateUtils";
-import { EmployeeSignUpDetailsType } from "@/actions/auth-action";
+import { EmployeeSignUpDetailsType, AdminDetailsType } from "@/actions/auth-action";
 
 export const getMetrics = (organisation_id: string) => {
   const stmt = db.prepare("SELECT * FROM metric WHERE organisation_id	 = ?");
@@ -59,4 +59,22 @@ export const addProgressDataOnSignUp = async (organisation_id: string) => {
     VALUES (?, ?, ?, ?, ?)`);
 
   stmtInsert.run(organisation_id, 0, 0, 0, 0);
+};
+
+export const addProjectWorkloadDataOnSignUp = async (organisation_id: string, adminDetails: AdminDetailsType, employeeDetails: (EmployeeSignUpDetailsType & { employee_id: string })[]) => {
+  const { administrator_name, administrator_employee_id } = adminDetails;
+  const stmtInsert = db.prepare(`
+    INSERT INTO project_workload (organisation_id, employee_id, employee_name, no_of_project)
+    VALUES (?, ?, ?, ?)`);
+
+  stmtInsert.run(organisation_id, administrator_employee_id, administrator_name, 0);
+
+  employeeDetails.forEach((employee) => {
+    const { employee_name, employee_id } = employee;
+    const stmtInsert = db.prepare(`
+      INSERT INTO project_workload (organisation_id, employee_id, employee_name, no_of_project)
+      VALUES (?, ?, ?, ?)`);
+
+    stmtInsert.run(organisation_id, employee_id, employee_name, 0);
+  });
 };

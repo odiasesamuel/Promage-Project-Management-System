@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import { getEmployeeByEmail, getOrganisationByEmail, createOrganisationAccount, createAdminEmployeeAccount, createEmployeeAccount } from "@/lib/employee";
 import { createAuthSession, destroySession } from "@/lib/auth";
-import { addMetricsOnSignUp, addProgressDataOnSignUp } from "@/lib/dashboard";
+import { addMetricsOnSignUp, addProgressDataOnSignUp, addProjectWorkloadDataOnSignUp } from "@/lib/dashboard";
 
 export type ValueType = {
   email: string;
@@ -25,6 +25,12 @@ export type OrganisationSignUpDetailsType = {
   organisation_email: string;
   administrator_name: string;
   administrator_email: string;
+};
+
+export type AdminDetailsType = {
+  administrator_name: string;
+  administrator_email: string;
+  administrator_employee_id: string;
 };
 
 export type EmployeeSignUpDetailsType = {
@@ -74,10 +80,10 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
     const adminDetails = await createAdminEmployeeAccount(organisation_id, organisation_info);
 
     const employeeDetails = await createEmployeeAccount(organisation_id, employee_info);
-    console.log(employeeDetails);
 
     await addMetricsOnSignUp(organisation_id, metric_info, employeeDetails);
     await addProgressDataOnSignUp(organisation_id);
+    await addProjectWorkloadDataOnSignUp(organisation_id, adminDetails, employeeDetails);
 
     const administrator_login_details = {
       email: adminDetails.administrator_email,
