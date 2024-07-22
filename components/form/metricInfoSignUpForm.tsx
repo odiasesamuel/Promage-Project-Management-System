@@ -1,8 +1,9 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { metricInfoSignUpFormSchema } from "@/lib/formSchema";
 import { signup } from "@/actions/auth-action";
@@ -10,9 +11,11 @@ import { signup } from "@/actions/auth-action";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { getQuarter, getPreviousQuarter } from "@/utils/dateUtils";
 
 const MetricInfoSignUpForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof metricInfoSignUpFormSchema>>({
     resolver: zodResolver(metricInfoSignUpFormSchema),
   });
@@ -33,13 +36,31 @@ const MetricInfoSignUpForm = () => {
   const currentQuarter = getQuarter(currentDate);
   const previousQuarter = getPreviousQuarter(currentQuarter);
 
+  const { toast } = useToast();
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+
   async function onSubmit(values: z.infer<typeof metricInfoSignUpFormSchema>) {
     sessionStorage.setItem("metric_information", JSON.stringify(values));
     const organisation_info = JSON.parse(sessionStorage.getItem("organisation_information") || "{}");
     const employee_info = JSON.parse(sessionStorage.getItem("employee_information") || "[]");
     const metric_info = JSON.parse(sessionStorage.getItem("metric_information") || "{}");
     if (organisation_info && employee_info && metric_info) {
+      setIsLoading(true);
       const result = await signup(organisation_info, employee_info, metric_info);
+      setIsLoading(false);
+      if (!result.success) {
+        setErrorMessage(result.message || "An unknown error occurred");
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: errorMessage,
+          duration: 3000,
+        });
+      } else {
+        setErrorMessage("");
+        router.push("/dashboard");
+      }
     }
   }
 
@@ -105,7 +126,7 @@ const MetricInfoSignUpForm = () => {
         </div>
 
         <Button type="submit" className="w-full">
-          Submit
+          {isLoading ? "Submitting..." : "Submit"}
         </Button>
       </form>
     </Form>

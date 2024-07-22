@@ -75,6 +75,7 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
 
     const existingOrganisation: OrganisationSignUpDetailsType = getOrganisationByEmail(organisation_info.organisation_email);
     if (existingOrganisation) throw new Error("This organisation has already been registered");
+    console.log("working..")
     const organisation_id = await createOrganisationAccount(organisation_info);
     // console.log(organisation_id);
     const adminDetails = await createAdminEmployeeAccount(organisation_id, organisation_info);

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { inter } from "@/font/font";
+import { Toaster } from "@/components/ui/toaster";
 import "../globals.css";
 import Introduction from "@/components/introduction";
 
@@ -22,6 +23,7 @@ export default function RootLayout({
           </div>
           <div className="bg-[#FAFFFB] col-start-7 col-end-13 grid place-content-center">{children}</div>
         </div>
+        <Toaster />
       </body>
     </html>
   );
