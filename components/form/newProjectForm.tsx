@@ -18,11 +18,11 @@ import { Input } from "@/components/ui/input";
 import { createNewProject } from "@/actions/project";
 import { useToast } from "@/components/ui/use-toast";
 
-type NewPostFormProps = {
+type NewProjectFormProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export function NewPostForm({ setOpen }: NewPostFormProps) {
+export function NewProjectForm({ setOpen }: NewProjectFormProps) {
   const form = useForm<z.infer<typeof createNewProjectSchema>>({
     resolver: zodResolver(createNewProjectSchema),
   });
@@ -200,4 +200,4 @@ export function NewPostForm({ setOpen }: NewPostFormProps) {
   );
 }
 
-export default NewPostForm;
+export default NewProjectForm;
