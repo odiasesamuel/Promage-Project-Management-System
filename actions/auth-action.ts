@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import { getEmployeeByEmail, getOrganisationByEmail, createOrganisationAccount, createAdminEmployeeAccount, createEmployeeAccount } from "@/lib/employee";
 import { createAuthSession, destroySession } from "@/lib/auth";
-import { addMetricsOnSignUp } from "@/lib/dashboard";
+import { addMetricsOnSignUp, addProgressDataOnSignUp } from "@/lib/dashboard";
 
 export type ValueType = {
   email: string;
@@ -70,13 +70,14 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
     const existingOrganisation: OrganisationSignUpDetailsType = getOrganisationByEmail(organisation_info.organisation_email);
     if (existingOrganisation) throw new Error("This organisation has already been registered");
     const organisation_id = await createOrganisationAccount(organisation_info);
-    console.log(organisation_id);
+    // console.log(organisation_id);
     const adminDetails = await createAdminEmployeeAccount(organisation_id, organisation_info);
 
     const employeeDetails = await createEmployeeAccount(organisation_id, employee_info);
     console.log(employeeDetails);
 
-    await addMetricsOnSignUp(organisation_id, metric_info);
+    await addMetricsOnSignUp(organisation_id, metric_info, employeeDetails);
+    await addProgressDataOnSignUp(organisation_id);
 
     const administrator_login_details = {
       email: adminDetails.administrator_email,
