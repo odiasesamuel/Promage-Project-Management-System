@@ -3,10 +3,10 @@ const sql = require("better-sqlite3");
 const db = sql("project.db");
 
 db.exec(`
-  CREATE TABLE IF NOT EXISTS organization (
+  CREATE TABLE IF NOT EXISTS organisation (
     organisation_id TEXT PRIMARY KEY,
-    organization_name TEXT,
-    organization_email TEXT
+    organisation_name TEXT,
+    organisation_email TEXT
   );
 `);
 
@@ -16,7 +16,8 @@ db.exec(`
     organisation_id TEXT,
     employee_name TEXT,
     employee_email TEXT,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL
+    job_title TEXT,
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
   );
 `);
 
@@ -37,7 +38,7 @@ db.exec(`
     due_date DATE,
     status TEXT,
     progress INTEGER,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
   );
 `);
 
@@ -45,12 +46,12 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS metric (
     metric_id INTEGER PRIMARY KEY AUTOINCREMENT,
     organisation_id TEXT,
-    month TEXT,
+    quarter TEXT,
     total_revenue INTEGER,
     project INTEGER,
     time INTEGER,
     resource INTEGER,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
   );
 `);
 
@@ -62,7 +63,7 @@ db.exec(`
     completed_project INTEGER,
     delayed_project INTEGER,
     ongoing_project INTEGER,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
   );
 `);
 
@@ -74,7 +75,7 @@ db.exec(`
     description TEXT,
     checked TEXT,
     approval TEXT,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL,
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL,
     FOREIGN KEY (assigned_to) REFERENCES employee(id)
   );
 `);
@@ -86,29 +87,29 @@ db.exec(`
     employee_id INTEGER,
     employee_name TEXT,
     no_of_project INTEGER,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL,
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL,
     FOREIGN KEY (employee_id) REFERENCES employee(id)
   );
 `);
 
 // db.exec(`
-//   INSERT INTO organization (organisation_id, organization_name, organization_email)
+//   INSERT INTO organisation (organisation_id, organisation_name, organisation_email)
 //   VALUES
 //     ('BOL123', 'Boltzmenn', 'boltzmenn@gmail.com'),
 //     ('KUN456', 'Kunle Empire', 'kunle@gmail.com'),
 //     ('LAM789', 'Lamdex', 'lamdex@gmail.com');
 
-//   INSERT INTO employee (id, organisation_id, employee_name, employee_email)
+//   INSERT INTO employee (id, organisation_id, employee_name, employee_email, job_title)
 //   VALUES
-//     ('ALI123', 'BOL123', 'Alice Johnson', 'alice.johnson@gmail.com'),
-//     ('BOB456', 'BOL123', 'Bob Smith', 'bob.smith@gmail.com'),
-//     ('CHA789', 'BOL123', 'Charlie Brown', 'charlie.brown@gmail.com'),
-//     ('DAV101', 'KUN456', 'David Williams', 'david.williams@gmail.com'),
-//     ('EVE202', 'KUN456', 'Eve Davis', 'eve.davis@gmail.com'),
-//     ('FRA303', 'KUN456', 'Frank Miller', 'frank.miller@gmail.com'),
-//     ('GRA404', 'LAM789', 'Grace Wilson', 'grace.wilson@gmail.com'),
-//     ('HAN505', 'LAM789', 'Hank Moore', 'hank.moore@gmail.com'),
-//     ('IVY606', 'LAM789', 'Ivy Taylor', 'ivy.taylor@gmail.com');
+//     ('ALI123', 'BOL123', 'Alice Johnson', 'alice.johnson@gmail.com', 'Software Engineer'),
+//     ('BOB456', 'BOL123', 'Bob Smith', 'bob.smith@gmail.com', 'Product Manager'),
+//     ('CHA789', 'BOL123', 'Charlie Brown', 'charlie.brown@gmail.com', 'Software Engineer'),
+//     ('DAV101', 'KUN456', 'David Williams', 'david.williams@gmail.com', 'Software Engineer'),
+//     ('EVE202', 'KUN456', 'Eve Davis', 'eve.davis@gmail.com', 'Software Engineer'),
+//     ('FRA303', 'KUN456', 'Frank Miller', 'frank.miller@gmail.com', 'Software Engineer'),
+//     ('GRA404', 'LAM789', 'Grace Wilson', 'grace.wilson@gmail.com', 'Software Engineer'),
+//     ('HAN505', 'LAM789', 'Hank Moore', 'hank.moore@gmail.com', 'Software Engineer'),
+//     ('IVY606', 'LAM789', 'Ivy Taylor', 'ivy.taylor@gmail.com', 'Software Engineer');
 
 //   INSERT INTO project (organisation_id, project_name, project_manager, due_date, status, progress)
 //   VALUES
@@ -122,14 +123,20 @@ db.exec(`
 //     ('LAM789', 'Vortex Social Media Platform', 'Hank Moore', '2024-11-30', 'Completed', 100),
 //     ('LAM789', 'Hyperion Data Visualization Suite', 'Ivy Taylor', '2024-10-31', 'Delayed', 90);
 
-//   INSERT INTO metric (organisation_id, month, total_revenue, project, time, resource)
+//   INSERT INTO metric (organisation_id, quarter, total_revenue, project, time, resource)
 //   VALUES
-//     ('BOL123', 'current_month', 100000, 110, 120, 80),
-//     ('BOL123', 'previous_month', 150000, 100, 200, 90),
-//     ('KUN456', 'current_month', 110000, 98, 130, 70),
-//     ('KUN456', 'previous_month', 160000, 105, 210, 95),
-//     ('LAM789', 'current_month', 120000, 60, 140, 75),
-//     ('LAM789', 'previous_month', 170000, 110, 220, 100);
+//     ('BOL123', 'Q1', 100000, 110, 120, 80),
+//     ('BOL123', 'Q2', 120000, 115, 125, 85),
+//     ('BOL123', 'Q3', 130000, 120, 130, 90),
+//     ('BOL123', 'Q4', 150000, 100, 200, 90),
+//     ('KUN456', 'Q1', 110000, 98, 130, 70),
+//     ('KUN456', 'Q2', 115000, 105, 135, 75),
+//     ('KUN456', 'Q3', 120000, 110, 140, 80),
+//     ('KUN456', 'Q4', 160000, 105, 210, 95),
+//     ('LAM789', 'Q1', 120000, 60, 140, 75),
+//     ('LAM789', 'Q2', 125000, 65, 145, 80),
+//     ('LAM789', 'Q3', 130000, 70, 150, 85),
+//     ('LAM789', 'Q4', 170000, 110, 220, 100);
 
 //   INSERT INTO progress (organisation_id, total_project, completed_project, delayed_project, ongoing_project)
 //   VALUES

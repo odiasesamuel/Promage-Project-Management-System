@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { redirect } from "next/navigation";
 import { verifyAuth } from "@/lib/auth";
 import { getEmployeeByEmployeeId } from "@/lib/employee";
-import { EmployeeDetailsType } from "@/actions/auth-action";
+import { EmployeeSignInDetailsType } from "@/actions/auth-action";
 
 export const metadata: Metadata = {
   title: "Promage",
@@ -24,7 +24,7 @@ export default async function RootLayout({
   if (!result.user) {
     return redirect("/");
   }
-  const employeeDetails: EmployeeDetailsType = getEmployeeByEmployeeId(result.user.id);
+  const employeeDetails: EmployeeSignInDetailsType = getEmployeeByEmployeeId(result.user.id);
   return (
     <html lang="en">
       <body className={inter.className}>

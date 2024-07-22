@@ -3,10 +3,10 @@ const sql = require("better-sqlite3");
 const db = sql("project.db");
 
 db.exec(`
-  CREATE TABLE IF NOT EXISTS organization (
+  CREATE TABLE IF NOT EXISTS organisation (
     organisation_id TEXT PRIMARY KEY,
-    organization_name TEXT,
-    organization_email TEXT
+    organisation_name TEXT,
+    organisation_email TEXT
   );
 `);
 
@@ -16,7 +16,8 @@ db.exec(`
     organisation_id TEXT,
     employee_name TEXT,
     employee_email TEXT,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL
+    job_title TEXT,
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
   );
 `);
 
@@ -37,7 +38,7 @@ db.exec(`
     due_date DATE,
     status TEXT,
     progress INTEGER,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
   );
 `);
 
@@ -50,7 +51,7 @@ db.exec(`
     project INTEGER,
     time INTEGER,
     resource INTEGER,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
   );
 `);
 
@@ -62,7 +63,7 @@ db.exec(`
     completed_project INTEGER,
     delayed_project INTEGER,
     ongoing_project INTEGER,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
   );
 `);
 
@@ -74,7 +75,7 @@ db.exec(`
     description TEXT,
     checked TEXT,
     approval TEXT,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL,
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL,
     FOREIGN KEY (assigned_to) REFERENCES employee(id)
   );
 `);
@@ -86,29 +87,29 @@ db.exec(`
     employee_id INTEGER,
     employee_name TEXT,
     no_of_project INTEGER,
-    FOREIGN KEY (organisation_id) REFERENCES organization(organisation_id) ON DELETE SET NULL,
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL,
     FOREIGN KEY (employee_id) REFERENCES employee(id)
   );
 `);
 
 db.exec(`
-  INSERT INTO organization (organisation_id, organization_name, organization_email)
+  INSERT INTO organisation (organisation_id, organisation_name, organisation_email)
   VALUES
     ('BOL123', 'Boltzmenn', 'boltzmenn@gmail.com'),
     ('KUN456', 'Kunle Empire', 'kunle@gmail.com'),
     ('LAM789', 'Lamdex', 'lamdex@gmail.com');
 
-  INSERT INTO employee (id, organisation_id, employee_name, employee_email)
+  INSERT INTO employee (id, organisation_id, employee_name, employee_email, job_title)
   VALUES
-    ('ALI123', 'BOL123', 'Alice Johnson', 'alice.johnson@gmail.com'),
-    ('BOB456', 'BOL123', 'Bob Smith', 'bob.smith@gmail.com'),
-    ('CHA789', 'BOL123', 'Charlie Brown', 'charlie.brown@gmail.com'),
-    ('DAV101', 'KUN456', 'David Williams', 'david.williams@gmail.com'),
-    ('EVE202', 'KUN456', 'Eve Davis', 'eve.davis@gmail.com'),
-    ('FRA303', 'KUN456', 'Frank Miller', 'frank.miller@gmail.com'),
-    ('GRA404', 'LAM789', 'Grace Wilson', 'grace.wilson@gmail.com'),
-    ('HAN505', 'LAM789', 'Hank Moore', 'hank.moore@gmail.com'),
-    ('IVY606', 'LAM789', 'Ivy Taylor', 'ivy.taylor@gmail.com');
+    ('ALI123', 'BOL123', 'Alice Johnson', 'alice.johnson@gmail.com', 'Software Engineer'),
+    ('BOB456', 'BOL123', 'Bob Smith', 'bob.smith@gmail.com', 'Product Manager'),
+    ('CHA789', 'BOL123', 'Charlie Brown', 'charlie.brown@gmail.com', 'Software Engineer'),
+    ('DAV101', 'KUN456', 'David Williams', 'david.williams@gmail.com', 'Software Engineer'),
+    ('EVE202', 'KUN456', 'Eve Davis', 'eve.davis@gmail.com', 'Software Engineer'),
+    ('FRA303', 'KUN456', 'Frank Miller', 'frank.miller@gmail.com', 'Software Engineer'),
+    ('GRA404', 'LAM789', 'Grace Wilson', 'grace.wilson@gmail.com', 'Software Engineer'),
+    ('HAN505', 'LAM789', 'Hank Moore', 'hank.moore@gmail.com', 'Software Engineer'),
+    ('IVY606', 'LAM789', 'Ivy Taylor', 'ivy.taylor@gmail.com', 'Software Engineer');
 
   INSERT INTO project (organisation_id, project_name, project_manager, due_date, status, progress)
   VALUES

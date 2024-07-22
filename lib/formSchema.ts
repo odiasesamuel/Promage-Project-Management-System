@@ -13,25 +13,65 @@ const signUpFormSchema = z.object({
   employee_name: z.string().min(1, { message: "Employee name is required" }),
   employee_email: z.string().email({ message: "Invalid email address" }),
   job_title: z.string().min(1, { message: "Job title is required" }),
-  last_month_revenue: z
+  last_quarter_revenue: z
     .string()
     .transform((val) => Number(val))
     .refine((val) => !isNaN(val) && val > 0, {
       message: "Revenue must be a positive number",
     }),
-  last_month_project: z
+  last_quarter_project: z
     .string()
     .transform((val) => Number(val))
     .refine((val) => !isNaN(val) && val > 0, {
       message: "Project must be a positive number",
     }),
-  last_month_time: z
+  last_quarter_time: z
     .string()
     .transform((val) => Number(val))
     .refine((val) => !isNaN(val) && val > 0, {
       message: "Project must be a positive number",
     }),
-  last_month_resources: z
+  last_quarter_resources: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Project must be a positive number",
+    }),
+});
+
+const organisationInfoSignUpFormSchema = z.object({
+  organisation_name: z.string().min(1, { message: "Organisation name is required" }),
+  organisation_email: z.string().email({ message: "Invalid email address" }),
+  administrator_name: z.string().min(1, { message: "Administrator name is required" }),
+  administrator_email: z.string().email({ message: "Invalid email address" }),
+});
+
+const employeeInfoSignUpFormSchema = z.object({
+  employee_name: z.string().min(1, { message: "Employee name is required" }),
+  employee_email: z.string().email({ message: "Invalid email address" }),
+  job_title: z.string().min(1, { message: "Job title is required" }),
+});
+
+const metricInfoSignUpFormSchema = z.object({
+  last_quarter_revenue: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Revenue must be a positive number",
+    }),
+  last_quarter_project: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Project must be a positive number",
+    }),
+  last_quarter_time: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Project must be a positive number",
+    }),
+  last_quarter_resources: z
     .string()
     .transform((val) => Number(val))
     .refine((val) => !isNaN(val) && val > 0, {
@@ -60,4 +100,4 @@ const createNewProjectSchema = z.object({
   }),
 });
 
-export { signInFormSchema, signUpFormSchema, createNewProjectSchema };
+export { signInFormSchema, signUpFormSchema, organisationInfoSignUpFormSchema, employeeInfoSignUpFormSchema, metricInfoSignUpFormSchema, createNewProjectSchema };

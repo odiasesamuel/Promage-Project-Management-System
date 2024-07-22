@@ -1,5 +1,6 @@
 import { getMetrics } from "@/lib/dashboard";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { getQuarter, getPreviousQuarter } from "@/utils/dateUtils";
 import Image from "next/image";
 import revenueIcon from "@/assets/Frame 1171275857.svg";
 import projectIcon from "@/assets/Frame 1171275856.svg";
@@ -15,7 +16,7 @@ type MetricsProps = {
 type Metrics = {
   metric_id: number;
   organisation_id: string;
-  month: string;
+  quarter: string;
   total_revenue: number;
   project: number;
   time: number;
@@ -24,9 +25,20 @@ type Metrics = {
 
 const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
   const metrics: Metrics[] = getMetrics(organisation_id);
+  console.log(metrics);
+
   // Or using route handlers
   //   const response = await fetch('http://localhost:3000/api/metrics');
   //   const metricsRouteHandler = await response.json();
+
+  const currentDate = new Date();
+  const currentQuarter = getQuarter(currentDate);
+  const previousQuarter = getPreviousQuarter(currentQuarter);
+
+  const currentQuarterMetrics = metrics.find((metric) => metric.quarter === currentQuarter);
+  const previousQuarterMetrics = metrics.find((metric) => metric.quarter === previousQuarter);
+
+  if (!currentQuarterMetrics || !previousQuarterMetrics) return <div>No data available for the current or previous quarters.</div>;
 
   const formatCurrency = (number: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -36,26 +48,26 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
     }).format(number);
   };
 
-  const total_revenue = formatCurrency(metrics[0].total_revenue);
-  const currentMonthRevenue = metrics[0].total_revenue;
-  const previousMonthRevenue = metrics[1].total_revenue;
-  const monthRevenuePercentage = Math.abs((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100;
-  const RevenueArrow = currentMonthRevenue > previousMonthRevenue ? incrementArrow : decrementArrow;
+  const total_revenue = formatCurrency(currentQuarterMetrics.total_revenue);
+  const currentQuarterRevenue = currentQuarterMetrics.total_revenue;
+  const previousQuarterRevenue = previousQuarterMetrics.total_revenue;
+  const revenuePercentageChange = Math.abs((currentQuarterRevenue - previousQuarterRevenue) / previousQuarterRevenue) * 100;
+  const revenueArrow = currentQuarterRevenue > previousQuarterRevenue ? incrementArrow : decrementArrow;
 
-  const currentMonthProject = metrics[0].project;
-  const previousMonthProject = metrics[1].project;
-  const monthProjectPercentage = Math.abs((currentMonthProject - previousMonthProject) / previousMonthProject) * 100;
-  const projectArrow = currentMonthProject > previousMonthProject ? incrementArrow : decrementArrow;
+  const currentQuarterProject = currentQuarterMetrics.project;
+  const previousQuarterProject = previousQuarterMetrics.project;
+  const projectPercentageChange = Math.abs((currentQuarterProject - previousQuarterProject) / previousQuarterProject) * 100;
+  const projectArrow = currentQuarterProject > previousQuarterProject ? incrementArrow : decrementArrow;
 
-  const currentMonthTime = metrics[0].time;
-  const previousMonthTime = metrics[1].time;
-  const monthTimePercentage = Math.abs((currentMonthTime - previousMonthTime) / previousMonthTime) * 100;
-  const TimeArrow = currentMonthTime > previousMonthTime ? incrementArrow : decrementArrow;
+  const currentQuarterTime = currentQuarterMetrics.time;
+  const previousQuarterTime = previousQuarterMetrics.time;
+  const timePercentageChange = Math.abs((currentQuarterTime - previousQuarterTime) / previousQuarterTime) * 100;
+  const timeArrow = currentQuarterTime > previousQuarterTime ? incrementArrow : decrementArrow;
 
-  const currentMonthResource = metrics[0].resource;
-  const previousMonthResource = metrics[1].resource;
-  const monthResourcePercentage = Math.abs((currentMonthResource - previousMonthResource) / previousMonthResource) * 100;
-  const resourceArrow = currentMonthResource > previousMonthResource ? incrementArrow : decrementArrow;
+  const currentQuarterResource = currentQuarterMetrics.resource;
+  const previousQuarterResource = previousQuarterMetrics.resource;
+  const resourcePercentageChange = Math.abs((currentQuarterResource - previousQuarterResource) / previousQuarterResource) * 100;
+  const resourceArrow = currentQuarterResource > previousQuarterResource ? incrementArrow : decrementArrow;
 
   return (
     <div className="flex justify-between">
@@ -69,9 +81,9 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
         <CardContent>
           <p className="text-2xl font-semibold mb-3">{total_revenue}</p>
           <div className="flex gap-x-1">
-            <Image src={RevenueArrow} alt="arrow" />
+            <Image src={revenueArrow} alt="arrow" />
             <p className="text-xs">
-              {monthRevenuePercentage.toFixed(2)}% {currentMonthRevenue > previousMonthRevenue ? "increase" : "decrease"} from last month
+              {revenuePercentageChange.toFixed(2)}% {currentQuarterRevenue > previousQuarterRevenue ? "increase" : "decrease"} from last quarter ({previousQuarter})
             </p>
           </div>
         </CardContent>
@@ -85,14 +97,13 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-semibold mb-3">
-            {currentMonthProject}
-            <span className="text-base ml-1">/{previousMonthProject}</span>
+            {currentQuarterProject}
+            <span className="text-base ml-1">/{previousQuarterProject}</span>
           </p>
-
           <div className="flex gap-x-1">
             <Image src={projectArrow} alt="arrow" />
             <p className="text-xs">
-              {monthProjectPercentage.toFixed(2)}% {currentMonthProject > previousMonthProject ? "increase" : "decrease"} from last month
+              {projectPercentageChange.toFixed(2)}% {currentQuarterProject > previousQuarterProject ? "increase" : "decrease"} from last quarter ({previousQuarter})
             </p>
           </div>
         </CardContent>
@@ -100,19 +111,19 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
       <Card className="w-[24%] h-[200px] bg-[#F2EAE5]">
         <CardHeader className="pt-4 pb-2">
           <CardDescription>
-            <Image src={timespentIcon} alt="revenue icon" />
+            <Image src={timespentIcon} alt="time spent icon" />
             <p className="mt-4">Time spent</p>
           </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-semibold mb-3">
-            {currentMonthTime}
-            <span className="text-base ml-1">/{previousMonthTime}</span>
+            {currentQuarterTime}
+            <span className="text-base ml-1">/{previousQuarterTime}</span>
           </p>
           <div className="flex gap-x-1">
-            <Image src={TimeArrow} alt="arrow" />
+            <Image src={timeArrow} alt="arrow" />
             <p className="text-xs">
-              {monthTimePercentage.toFixed(2)}% {currentMonthTime > previousMonthTime ? "increase" : "decrease"} from last month
+              {timePercentageChange.toFixed(2)}% {currentQuarterTime > previousQuarterTime ? "increase" : "decrease"} from last quarter ({previousQuarter})
             </p>
           </div>
         </CardContent>
@@ -120,19 +131,19 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
       <Card className="w-[24%] h-[200px] bg-[#F2EAE5]">
         <CardHeader className="pt-4 pb-2">
           <CardDescription>
-            <Image src={resourceIcon} alt="revenue icon" />
+            <Image src={resourceIcon} alt="resource icon" />
             <p className="mt-4">Resources</p>
           </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-semibold mb-3">
-            {currentMonthResource}
-            <span className="text-base ml-1">/{previousMonthResource}</span>
+            {currentQuarterResource}
+            <span className="text-base ml-1">/{previousQuarterResource}</span>
           </p>
           <div className="flex gap-x-1">
             <Image src={resourceArrow} alt="arrow" />
             <p className="text-xs">
-              {Math.round(monthResourcePercentage)}% {currentMonthResource > previousMonthResource ? "increase" : "decrease"} from last month
+              {resourcePercentageChange.toFixed(2)}% {currentQuarterResource > previousQuarterResource ? "increase" : "decrease"} from last quarter ({previousQuarter})
             </p>
           </div>
         </CardContent>

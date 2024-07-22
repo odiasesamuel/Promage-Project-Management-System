@@ -1,10 +1,10 @@
 import Image from "next/image";
 import profilePicture from "@/assets/Ellipse 3226.svg";
-import { EmployeeDetailsType } from "@/actions/auth-action";
+import { EmployeeSignInDetailsType } from "@/actions/auth-action";
 
 type HeaderProps = {
   className?: string;
-  employeeDetails: EmployeeDetailsType;
+  employeeDetails: EmployeeSignInDetailsType;
 };
 
 const Header: React.FC<HeaderProps> = ({ className, employeeDetails }) => {
@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ className, employeeDetails }) => {
           <Image src={profilePicture} alt="profile picture" height={40} className="mt-[6px]" />
           <div>
             <h1 className="text-xs">{employeeDetails.employee_name}</h1>
-            <p className="text-xs text-[#A1A3A5]">Product manager</p>
+            <p className="text-xs text-[#A1A3A5]">{employeeDetails.job_title}</p>
           </div>
         </div>
       </div>

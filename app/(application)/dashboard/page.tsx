@@ -10,7 +10,7 @@ import { getProjectSummary, getProgress, getTaskList } from "@/lib/dashboard";
 import { redirect } from "next/navigation";
 import { verifyAuth } from "@/lib/auth";
 import { getEmployeeByEmployeeId } from "@/lib/employee";
-import { EmployeeDetailsType } from "@/actions/auth-action";
+import { EmployeeSignInDetailsType } from "@/actions/auth-action";
 import { ProgressDataType } from "@/components/overallProgress";
 import { TaskListType } from "@/components/taskList";
 
@@ -19,7 +19,7 @@ const Home = async () => {
   if (!result.user) {
     return redirect("/");
   }
-  const employeeDetails: EmployeeDetailsType = getEmployeeByEmployeeId(result.user.id);
+  const employeeDetails: EmployeeSignInDetailsType = getEmployeeByEmployeeId(result.user.id);
   const organisation_id = employeeDetails.organisation_id;
   const employee_id = employeeDetails.id;
 
