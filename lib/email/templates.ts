@@ -1,16 +1,17 @@
-import { EmployeeSignUpDetailsType, AdminDetailsType } from "@/actions/auth-action";
+import { EmployeeSignUpDetailsType, AdminDetailsType, OrganisationSignUpDetailsType } from "@/actions/auth-action";
 
-export const welcomeAdminEmailTemplate = (organisation_id: string, adminDetails: AdminDetailsType) => {
+export const welcomeAdminEmailTemplate = (organisation_id: string, organisation_info: OrganisationSignUpDetailsType, adminDetails: AdminDetailsType) => {
   const { administrator_name, administrator_employee_id, administrator_email } = adminDetails;
+  const { organisation_name } = organisation_info;
   return `
   <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
       <h2 style="color: #E65F2B;">Welcome to Promage!</h2>
       <p>Hello <strong>${administrator_name}</strong>,</p>
-      <p>Congratulations on successfully registering your organization with <strong  style="color: #E65F2B;">Promage.</strong> As the admin, you have full access to manage your team and projects effectively. Here are your login details:</p>
+      <p>Congratulations on successfully registering <strong>${organisation_name}</strong> with <strong  style="color: #E65F2B;">Promage.</strong> As the admin, you have full access to manage your team and projects effectively. Here are your login details:</p>
       <ul>
+       <li><strong>Email:</strong> ${administrator_email}</li>
         <li><strong>Employee ID:</strong> ${administrator_employee_id}</li>
         <li><strong>Organization ID:</strong> ${organisation_id}</li>
-        <li><strong>Email:</strong> ${administrator_email}</li>
       </ul>
       <p>Please keep this information secure. You can log in to your admin account using the link below:</p>
     	<p style="text-align: center; padding: 10px 0;">
@@ -20,8 +21,12 @@ export const welcomeAdminEmailTemplate = (organisation_id: string, adminDetails:
 
       <p>Best regards,</p>
       <p>The Promage Team</p>
-  	<div style="display: flex; align-items: center; margin-bottom: 12px;">
-  	<img src="https://raw.githubusercontent.com/odiasesamuel/Promage-Project-Management-System/main/assets/logo.svg" alt="Logo of promage" style="display: inline-block;" />
+  	<div style="display: flex; align-items: center;">
+  	<img 
+        src="https://raw.githubusercontent.com/odiasesamuel/Promage-Project-Management-System/feature/auth-api/assets/logo.png" 
+        alt="Logo of Promage" 
+        style="width: 36px; height: 35px;"
+    />
   	<h1 style="margin-left: 4px; font-size: 24px; font-weight: 500; color: black;">Promage</h1>
 	</div>
 

@@ -76,7 +76,7 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
     // console.log(organisation_info, employee_info, metric_info);
 
     const existingOrganisation: OrganisationSignUpDetailsType = getOrganisationByEmail(organisation_info.organisation_email);
-    if (existingOrganisation) throw new Error("This organisation has already been registered");
+    // if (existingOrganisation) throw new Error("This organisation has already been registered");
     console.log("working..");
     const organisation_id = await createOrganisationAccount(organisation_info);
     // console.log(organisation_id);
@@ -95,7 +95,7 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
 
     // Send welcome email to the admin
     const adminSubject = "Welcome to Promage! Your Admin Account is Ready";
-    const adminHtml = welcomeAdminEmailTemplate(organisation_id, adminDetails);
+    const adminHtml = welcomeAdminEmailTemplate(organisation_id, organisation_info, adminDetails);
     const adminEmailOptions: EmailOptions = {
       to: adminDetails.administrator_email,
       subject: adminSubject,
