@@ -14,7 +14,6 @@ export const getEmployeeByEmployeeId = (email: string) => {
 };
 
 export const createOrganisationAccount = async (organisation_info: OrganisationSignUpDetailsType) => {
-  // console.log(organisation_info);
   const { organisation_name, organisation_email } = organisation_info;
   const orgNum = Math.floor(Math.random() * 900) + 100;
   const orgChar = organisation_name.substring(0, 3).toUpperCase();
