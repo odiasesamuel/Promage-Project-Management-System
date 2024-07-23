@@ -1,5 +1,6 @@
 import db from "./db";
 import { OrganisationSignUpDetailsType, EmployeeSignUpDetailsType } from "@/actions/auth-action";
+import { generateRandomCharID } from "@/utils/generateRandomCharID";
 
 export const getOrganisationByEmail = (email: string) => {
   return db.prepare("SELECT * FROM organisation WHERE organisation_email = ?").get(email);
@@ -29,7 +30,7 @@ export const createOrganisationAccount = async (organisation_info: OrganisationS
 export const createAdminEmployeeAccount = async (organisation_id: string, organisation_info: OrganisationSignUpDetailsType) => {
   const { administrator_name, administrator_email } = organisation_info;
   const adminNum = Math.floor(Math.random() * 900) + 100;
-  const adminChar = administrator_name.substring(0, 3).toUpperCase();
+  const adminChar = generateRandomCharID(administrator_name);
   const administrator_employee_id = `${adminChar}${adminNum}`;
   const stmtInsert = db.prepare(`
    INSERT INTO employee (id, organisation_id, employee_name, employee_email, job_title)
@@ -48,7 +49,7 @@ export const createEmployeeAccount = async (organisation_id: string, employee_in
   employee_info.forEach((employee) => {
     const { employee_name, employee_email, job_title } = employee;
     const empNum = Math.floor(Math.random() * 900) + 100;
-    const empChar = employee_name.substring(0, 3).toUpperCase();
+    const empChar = generateRandomCharID(employee_name);
     const employee_id = `${empChar}${empNum}`;
     const stmtInsert = db.prepare(`
      INSERT INTO employee (id, organisation_id, employee_name, employee_email, job_title)
