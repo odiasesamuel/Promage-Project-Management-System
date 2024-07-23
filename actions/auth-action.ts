@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import { getEmployeeByEmail, getOrganisationByEmail, createOrganisationAccount, createAdminEmployeeAccount, createEmployeeAccount } from "@/lib/employee";
 import { createAuthSession, destroySession } from "@/lib/auth";
 import { addMetricsOnSignUp, addProgressDataOnSignUp, addProjectWorkloadDataOnSignUp } from "@/lib/dashboard";
+import { welcomeEmployeeEmailTemplate, welcomeAdminEmailTemplate } from "@/lib/email/templates";
+import { sendEmail, EmailOptions } from "@/lib/email/email";
 
 export type ValueType = {
   email: string;
@@ -75,7 +77,7 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
 
     const existingOrganisation: OrganisationSignUpDetailsType = getOrganisationByEmail(organisation_info.organisation_email);
     if (existingOrganisation) throw new Error("This organisation has already been registered");
-    console.log("working..")
+    console.log("working..");
     const organisation_id = await createOrganisationAccount(organisation_info);
     // console.log(organisation_id);
     const adminDetails = await createAdminEmployeeAccount(organisation_id, organisation_info);
@@ -90,6 +92,20 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
       email: adminDetails.administrator_email,
       employee_id: adminDetails.administrator_employee_id,
     };
+
+    // Send welcome email to the admin
+    const adminSubject = "Welcome to Promage! Your Admin Account is Ready";
+    const adminHtml = welcomeAdminEmailTemplate(organisation_id, adminDetails);
+    const adminEmailOptions: EmailOptions = {
+      to: adminDetails.administrator_email,
+      subject: adminSubject,
+      html: adminHtml,
+    };
+    console.log(adminDetails.administrator_email);
+    await sendEmail(adminEmailOptions);
+
+    // Send welcome email to the empployees
+    const employeeHtml = welcomeEmployeeEmailTemplate(organisation_id, employeeDetails);
 
     return login(administrator_login_details);
   } catch (error) {
