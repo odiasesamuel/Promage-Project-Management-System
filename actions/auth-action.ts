@@ -47,12 +47,14 @@ export type MetricSignUpDetailsType = {
 
 export const login = async (values: ValueType) => {
   try {
-    const existingUser: EmployeeSignInDetailsType = getEmployeeByEmail(values.email);
-    if (!existingUser) throw new Error("Could not authenticate employee, please check your credentials.");
+    const existingUsers: EmployeeSignInDetailsType[] = getEmployeeByEmail(values.email);
+    if (existingUsers.length === 0) throw new Error("Could not authenticate employee, please check your credentials.");
 
-    if (existingUser.id !== values.employee_id) throw new Error("Could not authenticate employee, please check your credentials.");
+    const matchingUser = existingUsers.find((user) => user.id === values.employee_id);
 
-    await createAuthSession(existingUser.id);
+    if (!matchingUser) throw new Error("Could not authenticate employee, please check your credentials.");
+
+    await createAuthSession(matchingUser.id);
 
     return { success: true, message: null };
   } catch (error) {

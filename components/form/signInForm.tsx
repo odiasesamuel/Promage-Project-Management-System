@@ -47,7 +47,7 @@ const SignInForm: React.FC<{}> = () => {
             <FormItem className="text-black w-full">
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="user@gmail.com" {...field} className="p-3" />
+                <Input placeholder="employee@gmail.com" {...field} className="p-3" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -60,7 +60,7 @@ const SignInForm: React.FC<{}> = () => {
             <FormItem className="text-black w-full">
               <FormLabel>Employee ID</FormLabel>
               <FormControl>
-                <Input placeholder="45673" {...field} className="p-3" />
+                <Input placeholder="EMP749" {...field} className="p-3" />
               </FormControl>
               <FormMessage>{!isLoading && errorMessage}</FormMessage>
             </FormItem>

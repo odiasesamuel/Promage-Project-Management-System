@@ -7,7 +7,7 @@ export const getOrganisationByEmail = (email: string) => {
 };
 
 export const getEmployeeByEmail = (email: string) => {
-  return db.prepare("SELECT * FROM employee WHERE employee_email = ?").get(email);
+  return db.prepare("SELECT * FROM employee WHERE employee_email = ?").all(email);
 };
 
 export const getEmployeeByEmployeeId = (email: string) => {

@@ -1,8 +1,5 @@
-// utils/email.ts
-
 import nodemailer from "nodemailer";
 
-// Define the transporter with environment variables
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT || "465", 10),
@@ -13,14 +10,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Type definition for sending email
 export type EmailOptions = {
   to: string;
   subject: string;
   html: string;
 };
 
-// Function to send an email
 export const sendEmail = async ({ to, subject, html }: EmailOptions) => {
   const mailOptions = {
     from: `"Promage" <${process.env.SMTP_USER}>`,
