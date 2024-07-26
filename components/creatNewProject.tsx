@@ -2,14 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import NewPostForm from "./form/newProjectForm";
+import NewProjectForm from "./form/newProjectForm";
 import { useState } from "react";
+import { EmployeeListType } from "@/app/(application)/layout";
 
 type CreatNewProjectProps = {
   children: React.ReactNode;
+  employeeList: EmployeeListType[];
 };
 
-const CreatNewProject: React.FC<CreatNewProjectProps> = ({ children }) => {
+const CreatNewProject: React.FC<CreatNewProjectProps> = ({ children, employeeList }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -20,7 +22,7 @@ const CreatNewProject: React.FC<CreatNewProjectProps> = ({ children }) => {
           <DialogTitle>Create a new project</DialogTitle>
         </DialogHeader>
         <div className="flex items-center space-x-2">
-          <NewPostForm setOpen={setOpen} />
+          <NewProjectForm employeeList={employeeList} setOpen={setOpen} />
         </div>
       </DialogContent>
     </Dialog>

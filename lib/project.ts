@@ -1,20 +1,25 @@
 import db from "./db";
-import { ValueType } from "@/actions/project";
+import { newProjectFormValueType } from "@/actions/project";
+import { employeeOptions } from "@/components/form/newProjectForm";
+import { MultiValue } from "react-select";
+import { getQuarter } from "@/utils/dateUtils";
 
-export const storeNewProject = async (values: ValueType) => {
+export const storeNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<employeeOptions> | undefined) => {
   // throw new Error("Failed to create new project"); // stimulate error
   const stmtInsert = db.prepare(`
-    INSERT INTO project (name, projectManager, dueDate, status, progress)
-    VALUES (?, ?, ?, ?, ?)`);
-  const result = stmtInsert.run(values.projectName, values.projectManager, values.dueDate, values.status, values.progress);
+    INSERT INTO project (organisation_id, project_name, project_manager, due_date, status, progress)
+    VALUES (?, ?, ?, ?, ?, ?)`);
+  const result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.dueDate, values.status, values.progress);
 
   if (result.changes > 0) {
+    const currentDate = new Date();
+    const currentQuarter = getQuarter(currentDate);
     const stmtUpdateMonthlyStats = db.prepare(`
       UPDATE metric
       SET project = project + 1,
           total_revenue = total_revenue + ?
-      WHERE month = 'current_month'`);
-    stmtUpdateMonthlyStats.run(values.revenue);
+      WHERE organisation_id = ? AND quarter = ?`);
+    stmtUpdateMonthlyStats.run(values.revenue, values.organisation_id, currentQuarter);
 
     let stmtUpdateStats;
     switch (values.status) {
@@ -23,26 +28,26 @@ export const storeNewProject = async (values: ValueType) => {
           UPDATE progress
           SET total_project = total_project + 1,
               completed_project = completed_project + 1
-          WHERE id = 1`);
+          WHERE organisation_id = ?`);
         break;
       case "Delayed":
         stmtUpdateStats = db.prepare(`
           UPDATE progress
           SET total_project = total_project + 1,
               delayed_project = delayed_project + 1
-          WHERE id = 1`);
+          WHERE organisation_id = ?`);
         break;
       case "On going":
         stmtUpdateStats = db.prepare(`
           UPDATE progress
           SET total_project = total_project + 1,
               ongoing_project = ongoing_project + 1
-          WHERE id = 1`);
+          WHERE organisation_id = ?`);
         break;
     }
 
     if (stmtUpdateStats) {
-      stmtUpdateStats.run();
+      stmtUpdateStats.run(values.organisation_id);
     }
   }
 

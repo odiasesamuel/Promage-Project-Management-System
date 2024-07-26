@@ -18,12 +18,14 @@ import usersIconNotActive from "@/assets/users.svg";
 import sidebarBavArrow from "@/assets/arrow.svg";
 import LogoutConfirmation from "../logoutConfirmation";
 import { LogOut } from "lucide-react";
+import { EmployeeListType } from "@/app/(application)/layout";
 
 type NavBarProps = {
   className?: string;
+  employeeList: EmployeeListType[];
 };
 
-const NavBar: React.FC<NavBarProps> = ({ className }) => {
+const NavBar: React.FC<NavBarProps> = ({ className, employeeList }) => {
   return (
     <>
       <div className={`${className} relative`}>
@@ -34,7 +36,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
             <Image src={sidebarBavArrow} alt="navigation sidebar icon" />
           </div>
         </div>
-        <CreatNewProject>
+        <CreatNewProject employeeList={employeeList}>
           <div className="bg-white w-[85%] h-[50px] ml-4 mt-16 mb-12 rounded-full flex items-center cursor-pointer">
             <Image src={newProjectIcon} alt="new project icon" className="mx-2" />
             <span className="text-sm text-black">

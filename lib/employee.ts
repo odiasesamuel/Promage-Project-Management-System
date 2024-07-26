@@ -14,6 +14,10 @@ export const getEmployeeByEmployeeId = (email: string) => {
   return db.prepare("SELECT * FROM employee WHERE id = ?").get(email);
 };
 
+export const getAllEmployee = (organisation_id: string) => {
+  return db.prepare("SELECT * FROM employee WHERE organisation_id = ?").all(organisation_id);
+};
+
 export const createOrganisationAccount = async (organisation_info: OrganisationSignUpDetailsType) => {
   const { organisation_name, organisation_email } = organisation_info;
   const orgNum = Math.floor(Math.random() * 900) + 100;

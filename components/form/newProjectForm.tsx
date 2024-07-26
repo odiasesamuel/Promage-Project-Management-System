@@ -1,7 +1,8 @@
 "use client";
 
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { createNewProjectSchema } from "@/lib/formSchema";
 
@@ -11,18 +12,36 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ReactSelect, { MultiValue } from "react-select";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createNewProject } from "@/actions/project";
 import { useToast } from "@/components/ui/use-toast";
+import { EmployeeListType } from "@/app/(application)/layout";
 
 type NewProjectFormProps = {
+  employeeList: EmployeeListType[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export function NewProjectForm({ setOpen }: NewProjectFormProps) {
+export type employeeOptions = {
+  value: string;
+  label: string;
+};
+
+export function NewProjectForm({ employeeList, setOpen }: NewProjectFormProps) {
+  const [selectedEmployee, setSelectedEmployee] = useState<MultiValue<employeeOptions>>();
+  const selectedEmployeeHandler = (selectedOptions: MultiValue<employeeOptions>) => {
+    setSelectedEmployee(selectedOptions);
+  };
+
+  const employeeOptions = employeeList.map((employee) => ({
+    value: employee.id,
+    label: employee.employee_name,
+  }));
+
   const form = useForm<z.infer<typeof createNewProjectSchema>>({
     resolver: zodResolver(createNewProjectSchema),
   });
@@ -30,10 +49,14 @@ export function NewProjectForm({ setOpen }: NewProjectFormProps) {
   const { toast } = useToast();
   async function onSubmit(values: z.infer<typeof createNewProjectSchema>) {
     try {
-      await createNewProject({
-        ...values,
-        dueDate: values.dueDate.toISOString(),
-      });
+      await createNewProject(
+        {
+          organisation_id: employeeList[0].organisation_id,
+          ...values,
+          dueDate: values.dueDate.toISOString(),
+        },
+        selectedEmployee
+      );
       setOpen(false);
       toast({
         title: "Project created successfully",
@@ -95,10 +118,11 @@ export function NewProjectForm({ setOpen }: NewProjectFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Kunle Owolabi">Kunle Owolabi</SelectItem>
-                  <SelectItem value="Samuel Adegoke">Samuel Adegoke</SelectItem>
-                  <SelectItem value="Ogechi Williams">Ogechi Williams</SelectItem>
-                  <SelectItem value="Lois Stephen">Lois Stephen</SelectItem>
+                  {employeeList.map((employee) => (
+                    <SelectItem key={employee.id} value={employee.employee_name}>
+                      {employee.employee_name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -179,19 +203,14 @@ export function NewProjectForm({ setOpen }: NewProjectFormProps) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="revenue"
-          render={({ field }) => (
-            <FormItem className="text-black w-[48%]">
-              <FormLabel>Revenue</FormLabel>
-              <FormControl>
-                <Input placeholder="60000000" {...field} className="p-3" onInput={revenueValidation} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
+        <div className="w-full text-sm text-black">
+          <label htmlFor="projectTeam" className="font-medium">
+            Project Team
+          </label>
+          <ReactSelect isMulti name="projectTeam" options={employeeOptions} className="basic-multi-select mt-2" classNamePrefix="select" onChange={selectedEmployeeHandler} />
+        </div>
+
         <Button type="submit" className="w-full">
           Create Project
         </Button>

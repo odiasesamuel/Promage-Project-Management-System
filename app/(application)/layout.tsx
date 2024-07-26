@@ -9,10 +9,19 @@ import { redirect } from "next/navigation";
 import { verifyAuth } from "@/lib/auth";
 import { getEmployeeByEmployeeId } from "@/lib/employee";
 import { EmployeeSignInDetailsType } from "@/actions/auth-action";
+import { getAllEmployee } from "@/lib/employee";
 
 export const metadata: Metadata = {
   title: "Promage",
   description: "Project management application used to effectively organise and manage task accross teams",
+};
+
+export type EmployeeListType = {
+  id: string;
+  organisation_id: string;
+  employee_name: string;
+  employee_email: string;
+  job_title: string;
 };
 
 export default async function RootLayout({
@@ -25,12 +34,14 @@ export default async function RootLayout({
     return redirect("/");
   }
   const employeeDetails: EmployeeSignInDetailsType = getEmployeeByEmployeeId(result.user.id);
+  const employeeList: EmployeeListType[] = getAllEmployee(employeeDetails.organisation_id);
+  // console.log(employeeList);
   return (
     <html lang="en">
       <body className={inter.className}>
         <div className="text-white grid grid-cols-[repeat(12,_1fr)] grid-rows-[auto_1fr] min-h-screen">
           <Header className="bg-[#ebdfd7] col-start-3 col-end-13 px-[3%] border-b border-[#D8CDC6]" employeeDetails={employeeDetails}></Header>
-          <NavBar className="bg-[#060606] col-start-1 col-end-3 row-start-1 row-end-3"></NavBar>
+          <NavBar className="bg-[#060606] col-start-1 col-end-3 row-start-1 row-end-3" employeeList={employeeList}></NavBar>
           <Main className="bg-[#ebdfd7] col-start-3 col-end-13 px-[3%] overflow-y-auto">{children}</Main>
         </div>
         <Toaster />

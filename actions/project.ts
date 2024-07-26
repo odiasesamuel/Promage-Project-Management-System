@@ -2,10 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { employeeOptions } from "@/components/form/newProjectForm";
+import { MultiValue } from "react-select";
 
 import { storeNewProject } from "@/lib/project";
 
-export type ValueType = {
+export type newProjectFormValueType = {
+  organisation_id: string;
   dueDate: string;
   projectName: string;
   projectManager: string;
@@ -14,11 +17,11 @@ export type ValueType = {
   progress: number;
 };
 
-export const createNewProject = async (values: ValueType) => {
+export const createNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<employeeOptions> | undefined) => {
   try {
-    await storeNewProject(values);
+    await storeNewProject(values, projectTeam);
+    console.log(values, projectTeam);
     revalidatePath("/dashboard");
-    // redirect("/dashboard");
   } catch (error) {
     throw new Error("Failed to create new project");
   }
