@@ -4,7 +4,7 @@ import { EmployeeOptions } from "@/components/form/newProjectForm";
 import { MultiValue } from "react-select";
 import { getQuarter } from "@/utils/dateUtils";
 
-export const storeNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined) => {
+export const storeNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined) => {
   // Store Project
   const stmtInsert = db.prepare(`
     INSERT INTO project (organisation_id, project_name, project_manager, due_date, status, progress)
@@ -50,7 +50,24 @@ export const storeNewProject = async (values: newProjectFormValueType, projectTe
     if (stmtUpdateStats) stmtUpdateStats.run(values.organisation_id);
 
     // Update project workload table and tab
-    console.log(values.projectManager, projectTeam);
+    // console.log(values.projectManager, projectTeam);
+    const isManagerPartOfTeam = projectTeam?.some((item) => item.value === projectManagerId);
+    console.log(isManagerPartOfTeam);
+    if (!isManagerPartOfTeam) {
+      const stmtupdateProjectWorkload = db.prepare(`
+        UPDATE project_workload
+            SET no_of_project = no_of_project + 1
+            WHERE organisation_id = ? AND employee_id = ?`);
+      stmtupdateProjectWorkload.run(values.organisation_id, projectManagerId);
+      console.log("sam");
+    }
+    projectTeam?.forEach((employee) => {
+      const stmtupdateProjectWorkload = db.prepare(`
+        UPDATE project_workload
+            SET no_of_project = no_of_project + 1
+            WHERE organisation_id = ? AND employee_id = ?`);
+      stmtupdateProjectWorkload.run(values.organisation_id, employee.value);
+    });
   }
 
   return result;

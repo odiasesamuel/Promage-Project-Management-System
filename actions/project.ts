@@ -17,9 +17,9 @@ export type newProjectFormValueType = {
   progress: number;
 };
 
-export const createNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined) => {
+export const createNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined) => {
   try {
-    await storeNewProject(values, projectTeam);
+    await storeNewProject(values, projectTeam, projectManagerId);
     revalidatePath("/dashboard");
   } catch (error) {
     throw new Error("Failed to create new project");

@@ -53,6 +53,8 @@ export function NewProjectForm({ employeeList, setOpen }: NewProjectFormProps) {
   const { toast } = useToast();
 
   async function onSubmit(values: z.infer<typeof createNewProjectSchema>) {
+    const projectManager = employeeList.find((employee) => employee.employee_name === values.projectManager);
+    const projectManagerId = projectManager?.id;
     try {
       await createNewProject(
         {
@@ -60,7 +62,8 @@ export function NewProjectForm({ employeeList, setOpen }: NewProjectFormProps) {
           ...values,
           dueDate: values.dueDate.toISOString(),
         },
-        selectedEmployee
+        selectedEmployee,
+        projectManagerId
       );
       setOpen(false);
       toast({
@@ -93,7 +96,6 @@ export function NewProjectForm({ employeeList, setOpen }: NewProjectFormProps) {
       e.currentTarget.value = "";
     }
   }
-
 
   useEffect(() => {
     const subscription = form.watch((value, { name, type }) => {
