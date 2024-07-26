@@ -5,13 +5,14 @@ import { MultiValue } from "react-select";
 import { getQuarter } from "@/utils/dateUtils";
 
 export const storeNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined) => {
-  // throw new Error("Failed to create new project"); // stimulate error
+  // Store Project
   const stmtInsert = db.prepare(`
     INSERT INTO project (organisation_id, project_name, project_manager, due_date, status, progress)
     VALUES (?, ?, ?, ?, ?, ?)`);
   const result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.dueDate, values.status, values.progress);
 
   if (result.changes > 0) {
+    // Update metric table and overview tab
     const currentDate = new Date();
     const currentQuarter = getQuarter(currentDate);
     const stmtUpdateMonthlyStats = db.prepare(`
@@ -21,6 +22,7 @@ export const storeNewProject = async (values: newProjectFormValueType, projectTe
       WHERE organisation_id = ? AND quarter = ?`);
     stmtUpdateMonthlyStats.run(values.revenue, values.organisation_id, currentQuarter);
 
+    // Update Progress table and overall Progress tab
     let stmtUpdateStats;
     switch (values.status) {
       case "Completed":
@@ -45,13 +47,11 @@ export const storeNewProject = async (values: newProjectFormValueType, projectTe
           WHERE organisation_id = ?`);
         break;
     }
+    if (stmtUpdateStats) stmtUpdateStats.run(values.organisation_id);
 
-    if (stmtUpdateStats) {
-      stmtUpdateStats.run(values.organisation_id);
-    }
+    // Update project workload table and tab
+    console.log(values.projectManager, projectTeam);
   }
-
-  // await new Promise((resolve) => setTimeout(resolve, 10000)); // stimulate loading
 
   return result;
 };

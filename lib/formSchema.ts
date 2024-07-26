@@ -90,8 +90,8 @@ const createNewProjectSchema = z.object({
     }),
   status: z.enum(["Completed", "On going", "Delayed", "At risk"], { message: "Invalid status" }),
   progress: z
-    .string()
-    .transform((val) => Number(val))
+    .union([z.string(), z.number()])
+    .transform((val) => (typeof val === "string" ? Number(val) : val))
     .refine((val) => !isNaN(val) && val >= 1 && val <= 100, {
       message: "Progress must be from 1 to 100",
     }),
