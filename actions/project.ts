@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { employeeOptions } from "@/components/form/newProjectForm";
+import { EmployeeOptions } from "@/components/form/newProjectForm";
 import { MultiValue } from "react-select";
 
 import { storeNewProject } from "@/lib/project";
@@ -17,7 +17,7 @@ export type newProjectFormValueType = {
   progress: number;
 };
 
-export const createNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<employeeOptions> | undefined) => {
+export const createNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined) => {
   try {
     await storeNewProject(values, projectTeam);
     console.log(values, projectTeam);

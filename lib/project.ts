@@ -1,10 +1,10 @@
 import db from "./db";
 import { newProjectFormValueType } from "@/actions/project";
-import { employeeOptions } from "@/components/form/newProjectForm";
+import { EmployeeOptions } from "@/components/form/newProjectForm";
 import { MultiValue } from "react-select";
 import { getQuarter } from "@/utils/dateUtils";
 
-export const storeNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<employeeOptions> | undefined) => {
+export const storeNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined) => {
   // throw new Error("Failed to create new project"); // stimulate error
   const stmtInsert = db.prepare(`
     INSERT INTO project (organisation_id, project_name, project_manager, due_date, status, progress)

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -15,25 +15,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ReactSelect, { MultiValue } from "react-select";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createNewProject } from "@/actions/project";
 import { useToast } from "@/components/ui/use-toast";
 import { EmployeeListType } from "@/app/(application)/layout";
 
+// Ensure this matches the schema
 type NewProjectFormProps = {
   employeeList: EmployeeListType[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export type employeeOptions = {
+export type EmployeeOptions = {
   value: string;
   label: string;
 };
 
 export function NewProjectForm({ employeeList, setOpen }: NewProjectFormProps) {
-  const [selectedEmployee, setSelectedEmployee] = useState<MultiValue<employeeOptions>>();
-  const selectedEmployeeHandler = (selectedOptions: MultiValue<employeeOptions>) => {
+  const [selectedEmployee, setSelectedEmployee] = useState<MultiValue<EmployeeOptions>>();
+  const [progressDisabled, setProgressDisabled] = useState<boolean>(false);
+
+  const selectedEmployeeHandler = (selectedOptions: MultiValue<EmployeeOptions>) => {
     setSelectedEmployee(selectedOptions);
   };
 
@@ -42,11 +45,13 @@ export function NewProjectForm({ employeeList, setOpen }: NewProjectFormProps) {
     label: employee.employee_name,
   }));
 
+  // Use the correct schema for the form
   const form = useForm<z.infer<typeof createNewProjectSchema>>({
     resolver: zodResolver(createNewProjectSchema),
   });
 
   const { toast } = useToast();
+
   async function onSubmit(values: z.infer<typeof createNewProjectSchema>) {
     try {
       await createNewProject(
@@ -89,9 +94,22 @@ export function NewProjectForm({ employeeList, setOpen }: NewProjectFormProps) {
     }
   }
 
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      if (name === "status" && value.status === "Completed") {
+        form.setValue("progress", 100);
+        setProgressDisabled(true);
+      } else if (name === "status") {
+        setProgressDisabled(false);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className=" w-full flex flex-wrap gap-4 justify-between">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-wrap gap-4 justify-between">
         <FormField
           control={form.control}
           name="projectName"
@@ -174,7 +192,7 @@ export function NewProjectForm({ employeeList, setOpen }: NewProjectFormProps) {
             <FormItem className="text-black w-[48%]">
               <FormLabel>Progress</FormLabel>
               <FormControl>
-                <Input placeholder="70%" {...field} className="p-3" onInput={progressValidation} />
+                <Input placeholder="70" {...field} className="p-3" onInput={progressValidation} disabled={progressDisabled} />
               </FormControl>
               <FormMessage />
             </FormItem>
