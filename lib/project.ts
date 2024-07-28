@@ -6,10 +6,19 @@ import { getQuarter } from "@/utils/dateUtils";
 
 export const storeNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined) => {
   // Store Project
+  const isManagerPartOfTeam = projectTeam?.some((item) => item.value === projectManagerId);
+  let result;
   const stmtInsert = db.prepare(`
-    INSERT INTO project (organisation_id, project_name, project_manager, due_date, status, progress)
-    VALUES (?, ?, ?, ?, ?, ?)`);
-  const result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.dueDate, values.status, values.progress);
+    INSERT INTO project (organisation_id, project_name, project_manager, due_date, status, progress, project_team)
+    VALUES (?, ?, ?, ?, ?, ?, ?)`);
+  if (isManagerPartOfTeam) {
+    // Store project with project team member if maanager is part of team
+    result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.dueDate, values.status, values.progress, JSON.stringify(projectTeam));
+  } else {
+    // Add manager to the project team if manager is not on the project team before storing project
+    const projectTeamWithManger = [{ value: projectManagerId, label: values.projectManager }, ...(projectTeam ?? [])];
+    result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.dueDate, values.status, values.progress, JSON.stringify(projectTeamWithManger));
+  }
 
   if (result.changes > 0) {
     // Update metric table and overview tab
@@ -50,17 +59,16 @@ export const storeNewProject = async (values: newProjectFormValueType, projectTe
     if (stmtUpdateStats) stmtUpdateStats.run(values.organisation_id);
 
     // Update project workload table and tab
-    // console.log(values.projectManager, projectTeam);
-    const isManagerPartOfTeam = projectTeam?.some((item) => item.value === projectManagerId);
-    console.log(isManagerPartOfTeam);
     if (!isManagerPartOfTeam) {
+      // Add project workload to project manager if manager was not included in the project team
       const stmtupdateProjectWorkload = db.prepare(`
         UPDATE project_workload
             SET no_of_project = no_of_project + 1
             WHERE organisation_id = ? AND employee_id = ?`);
       stmtupdateProjectWorkload.run(values.organisation_id, projectManagerId);
-      console.log("sam");
     }
+
+    // Add project workload to each team member
     projectTeam?.forEach((employee) => {
       const stmtupdateProjectWorkload = db.prepare(`
         UPDATE project_workload

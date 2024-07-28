@@ -35,7 +35,7 @@ export default async function RootLayout({
   }
   const employeeDetails: EmployeeSignInDetailsType = getEmployeeByEmployeeId(result.user.id);
   const employeeList: EmployeeListType[] = getAllEmployee(employeeDetails.organisation_id);
-  // console.log(employeeList);
+
   return (
     <html lang="en">
       <body className={inter.className}>
