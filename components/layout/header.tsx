@@ -1,6 +1,7 @@
 import Image from "next/image";
 import profilePicture from "@/assets/Ellipse 3226.svg";
 import { EmployeeSignInDetailsType } from "@/actions/auth-action";
+import PageTitle from "./pageTitle";
 
 type HeaderProps = {
   className?: string;
@@ -10,7 +11,7 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ className, employeeDetails }) => {
   return (
     <header className={`${className} text-black flex items-center justify-between h-[80px]`}>
-      <h1 className="text-[1.8rem] font-medium">Dashboard</h1>
+      <h1 className="text-[1.8rem] font-medium"><PageTitle /></h1>
       <div className="flex items-center gap-4">
         <div>
           <input type="text" placeholder="Search for anything..." className="h-10 min-w-[300px] focus:outline-none pl-12 pr-5 text-sm placeholder:text-sm rounded-full" />

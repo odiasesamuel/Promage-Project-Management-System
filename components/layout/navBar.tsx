@@ -36,7 +36,7 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeList }) => {
             <Image src={sidebarBavArrow} alt="navigation sidebar icon" />
           </div>
         </div>
-        <CreatNewProject employeeList={employeeList}>
+        <CreatNewProject employeeList={employeeList} projectFormHeading="Create a new project">
           <div className="bg-white w-[85%] h-[50px] ml-4 mt-16 mb-12 rounded-full flex items-center cursor-pointer">
             <Image src={newProjectIcon} alt="new project icon" className="mx-2" />
             <span className="text-sm text-black">

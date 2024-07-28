@@ -8,6 +8,12 @@ import "react-circular-progressbar/dist/styles.css";
 
 import { Button } from "@/components/ui/button";
 import { Badge, BadgeProps } from "@/components/ui/badge";
+import { usePathname } from "next/navigation";
+import CreatNewProject from "./creatNewProject";
+import { useState, useEffect } from "react";
+import { getEmployeeList, EmployeeListType } from "@/actions/project";
+
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -112,4 +118,29 @@ export const columns: ColumnDef<ProjectListType>[] = [
       );
     },
   },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row, table }) => {
+      const pathname = usePathname();
+      const employeeList = table.options.meta?.employeeList as EmployeeListType[];
+      // console.log(employeeList);
+
+      return <>{pathname === "/project" && <ReviewProjectButton employeeList={employeeList} />}</>;
+    },
+  },
 ];
+
+export const ReviewProjectButton: React.FC<{ employeeList: EmployeeListType[] }> = ({ employeeList }) => {
+  const reviewProjecctHandler = () => {};
+  const projectFormHeading = "Review project";
+  return (
+    <>
+      <CreatNewProject employeeList={employeeList} projectFormHeading={projectFormHeading}>
+        <Button variant="secondary" size="sm" className="bg-inherit text-xs border border-[#0000001f] text-black font-normal">
+          Review
+        </Button>
+      </CreatNewProject>
+    </>
+  );
+};

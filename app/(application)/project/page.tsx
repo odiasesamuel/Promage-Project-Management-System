@@ -1,11 +1,31 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-const ProjectPage = () => {
+import { columns, ProjectListType } from "../../../components/columns";
+import { getProjectSummary } from "@/lib/dashboard";
+import { redirect } from "next/navigation";
+import { verifyAuth } from "@/lib/auth";
+import { getEmployeeByEmployeeId, getAllEmployee } from "@/lib/employee";
+import { EmployeeSignInDetailsType } from "@/actions/auth-action";
+import { DataTable } from "../../../components/data-table";
+import { Card, CardContent } from "@/components/ui/card";
+import { EmployeeListType } from "../layout";
+
+const ProjectPage = async () => {
+  const result = await verifyAuth();
+  if (!result.user) {
+    return redirect("/");
+  }
+  const employeeDetails: EmployeeSignInDetailsType = getEmployeeByEmployeeId(result.user.id);
+  const organisation_id = employeeDetails.organisation_id;
+  const employeeList: EmployeeListType[] = getAllEmployee(organisation_id);
+
+  const projectList: ProjectListType[] = getProjectSummary(organisation_id);
+
   return (
     <>
-      <div>Projects</div>
-      <Link href={"/"}>Go to Home Page</Link>
-      <Button size="lg" variant="destructive">Click me</Button>
+      <Card className="bg-[#F2EAE5] mt-12">
+        <CardContent>
+          <DataTable columns={columns} data={projectList} employeeList={employeeList} className="" />
+        </CardContent>
+      </Card>
     </>
   );
 };

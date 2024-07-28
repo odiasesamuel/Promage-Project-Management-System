@@ -9,9 +9,10 @@ import { EmployeeListType } from "@/app/(application)/layout";
 type CreatNewProjectProps = {
   children: React.ReactNode;
   employeeList: EmployeeListType[];
+  projectFormHeading: string;
 };
 
-const CreatNewProject: React.FC<CreatNewProjectProps> = ({ children, employeeList }) => {
+const CreatNewProject: React.FC<CreatNewProjectProps> = ({ children, employeeList, projectFormHeading }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -19,7 +20,7 @@ const CreatNewProject: React.FC<CreatNewProjectProps> = ({ children, employeeLis
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-xl">
         <DialogHeader>
-          <DialogTitle>Create a new project</DialogTitle>
+          <DialogTitle>{projectFormHeading}</DialogTitle>
         </DialogHeader>
         <div className="flex items-center space-x-2">
           <NewProjectForm employeeList={employeeList} setOpen={setOpen} />

@@ -1,19 +1,28 @@
 "use client";
 
 import * as React from "react";
-import { ColumnDef, ColumnFiltersState, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, TableMeta, RowData } from "@tanstack/react-table";
+
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends RowData> {
+    employeeList: EmployeeListType[] | undefined;
+  }
+}
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { EmployeeListType } from "@/app/(application)/layout";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  employeeList?: EmployeeListType[];
+  dataTableHeading?: string;
   className?: string;
 }
 
-export function DataTable<TData, TValue>({ columns, data, className }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, employeeList, dataTableHeading, className }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
 
@@ -38,6 +47,9 @@ export function DataTable<TData, TValue>({ columns, data, className }: DataTable
       globalFilter,
     },
     globalFilterFn: customFilterFunction,
+    meta: {
+      employeeList,
+    },
   });
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +59,7 @@ export function DataTable<TData, TValue>({ columns, data, className }: DataTable
   return (
     <div className={className}>
       <div className="flex items-center justify-between py-4">
-        <h1 className="font-semibold">Project summary</h1>
+        <h1 className="font-semibold">{dataTableHeading}</h1>
         <Input placeholder="Filter project..." value={globalFilter} onChange={handleFilterChange} className="h-10 w-[300px] pl-12 pr-5 text-sm placeholder:text-sm rounded-full bg-white focus:outline-none" />
       </div>
       <div className="rounded-md">
