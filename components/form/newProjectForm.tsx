@@ -20,11 +20,13 @@ import { Input } from "@/components/ui/input";
 import { createNewProject } from "@/actions/project";
 import { useToast } from "@/components/ui/use-toast";
 import { EmployeeListType } from "@/app/(application)/layout";
+import { EditableProjectData } from "../columns";
 
 // Ensure this matches the schema
 type NewProjectFormProps = {
   employeeList: EmployeeListType[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  editableProjectData?: EditableProjectData;
 };
 
 export type EmployeeOptions = {
@@ -32,7 +34,7 @@ export type EmployeeOptions = {
   label: string;
 };
 
-export function NewProjectForm({ employeeList, setOpen }: NewProjectFormProps) {
+export function NewProjectForm({ employeeList, setOpen, editableProjectData }: NewProjectFormProps) {
   const [selectedEmployee, setSelectedEmployee] = useState<MultiValue<EmployeeOptions>>();
   const [progressDisabled, setProgressDisabled] = useState<boolean>(false);
 
@@ -45,9 +47,20 @@ export function NewProjectForm({ employeeList, setOpen }: NewProjectFormProps) {
     label: employee.employee_name,
   }));
 
-  // Use the correct schema for the form
+  // Parse the projectTeam JSON data if available
+  const defaultProjectTeam = editableProjectData?.projectTeam ? (JSON.parse(editableProjectData.projectTeam) as EmployeeOptions[]) : [];
+
+  console.log(editableProjectData);
+
   const form = useForm<z.infer<typeof createNewProjectSchema>>({
     resolver: zodResolver(createNewProjectSchema),
+    defaultValues: {
+      projectName: editableProjectData?.projectName,
+      projectManager: editableProjectData?.projectManager,
+      status: editableProjectData?.status,
+      progress: editableProjectData?.progress,
+      dueDate: editableProjectData?.dueDate && new Date(editableProjectData.dueDate),
+    },
   });
 
   const { toast } = useToast();
@@ -228,7 +241,7 @@ export function NewProjectForm({ employeeList, setOpen }: NewProjectFormProps) {
           <label htmlFor="projectTeam" className="font-medium">
             Project Team
           </label>
-          <ReactSelect isMulti name="projectTeam" options={employeeOptions} className="basic-multi-select mt-2" classNamePrefix="select" onChange={selectedEmployeeHandler} />
+          <ReactSelect isMulti name="projectTeam" options={employeeOptions} className="basic-multi-select mt-2" classNamePrefix="select" onChange={selectedEmployeeHandler} defaultValue={defaultProjectTeam} />
         </div>
 
         <Button type="submit" className="w-full">

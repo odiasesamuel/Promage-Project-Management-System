@@ -5,40 +5,6 @@ const signInFormSchema = z.object({
   employee_id: z.string().length(6, { message: "Employee ID must be 6 characters long" }),
 });
 
-const signUpFormSchema = z.object({
-  organisation_name: z.string().min(1, { message: "Organisation name is required" }),
-  organisation_email: z.string().email({ message: "Invalid email address" }),
-  administrator_name: z.string().min(1, { message: "Administrator name is required" }),
-  administrator_email: z.string().email({ message: "Invalid email address" }),
-  employee_name: z.string().min(1, { message: "Employee name is required" }),
-  employee_email: z.string().email({ message: "Invalid email address" }),
-  job_title: z.string().min(1, { message: "Job title is required" }),
-  last_quarter_revenue: z
-    .string()
-    .transform((val) => Number(val))
-    .refine((val) => !isNaN(val) && val > 0, {
-      message: "Revenue must be a positive number",
-    }),
-  last_quarter_project: z
-    .string()
-    .transform((val) => Number(val))
-    .refine((val) => !isNaN(val) && val > 0, {
-      message: "Project must be a positive number",
-    }),
-  last_quarter_time: z
-    .string()
-    .transform((val) => Number(val))
-    .refine((val) => !isNaN(val) && val > 0, {
-      message: "Project must be a positive number",
-    }),
-  last_quarter_resources: z
-    .string()
-    .transform((val) => Number(val))
-    .refine((val) => !isNaN(val) && val > 0, {
-      message: "Project must be a positive number",
-    }),
-});
-
 const organisationInfoSignUpFormSchema = z.object({
   organisation_name: z.string().min(1, { message: "Organisation name is required" }),
   organisation_email: z.string().email({ message: "Invalid email address" }),
@@ -100,4 +66,4 @@ const createNewProjectSchema = z.object({
   }),
 });
 
-export { signInFormSchema, signUpFormSchema, organisationInfoSignUpFormSchema, employeeInfoSignUpFormSchema, metricInfoSignUpFormSchema, createNewProjectSchema };
+export { signInFormSchema, organisationInfoSignUpFormSchema, employeeInfoSignUpFormSchema, metricInfoSignUpFormSchema, createNewProjectSchema };

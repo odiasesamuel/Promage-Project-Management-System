@@ -25,6 +25,16 @@ export type ProjectListType = {
   due_date: string;
   status: string;
   progress: number;
+  project_team: string;
+};
+
+export type EditableProjectData = {
+  projectName: string;
+  projectManager: string;
+  status: "Completed" | "On going" | "Delayed" | "At risk";
+  progress: number;
+  dueDate: Date;
+  projectTeam: string;
 };
 
 export const columns: ColumnDef<ProjectListType>[] = [
@@ -55,7 +65,7 @@ export const columns: ColumnDef<ProjectListType>[] = [
     },
     cell: (info) => {
       let variant: BadgeProps["variant"] = "onGoing";
-      const status = info.getValue();
+      const status = info.getValue() as string;
       switch (status) {
         case "Completed":
           variant = "success";
@@ -73,7 +83,7 @@ export const columns: ColumnDef<ProjectListType>[] = [
           variant = "onGoing";
       }
 
-      return <Badge variant={variant}>{status as string}</Badge>;
+      return <Badge variant={variant}>{status}</Badge>;
     },
   },
   {
@@ -119,24 +129,48 @@ export const columns: ColumnDef<ProjectListType>[] = [
     },
   },
   {
+    // Hidden column for project Team
+    accessorKey: "project_team",
+    header: () => null,
+    cell: () => null,
+    enableColumnFilter: false,
+    enableSorting: false,
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row, table }) => {
       const pathname = usePathname();
       const employeeList = table.options.meta?.employeeList as EmployeeListType[];
-      // console.log(employeeList);
 
-      return <>{pathname === "/project" && <ReviewProjectButton employeeList={employeeList} />}</>;
+      const projectName: string = row.getValue("project_name");
+      const projectManager: string = row.getValue("project_manager");
+      const status: "Completed" | "On going" | "Delayed" | "At risk" = row.getValue("status");
+      const progress: number = row.getValue("progress");
+      const dueDate: Date = row.getValue("due_date");
+      const projectTeam: string = row.getValue("project_team");
+
+      const editableProjectData = {
+        projectName,
+        projectManager,
+        status,
+        progress,
+        dueDate,
+        projectTeam,
+      };
+      console.log(editableProjectData);
+
+      return <>{pathname === "/project" && <ReviewProjectButton employeeList={employeeList} editableProjectData={editableProjectData} />}</>;
     },
   },
 ];
 
-export const ReviewProjectButton: React.FC<{ employeeList: EmployeeListType[] }> = ({ employeeList }) => {
+export const ReviewProjectButton: React.FC<{ employeeList: EmployeeListType[]; editableProjectData: EditableProjectData }> = ({ employeeList, editableProjectData }) => {
   const reviewProjecctHandler = () => {};
   const projectFormHeading = "Review project";
   return (
     <>
-      <CreatNewProject employeeList={employeeList} projectFormHeading={projectFormHeading}>
+      <CreatNewProject employeeList={employeeList} projectFormHeading={projectFormHeading} editableProjectData={editableProjectData}>
         <Button variant="secondary" size="sm" className="bg-inherit text-xs border border-[#0000001f] text-black font-normal">
           Review
         </Button>
