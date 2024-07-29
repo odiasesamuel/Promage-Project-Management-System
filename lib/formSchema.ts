@@ -49,8 +49,8 @@ const createNewProjectSchema = z.object({
   projectName: z.string().min(1, { message: "Project name is required" }),
   projectManager: z.string().min(1, { message: "Project manager is required" }),
   revenue: z
-    .string()
-    .transform((val) => Number(val))
+    .union([z.string(), z.number()])
+    .transform((val) => (typeof val === "string" ? Number(val) : val))
     .refine((val) => !isNaN(val) && val > 0, {
       message: "Revenue must be a positive number",
     }),

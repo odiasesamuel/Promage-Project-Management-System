@@ -8,16 +8,17 @@ export const storeNewProject = async (values: newProjectFormValueType, projectTe
   // Store Project
   const isManagerPartOfTeam = projectTeam?.some((item) => item.value === projectManagerId);
   let result;
+  console.log(values.organisation_id, values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeam));
   const stmtInsert = db.prepare(`
-    INSERT INTO project (organisation_id, project_name, project_manager, due_date, status, progress, project_team)
-    VALUES (?, ?, ?, ?, ?, ?, ?)`);
+   INSERT INTO project (organisation_id, project_name, project_manager, revenue, due_date, status, progress, project_team)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
   if (isManagerPartOfTeam) {
     // Store project with project team member if maanager is part of team
-    result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.dueDate, values.status, values.progress, JSON.stringify(projectTeam));
+    result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeam));
   } else {
     // Add manager to the project team if manager is not on the project team before storing project
     const projectTeamWithManger = [{ value: projectManagerId, label: values.projectManager }, ...(projectTeam ?? [])];
-    result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.dueDate, values.status, values.progress, JSON.stringify(projectTeamWithManger));
+    result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeamWithManger));
   }
 
   if (result.changes > 0) {

@@ -35,6 +35,7 @@ db.exec(`
     organisation_id TEXT,
     project_name TEXT,
     project_manager TEXT,
+    revenue INTEGER,
     due_date DATE,
     status TEXT,
     progress INTEGER,
@@ -112,32 +113,31 @@ db.exec(`
 //     ('HAN505', 'LAM789', 'Hank Moore', 'hank.moore@gmail.com', 'Software Engineer'),
 //     ('IVY606', 'LAM789', 'Ivy Taylor', 'ivy.taylor@gmail.com', 'Software Engineer');
 
-//   INSERT INTO project (organisation_id, project_name, project_manager, due_date, status, progress, project_team)
+//   INSERT INTO project (organisation_id, project_name, project_manager, revenue, due_date, status, progress, project_team)
 //   VALUES
-//     ('BOL123', 'Nesla Web Application', 'Alice Johnson', '2024-12-31', 'On going', 50, '[{"value": "ALI123", "label": "Alice Johnson"}, {"value": "BOB456", "label": "Bob Smith"}, {"value": "CHA789", "label": "Charlie Brown"}]'),
-//     ('BOL123', 'Datascale AI App', 'Bob Smith', '2024-11-30', 'Completed', 100, '[{"value": "ALI123", "label": "Alice Johnson"}, {"value": "BOB456", "label": "Bob Smith"}]'),
-//     ('BOL123', 'Photon E-commerce Platform', 'Charlie Brown', '2024-10-31', 'Delayed', 75, '[{"value": "BOB456", "label": "Bob Smith"}, {"value": "CHA789", "label": "Charlie Brown"}, {"value": "ALI123", "label": "Alice Johnson"}]'),
-//     ('KUN456', 'Quantum CRM System', 'David Williams', '2024-12-31', 'On going', 60, '[{"value": "ALI123", "label": "Alice Johnson"}, {"value": "CHA789", "label": "Charlie Brown"}]'),
-//     ('KUN456', 'Nebula Analytics Dashboard', 'Eve Davis', '2024-11-30', 'Completed', 100, '[{"value": "BOB456", "label": "Bob Smith"}, {"value": "CHA789", "label": "Charlie Brown"}, {"value": "ALI123", "label": "Alice Johnson"}]'),
-//     ('KUN456', 'Orbit HR Management Tool', 'Frank Miller', '2024-10-31', 'Delayed', 80, '[{"value": "CHA789", "label": "Charlie Brown"}, {"value": "BOB456", "label": "Bob Smith"}, {"value": "ALI123", "label": "Alice Johnson"}]'),
-//     ('LAM789', 'Lyra Mobile Banking App', 'Grace Wilson', '2024-12-31', 'On going', 70, '[{"value": "ALI123", "label": "Alice Johnson"}, {"value": "BOB456", "label": "Bob Smith"}, {"value": "CHA789", "label": "Charlie Brown"}]'),
-//     ('LAM789', 'Vortex Social Media Platform', 'Hank Moore', '2024-11-30', 'Completed', 100, '[{"value": "BOB456", "label": "Bob Smith"}]'),
-//     ('LAM789', 'Hyperion Data Visualization Suite', 'Ivy Taylor', '2024-10-31', 'Delayed', 90, '[{"value": "CHA789", "label": "Charlie Brown"}, {"value": "ALI123", "label": "Alice Johnson"}]');
-
+//     ('BOL123', 'Nesla Web Application', 'Alice Johnson', 150000, '2024-12-31', 'On going', 50, '[{"value": "ALI123", "label": "Alice Johnson"}, {"value": "BOB456", "label": "Bob Smith"}, {"value": "CHA789", "label": "Charlie Brown"}]'),
+//     ('BOL123', 'Datascale AI App', 'Bob Smith', 250000, '2024-11-30', 'Completed', 100, '[{"value": "ALI123", "label": "Alice Johnson"}, {"value": "BOB456", "label": "Bob Smith"}]'),
+//     ('BOL123', 'Photon E-commerce Platform', 'Charlie Brown', 200000, '2024-10-31', 'Delayed', 75, '[{"value": "BOB456", "label": "Bob Smith"}, {"value": "CHA789", "label": "Charlie Brown"}, {"value": "ALI123", "label": "Alice Johnson"}]'),
+//     ('KUN456', 'Quantum CRM System', 'David Williams', 180000, '2024-12-31', 'On going', 60, '[{"value": "ALI123", "label": "Alice Johnson"}, {"value": "CHA789", "label": "Charlie Brown"}]'),
+//     ('KUN456', 'Nebula Analytics Dashboard', 'Eve Davis', 300000, '2024-11-30', 'Completed', 100, '[{"value": "BOB456", "label": "Bob Smith"}, {"value": "CHA789", "label": "Charlie Brown"}, {"value": "ALI123", "label": "Alice Johnson"}]'),
+//     ('KUN456', 'Orbit HR Management Tool', 'Frank Miller', 220000, '2024-10-31', 'Delayed', 80, '[{"value": "CHA789", "label": "Charlie Brown"}, {"value": "BOB456", "label": "Bob Smith"}, {"value": "ALI123", "label": "Alice Johnson"}]'),
+//     ('LAM789', 'Lyra Mobile Banking App', 'Grace Wilson', 275000, '2024-12-31', 'On going', 70, '[{"value": "ALI123", "label": "Alice Johnson"}, {"value": "BOB456", "label": "Bob Smith"}, {"value": "CHA789", "label": "Charlie Brown"}]'),
+//     ('LAM789', 'Vortex Social Media Platform', 'Hank Moore', 320000, '2024-11-30', 'Completed', 100, '[{"value": "BOB456", "label": "Bob Smith"}]'),
+//     ('LAM789', 'Hyperion Data Visualization Suite', 'Ivy Taylor', 230000, '2024-10-31', 'Delayed', 90, '[{"value": "CHA789", "label": "Charlie Brown"}, {"value": "ALI123", "label": "Alice Johnson"}]');
 
 //   INSERT INTO metric (organisation_id, quarter, total_revenue, project, time, resource)
 //   VALUES
 //     ('BOL123', 'Q1', 100000, 110, 120, 80),
 //     ('BOL123', 'Q2', 120000, 115, 125, 85),
-//     ('BOL123', 'Q3', 130000, 120, 130, 90),
+//     ('BOL123', 'Q3', 600000, 120, 130, 90),
 //     ('BOL123', 'Q4', 150000, 100, 200, 90),
 //     ('KUN456', 'Q1', 110000, 98, 130, 70),
 //     ('KUN456', 'Q2', 115000, 105, 135, 75),
-//     ('KUN456', 'Q3', 120000, 110, 140, 80),
+//     ('KUN456', 'Q3', 700000, 110, 140, 80),
 //     ('KUN456', 'Q4', 160000, 105, 210, 95),
 //     ('LAM789', 'Q1', 120000, 60, 140, 75),
 //     ('LAM789', 'Q2', 125000, 65, 145, 80),
-//     ('LAM789', 'Q3', 130000, 70, 150, 85),
+//     ('LAM789', 'Q3', 825000, 70, 150, 85),
 //     ('LAM789', 'Q4', 170000, 110, 220, 100);
 
 //   INSERT INTO progress (organisation_id, total_project, completed_project, delayed_project, ongoing_project)

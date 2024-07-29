@@ -57,6 +57,7 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
     defaultValues: {
       projectName: editableProjectData?.projectName,
       projectManager: editableProjectData?.projectManager,
+      revenue: editableProjectData?.revenue,
       status: editableProjectData?.status,
       progress: editableProjectData?.progress,
       dueDate: editableProjectData?.dueDate && new Date(editableProjectData.dueDate),

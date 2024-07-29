@@ -22,6 +22,7 @@ export type ProjectListType = {
   organisation_id: string;
   project_name: string;
   project_manager: string;
+  revenue: number;
   due_date: string;
   status: string;
   progress: number;
@@ -32,6 +33,7 @@ export type EditableProjectData = {
   projectName: string;
   projectManager: string;
   status: "Completed" | "On going" | "Delayed" | "At risk";
+  revenue: number;
   progress: number;
   dueDate: Date;
   projectTeam: string;
@@ -129,6 +131,14 @@ export const columns: ColumnDef<ProjectListType>[] = [
     },
   },
   {
+    // Hidden column for revenue
+    accessorKey: "revenue",
+    header: () => null,
+    cell: () => null,
+    enableColumnFilter: false,
+    enableSorting: false,
+  },
+  {
     // Hidden column for project Team
     accessorKey: "project_team",
     header: () => null,
@@ -146,6 +156,7 @@ export const columns: ColumnDef<ProjectListType>[] = [
       const projectName: string = row.getValue("project_name");
       const projectManager: string = row.getValue("project_manager");
       const status: "Completed" | "On going" | "Delayed" | "At risk" = row.getValue("status");
+      const revenue: number = row.getValue("revenue");
       const progress: number = row.getValue("progress");
       const dueDate: Date = row.getValue("due_date");
       const projectTeam: string = row.getValue("project_team");
@@ -154,11 +165,11 @@ export const columns: ColumnDef<ProjectListType>[] = [
         projectName,
         projectManager,
         status,
+        revenue,
         progress,
         dueDate,
         projectTeam,
       };
-      console.log(editableProjectData);
 
       return <>{pathname === "/project" && <ReviewProjectButton employeeList={employeeList} editableProjectData={editableProjectData} />}</>;
     },
@@ -166,7 +177,6 @@ export const columns: ColumnDef<ProjectListType>[] = [
 ];
 
 export const ReviewProjectButton: React.FC<{ employeeList: EmployeeListType[]; editableProjectData: EditableProjectData }> = ({ employeeList, editableProjectData }) => {
-  const reviewProjecctHandler = () => {};
   const projectFormHeading = "Review project";
   return (
     <>
