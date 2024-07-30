@@ -16,7 +16,10 @@ type OverallProgressType = {
 };
 
 const OverallProgress: React.FC<OverallProgressType> = ({ progress }) => {
-  const { total_project, completed_project, delayed_project, ongoing_project } = progress[0];
+  const total_project = progress[0].total_project === null ? 0 : progress[0].total_project;
+  const completed_project = progress[0].completed_project === null ? 0 : progress[0].completed_project;
+  const delayed_project = progress[0].delayed_project === null ? 0 : progress[0].delayed_project;
+  const ongoing_project = progress[0].ongoing_project === null ? 0 : progress[0].ongoing_project;
   const percentage = total_project === 0 ? 0 : Math.round((completed_project / total_project) * 100);
   return (
     <div className="relative">
