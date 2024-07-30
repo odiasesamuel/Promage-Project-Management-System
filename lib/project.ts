@@ -10,24 +10,9 @@ type ProjectWorkloadType = {
   number_of_projects: number;
 };
 
-export const storeNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined) => {
-  // Store Project
-  const isManagerPartOfTeam = projectTeam?.some((item) => item.value === projectManagerId);
-  let result;
-  const stmtInsert = db.prepare(`
-   INSERT INTO project (organisation_id, project_name, project_manager, revenue, due_date, status, progress, project_team)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
-  if (isManagerPartOfTeam) {
-    // Store project with project team member if maanager is part of team
-    result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeam));
-  } else {
-    // Add manager to the project team if manager is not on the project team before storing project
-    const projectTeamWithManger = [{ value: projectManagerId, label: values.projectManager }, ...(projectTeam ?? [])];
-    result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeamWithManger));
-  }
-
+export const updateMetricProgressProjectworkloadTable = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined, result: any) => {
   if (result.changes > 0) {
-    // Update metric table and overview tab
+    // Update metric table table
     const currentDate = new Date();
     const currentQuarter = getQuarter(currentDate);
     const project = db.prepare(`SELECT COUNT(*) AS total_project FROM project WHERE organisation_id = ?`).get(values.organisation_id);
@@ -39,7 +24,7 @@ export const storeNewProject = async (values: newProjectFormValueType, projectTe
       WHERE organisation_id = ? AND quarter = ?`);
     stmtUpdateMonthlyStats.run(project.total_project, revenue.total_revenue, values.organisation_id, currentQuarter);
 
-    // Update Progress table and overall Progress tab
+    // Update Progress table
     const progress = db
       .prepare(
         `SELECT COUNT(*) AS total_project,
@@ -58,85 +43,7 @@ export const storeNewProject = async (values: newProjectFormValueType, projectTe
       WHERE organisation_id = ?`);
     stmtUpdateStats.run(progress.total_project, progress.completed_project, progress.delayed_project, progress.ongoing_project, values.organisation_id);
 
-    // Update project workload table and tab
-    if (!isManagerPartOfTeam) {
-      // Add project workload to project manager if manager was not included in the project team
-      const stmtupdateProjectWorkload = db.prepare(`
-        UPDATE project_workload
-            SET no_of_project = no_of_project + 1
-            WHERE organisation_id = ? AND employee_id = ?`);
-      stmtupdateProjectWorkload.run(values.organisation_id, projectManagerId);
-    }
-
-    // Add project workload to each team member
-    projectTeam?.forEach((employee) => {
-      const stmtupdateProjectWorkload = db.prepare(`
-        UPDATE project_workload
-            SET no_of_project = no_of_project + 1
-            WHERE organisation_id = ? AND employee_id = ?`);
-      stmtupdateProjectWorkload.run(values.organisation_id, employee.value);
-    });
-  }
-
-  return result;
-};
-
-export const reviewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined, project_id: number) => {
-  // update Project
-  const isManagerPartOfTeam = projectTeam?.some((item) => item.value === projectManagerId);
-  let result;
-  const stmtInsert = db.prepare(`
-   UPDATE project
-   SET project_name = ?,
-      project_manager = ?,
-      revenue = ?,
-      due_date = ?,
-      status = ?,
-      progress = ?,
-      project_team = ?
-    WHERE project_id = ? AND organisation_id = ?
-      `);
-  if (isManagerPartOfTeam) {
-    // update project with project team member if maanager is part of team
-    result = stmtInsert.run(values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeam), project_id, values.organisation_id);
-  } else {
-    // Add manager to the project team if manager is not on the project team before updating project
-    const projectTeamWithManger = [{ value: projectManagerId, label: values.projectManager }, ...(projectTeam ?? [])];
-    result = stmtInsert.run(values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeamWithManger), project_id, values.organisation_id);
-  }
-
-  if (result.changes > 0) {
-    // Update metric table and overview tab
-    const currentDate = new Date();
-    const currentQuarter = getQuarter(currentDate);
-    const project = db.prepare(`SELECT COUNT(*) AS total_project FROM project WHERE organisation_id = ?`).get(values.organisation_id);
-    const revenue = db.prepare(`SELECT SUM(revenue) AS total_revenue FROM project WHERE organisation_id = ?`).get(values.organisation_id);
-    const stmtUpdateMonthlyStats = db.prepare(`
-      UPDATE metric
-      SET project = ?,
-          total_revenue = ?
-      WHERE organisation_id = ? AND quarter = ?`);
-    stmtUpdateMonthlyStats.run(project.total_project, revenue.total_revenue, values.organisation_id, currentQuarter);
-
-    // Update Progress table and overall Progress tab
-    const progress = db
-      .prepare(
-        `SELECT COUNT(*) AS total_project,
-          SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) AS completed_project,
-          SUM(CASE WHEN status = 'Delayed' THEN 1 ELSE 0 END) AS delayed_project,
-          SUM(CASE WHEN status = 'On going' THEN 1 ELSE 0 END) AS ongoing_project
-        FROM project WHERE organisation_id = ?`
-      )
-      .get(values.organisation_id);
-    const stmtUpdateStats = db.prepare(`
-      UPDATE progress
-      SET total_project = ?,
-          completed_project = ?,
-          delayed_project = ?,
-          ongoing_project = ?
-      WHERE organisation_id = ?`);
-    stmtUpdateStats.run(progress.total_project, progress.completed_project, progress.delayed_project, progress.ongoing_project, values.organisation_id);
-
+    // update project workload table
     const stmtgetProjectWorkLoad = db.prepare(`
       WITH TeamMembers AS (
         SELECT 
@@ -173,6 +80,50 @@ export const reviewProject = async (values: newProjectFormValueType, projectTeam
       stmtupdateProjectWorkload.run(number_of_projects, values.organisation_id, employee_id);
     });
   }
+};
 
-  return result;
+export const storeNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined) => {
+  // Store Project
+  const isManagerPartOfTeam = projectTeam?.some((item) => item.value === projectManagerId);
+  let result;
+  const stmtInsert = db.prepare(`
+   INSERT INTO project (organisation_id, project_name, project_manager, revenue, due_date, status, progress, project_team)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
+  if (isManagerPartOfTeam) {
+    // Store project with project team member if maanager is part of team
+    result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeam));
+  } else {
+    // Add manager to the project team if manager is not on the project team before storing project
+    const projectTeamWithManger = [{ value: projectManagerId, label: values.projectManager }, ...(projectTeam ?? [])];
+    result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeamWithManger));
+  }
+
+  updateMetricProgressProjectworkloadTable(values, projectTeam, projectManagerId, result);
+};
+
+export const reviewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined, project_id: number) => {
+  // update Project
+  const isManagerPartOfTeam = projectTeam?.some((item) => item.value === projectManagerId);
+  let result;
+  const stmtInsert = db.prepare(`
+   UPDATE project
+   SET project_name = ?,
+      project_manager = ?,
+      revenue = ?,
+      due_date = ?,
+      status = ?,
+      progress = ?,
+      project_team = ?
+    WHERE project_id = ? AND organisation_id = ?
+      `);
+  if (isManagerPartOfTeam) {
+    // update project with project team member if maanager is part of team
+    result = stmtInsert.run(values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeam), project_id, values.organisation_id);
+  } else {
+    // Add manager to the project team if manager is not on the project team before updating project
+    const projectTeamWithManger = [{ value: projectManagerId, label: values.projectManager }, ...(projectTeam ?? [])];
+    result = stmtInsert.run(values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeamWithManger), project_id, values.organisation_id);
+  }
+
+  updateMetricProgressProjectworkloadTable(values, projectTeam, projectManagerId, result);
 };

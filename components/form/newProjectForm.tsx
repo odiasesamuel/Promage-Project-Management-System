@@ -118,6 +118,8 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
 
   function deleteProjectHandler(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
+
+    
   }
 
   function revenueValidation(e: React.FormEvent<HTMLInputElement>) {
