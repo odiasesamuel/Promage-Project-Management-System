@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createNewProjectSchema } from "@/lib/formSchema";
 
@@ -17,7 +17,7 @@ import ReactSelect, { MultiValue } from "react-select";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createNewProject } from "@/actions/project";
+import { createNewProject, reviewProjectAction } from "@/actions/project";
 import { useToast } from "@/components/ui/use-toast";
 import { EmployeeListType } from "@/app/(application)/layout";
 import { EditableProjectData } from "../columns";
@@ -35,7 +35,7 @@ export type EmployeeOptions = {
 };
 
 export function NewProjectForm({ employeeList, setOpen, editableProjectData }: NewProjectFormProps) {
-  const [selectedEmployee, setSelectedEmployee] = useState<MultiValue<EmployeeOptions>>();
+  const [selectedEmployee, setSelectedEmployee] = useState<MultiValue<EmployeeOptions>>(editableProjectData?.projectTeam ? JSON.parse(editableProjectData.projectTeam) : []);
   const [progressDisabled, setProgressDisabled] = useState<boolean>(false);
 
   const selectedEmployeeHandler = (selectedOptions: MultiValue<EmployeeOptions>) => {
@@ -47,10 +47,7 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
     label: employee.employee_name,
   }));
 
-  // Parse the projectTeam JSON data if available
-  const defaultProjectTeam = editableProjectData?.projectTeam ? (JSON.parse(editableProjectData.projectTeam) as EmployeeOptions[]) : [];
-
-  console.log(editableProjectData);
+  // console.log(editableProjectData);
 
   const form = useForm<z.infer<typeof createNewProjectSchema>>({
     resolver: zodResolver(createNewProjectSchema),
@@ -67,23 +64,39 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
   const { toast } = useToast();
 
   async function onSubmit(values: z.infer<typeof createNewProjectSchema>) {
+    // Submit and Create a new Project
     const projectManager = employeeList.find((employee) => employee.employee_name === values.projectManager);
     const projectManagerId = projectManager?.id;
     try {
-      await createNewProject(
-        {
-          organisation_id: employeeList[0].organisation_id,
-          ...values,
-          dueDate: values.dueDate.toISOString(),
-        },
-        selectedEmployee,
-        projectManagerId
-      );
-      setOpen(false);
-      toast({
-        title: "Project created successfully",
-        description: "Your project has been created.",
-      });
+      if (editableProjectData) {
+        await reviewProjectAction(
+          {
+            organisation_id: employeeList[0].organisation_id,
+            ...values,
+            dueDate: values.dueDate.toISOString(),
+          },
+          selectedEmployee,
+          projectManagerId,
+          editableProjectData.project_id
+        );
+        setOpen(false);
+      } else {
+        console.log("call createNewProject");
+        await createNewProject(
+          {
+            organisation_id: employeeList[0].organisation_id,
+            ...values,
+            dueDate: values.dueDate.toISOString(),
+          },
+          selectedEmployee,
+          projectManagerId
+        );
+        setOpen(false);
+        toast({
+          title: "Project created successfully",
+          description: "Your project has been created.",
+        });
+      }
     } catch (error) {
       setOpen(false);
       toast({
@@ -93,6 +106,14 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
         duration: 3000,
       });
     }
+  }
+
+  function reviewProjectHandler(e: React.MouseEvent<HTMLButtonElement>) {
+    // e.preventDefault();
+  }
+
+  function deleteProjectHandler(e: React.MouseEvent<HTMLButtonElement>) {
+    // e.preventDefault();
   }
 
   function revenueValidation(e: React.FormEvent<HTMLInputElement>) {
@@ -242,12 +263,23 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
           <label htmlFor="projectTeam" className="font-medium">
             Project Team
           </label>
-          <ReactSelect isMulti name="projectTeam" options={employeeOptions} className="basic-multi-select mt-2" classNamePrefix="select" onChange={selectedEmployeeHandler} defaultValue={defaultProjectTeam} />
+          <ReactSelect isMulti name="projectTeam" options={employeeOptions} className="basic-multi-select mt-2" classNamePrefix="select" onChange={selectedEmployeeHandler} defaultValue={selectedEmployee} />
         </div>
 
-        <Button type="submit" className="w-full">
-          Create Project
-        </Button>
+        {editableProjectData ? (
+          <div className="w-full flex justify-between mt-5">
+            <Button type="submit" className="w-[45%]" onClick={reviewProjectHandler}>
+              Review Project
+            </Button>
+            <Button type="submit" variant="destructive" className="w-[45%]" onClick={deleteProjectHandler}>
+              Delete Project
+            </Button>
+          </div>
+        ) : (
+          <Button type="submit" className="w-full mt-5">
+            Create Project
+          </Button>
+        )}
       </form>
     </Form>
   );

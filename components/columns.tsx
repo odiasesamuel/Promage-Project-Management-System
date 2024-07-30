@@ -30,6 +30,7 @@ export type ProjectListType = {
 };
 
 export type EditableProjectData = {
+  project_id: number;
   projectName: string;
   projectManager: string;
   status: "Completed" | "On going" | "Delayed" | "At risk";
@@ -131,6 +132,14 @@ export const columns: ColumnDef<ProjectListType>[] = [
     },
   },
   {
+    // Hidden column for project id
+    accessorKey: "project_id",
+    header: () => null,
+    cell: () => null,
+    enableColumnFilter: false,
+    enableSorting: false,
+  },
+  {
     // Hidden column for revenue
     accessorKey: "revenue",
     header: () => null,
@@ -153,6 +162,7 @@ export const columns: ColumnDef<ProjectListType>[] = [
       const pathname = usePathname();
       const employeeList = table.options.meta?.employeeList as EmployeeListType[];
 
+      const project_id: number = row.getValue("project_id");
       const projectName: string = row.getValue("project_name");
       const projectManager: string = row.getValue("project_manager");
       const status: "Completed" | "On going" | "Delayed" | "At risk" = row.getValue("status");
@@ -162,6 +172,7 @@ export const columns: ColumnDef<ProjectListType>[] = [
       const projectTeam: string = row.getValue("project_team");
 
       const editableProjectData = {
+        project_id,
         projectName,
         projectManager,
         status,
