@@ -81,7 +81,6 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
         );
         setOpen(false);
       } else {
-        console.log("call createNewProject");
         await createNewProject(
           {
             organisation_id: employeeList[0].organisation_id,
@@ -99,21 +98,26 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
       }
     } catch (error) {
       setOpen(false);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to create project. Please try again.",
-        duration: 3000,
-      });
+      if (editableProjectData) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to review project. Please try again.",
+          duration: 3000,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to create project. Please try again.",
+          duration: 3000,
+        });
+      }
     }
   }
 
-  function reviewProjectHandler(e: React.MouseEvent<HTMLButtonElement>) {
-    // e.preventDefault();
-  }
-
   function deleteProjectHandler(e: React.MouseEvent<HTMLButtonElement>) {
-    // e.preventDefault();
+    e.preventDefault();
   }
 
   function revenueValidation(e: React.FormEvent<HTMLInputElement>) {
@@ -268,7 +272,7 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
 
         {editableProjectData ? (
           <div className="w-full flex justify-between mt-5">
-            <Button type="submit" className="w-[45%]" onClick={reviewProjectHandler}>
+            <Button type="submit" className="w-[45%]">
               Review Project
             </Button>
             <Button type="submit" variant="destructive" className="w-[45%]" onClick={deleteProjectHandler}>
