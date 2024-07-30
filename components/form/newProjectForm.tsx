@@ -17,10 +17,11 @@ import ReactSelect, { MultiValue } from "react-select";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createNewProject, reviewProjectAction } from "@/actions/project";
+import { createNewProject, reviewProjectAction, deleteProjectAction } from "@/actions/project";
 import { useToast } from "@/components/ui/use-toast";
 import { EmployeeListType } from "@/app/(application)/layout";
 import { EditableProjectData } from "../columns";
+import DeleteProjectConfirmation from "../deleteProjectConfirmation";
 
 // Ensure this matches the schema
 type NewProjectFormProps = {
@@ -46,8 +47,6 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
     value: employee.id,
     label: employee.employee_name,
   }));
-
-  // console.log(editableProjectData);
 
   const form = useForm<z.infer<typeof createNewProjectSchema>>({
     resolver: zodResolver(createNewProjectSchema),
@@ -116,10 +115,19 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
     }
   }
 
-  function deleteProjectHandler(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-
-    
+  async function deleteProjectHandler(e: React.MouseEvent<HTMLButtonElement>) {
+    setOpen(false);
+    const organisation_id = employeeList[0].organisation_id;
+    const project_id = editableProjectData?.project_id;
+    const result = await deleteProjectAction(organisation_id, project_id);
+    if (!result.success) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: result.message,
+        duration: 3000,
+      });
+    }
   }
 
   function revenueValidation(e: React.FormEvent<HTMLInputElement>) {
@@ -277,9 +285,11 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
             <Button type="submit" className="w-[45%]">
               Review Project
             </Button>
-            <Button type="submit" variant="destructive" className="w-[45%]" onClick={deleteProjectHandler}>
-              Delete Project
-            </Button>
+            <DeleteProjectConfirmation deleteProjectHandler={deleteProjectHandler}>
+              <Button type="button" variant="destructive" className="w-[45%]">
+                Delete Project
+              </Button>
+            </DeleteProjectConfirmation>
           </div>
         ) : (
           <Button type="submit" className="w-full mt-5">

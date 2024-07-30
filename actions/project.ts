@@ -6,7 +6,7 @@ import { EmployeeOptions } from "@/components/form/newProjectForm";
 import { getAllEmployee } from "@/lib/employee";
 import { MultiValue } from "react-select";
 
-import { storeNewProject, reviewProject } from "@/lib/project";
+import { storeNewProject, reviewProject, deleteProject } from "@/lib/project";
 
 export type newProjectFormValueType = {
   organisation_id: string;
@@ -36,12 +36,22 @@ export const createNewProject = async (values: newProjectFormValueType, projectT
 };
 
 export const reviewProjectAction = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined, project_id: number) => {
-  console.log(values);
   try {
     await reviewProject(values, projectTeam, projectManagerId, project_id);
     revalidatePath("/project");
   } catch (error) {
     throw new Error("Failed to review project");
+  }
+};
+
+export const deleteProjectAction = async (organisation_id: string, project_id: number | undefined) => {
+  try {
+    await deleteProject(organisation_id, project_id);
+    revalidatePath("/project");
+
+    return { success: true, message: null };
+  } catch (error) {
+    return { success: false, message: "Failed to delete project" };
   }
 };
 

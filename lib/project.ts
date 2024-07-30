@@ -10,19 +10,19 @@ type ProjectWorkloadType = {
   number_of_projects: number;
 };
 
-export const updateMetricProgressProjectworkloadTable = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined, result: any) => {
+const updateMetricProgressProjectworkloadTable = async (organisation_id: string, result: any) => {
   if (result.changes > 0) {
     // Update metric table table
     const currentDate = new Date();
     const currentQuarter = getQuarter(currentDate);
-    const project = db.prepare(`SELECT COUNT(*) AS total_project FROM project WHERE organisation_id = ?`).get(values.organisation_id);
-    const revenue = db.prepare(`SELECT SUM(revenue) AS total_revenue FROM project WHERE organisation_id = ?`).get(values.organisation_id);
+    const project = db.prepare(`SELECT COUNT(*) AS total_project FROM project WHERE organisation_id = ?`).get(organisation_id);
+    const revenue = db.prepare(`SELECT SUM(revenue) AS total_revenue FROM project WHERE organisation_id = ?`).get(organisation_id);
     const stmtUpdateMonthlyStats = db.prepare(`
       UPDATE metric
       SET project = ?,
           total_revenue = ?
       WHERE organisation_id = ? AND quarter = ?`);
-    stmtUpdateMonthlyStats.run(project.total_project, revenue.total_revenue, values.organisation_id, currentQuarter);
+    stmtUpdateMonthlyStats.run(project.total_project, revenue.total_revenue, organisation_id, currentQuarter);
 
     // Update Progress table
     const progress = db
@@ -33,7 +33,7 @@ export const updateMetricProgressProjectworkloadTable = async (values: newProjec
           SUM(CASE WHEN status = 'On going' THEN 1 ELSE 0 END) AS ongoing_project
         FROM project WHERE organisation_id = ?`
       )
-      .get(values.organisation_id);
+      .get(organisation_id);
     const stmtUpdateStats = db.prepare(`
       UPDATE progress
       SET total_project = ?,
@@ -41,7 +41,7 @@ export const updateMetricProgressProjectworkloadTable = async (values: newProjec
           delayed_project = ?,
           ongoing_project = ?
       WHERE organisation_id = ?`);
-    stmtUpdateStats.run(progress.total_project, progress.completed_project, progress.delayed_project, progress.ongoing_project, values.organisation_id);
+    stmtUpdateStats.run(progress.total_project, progress.completed_project, progress.delayed_project, progress.ongoing_project, organisation_id);
 
     // update project workload table
     const stmtgetProjectWorkLoad = db.prepare(`
@@ -67,7 +67,7 @@ export const updateMetricProgressProjectworkloadTable = async (values: newProjec
           number_of_projects DESC;
     `);
 
-    const getProjectWorkLoad: ProjectWorkloadType[] = stmtgetProjectWorkLoad.all(values.organisation_id);
+    const getProjectWorkLoad: ProjectWorkloadType[] = stmtgetProjectWorkLoad.all(organisation_id);
     console.log(getProjectWorkLoad);
 
     const stmtupdateProjectWorkload = db.prepare(`
@@ -77,7 +77,7 @@ export const updateMetricProgressProjectworkloadTable = async (values: newProjec
     `);
 
     getProjectWorkLoad.forEach(({ employee_id, number_of_projects }) => {
-      stmtupdateProjectWorkload.run(number_of_projects, values.organisation_id, employee_id);
+      stmtupdateProjectWorkload.run(number_of_projects, organisation_id, employee_id);
     });
   }
 };
@@ -98,7 +98,8 @@ export const storeNewProject = async (values: newProjectFormValueType, projectTe
     result = stmtInsert.run(values.organisation_id, values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeamWithManger));
   }
 
-  updateMetricProgressProjectworkloadTable(values, projectTeam, projectManagerId, result);
+  const organisation_id = values.organisation_id;
+  updateMetricProgressProjectworkloadTable(organisation_id, result);
 };
 
 export const reviewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined, project_id: number) => {
@@ -125,5 +126,14 @@ export const reviewProject = async (values: newProjectFormValueType, projectTeam
     result = stmtInsert.run(values.projectName, values.projectManager, values.revenue, values.dueDate, values.status, values.progress, JSON.stringify(projectTeamWithManger), project_id, values.organisation_id);
   }
 
-  updateMetricProgressProjectworkloadTable(values, projectTeam, projectManagerId, result);
+  const organisation_id = values.organisation_id;
+  updateMetricProgressProjectworkloadTable(organisation_id, result);
+};
+
+export const deleteProject = async (organisation_id: string, project_id: number | undefined) => {
+  const stmtDeleteProject = db.prepare(`DELETE FROM project WHERE organisation_id = ? AND project_id = ?;
+`);
+  const result = stmtDeleteProject.run(organisation_id, project_id);
+
+  updateMetricProgressProjectworkloadTable(organisation_id, result);
 };
