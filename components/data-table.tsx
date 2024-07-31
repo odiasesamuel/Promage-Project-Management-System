@@ -9,10 +9,13 @@ declare module "@tanstack/react-table" {
   }
 }
 
+import { usePathname } from "next/navigation";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmployeeListType } from "@/app/(application)/layout";
+import { exportProjectReport } from "@/utils/exportProjectReport";
+import { ProjectListType } from "@/components/columns";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -23,6 +26,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({ columns, data, employeeList, dataTableHeading, className }: DataTableProps<TData, TValue>) {
+  const pathname = usePathname();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
 
@@ -56,11 +60,18 @@ export function DataTable<TData, TValue>({ columns, data, employeeList, dataTabl
     setGlobalFilter(event.target.value);
   };
 
+  const exportReportHandler = () => {
+    exportProjectReport(data as ProjectListType[]);
+  };
+
   return (
     <div className={className}>
       <div className="flex items-center justify-between py-4">
         <h1 className="font-semibold">{dataTableHeading}</h1>
-        <Input placeholder="Filter project..." value={globalFilter} onChange={handleFilterChange} className="h-10 w-[300px] pl-12 pr-5 text-sm placeholder:text-sm rounded-full bg-white focus:outline-none" />
+        <div className="flex items-center">
+          {pathname === "/project" && <Button onClick={exportReportHandler}>Export</Button>}
+          <Input placeholder="Filter project..." value={globalFilter} onChange={handleFilterChange} className="h-10 w-[300px] pl-12 ml-8 pr-5 text-sm placeholder:text-sm rounded-full bg-white focus:outline-none" />
+        </div>
       </div>
       <div className="rounded-md">
         <Table>
