@@ -13,6 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { getQuarter, getPreviousQuarter } from "@/utils/dateUtils";
+import { Loader2 } from "lucide-react";
 
 const MetricInfoSignUpForm = () => {
   const router = useRouter();
@@ -125,8 +126,9 @@ const MetricInfoSignUpForm = () => {
           />
         </div>
 
-        <Button type="submit" className="w-full">
-          {isLoading ? "Submitting..." : "Submit"}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          Submit
+          {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
         </Button>
       </form>
     </Form>

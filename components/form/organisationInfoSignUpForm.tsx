@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { z } from "zod";
 import { organisationInfoSignUpFormSchema } from "@/lib/formSchema";
 
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-const OrganisationInfoSignUpForm = () => {
+const OrganisationInfoSignUpForm: React.FC<{ changeToEmployeeInfoHandler: () => void }> = ({ changeToEmployeeInfoHandler }) => {
   const form = useForm<z.infer<typeof organisationInfoSignUpFormSchema>>({
     resolver: zodResolver(organisationInfoSignUpFormSchema),
   });
@@ -22,6 +22,8 @@ const OrganisationInfoSignUpForm = () => {
 
   async function onSubmit(values: z.infer<typeof organisationInfoSignUpFormSchema>) {
     sessionStorage.setItem("organisation_information", JSON.stringify(values));
+
+    changeToEmployeeInfoHandler();
   }
 
   return (

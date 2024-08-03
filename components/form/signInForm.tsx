@@ -11,6 +11,7 @@ import { login } from "@/actions/auth-action";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
 
 const SignInForm: React.FC<{}> = () => {
   const router = useRouter();
@@ -66,8 +67,9 @@ const SignInForm: React.FC<{}> = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          {isLoading ? "Signing in..." : "Sign in"}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          Sign in
+          {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
         </Button>
       </form>
     </Form>
