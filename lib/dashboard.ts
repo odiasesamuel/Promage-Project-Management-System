@@ -78,3 +78,25 @@ export const addProjectWorkloadDataOnSignUp = async (organisation_id: string, ad
     stmtInsert.run(organisation_id, employee_id, employee_name, 0);
   });
 };
+
+export const updateMetricsAfterAddingSingleEmployee = async (organisation_id: string, employee_info: EmployeeSignUpDetailsType) => {
+  const currentDate = new Date();
+  const currentQuarter = getQuarter(currentDate);
+
+  const stmtupdatequarter = db.prepare(`
+      UPDATE metric
+      SET resource = resource + 1
+      WHERE organisation_id = ? AND quarter = ?
+    `);
+
+  stmtupdatequarter.run(organisation_id, currentQuarter);
+};
+
+export const addProjectWorkloadDataAfterAddingSingleEmployee = async (organisation_id: string, employee_info: EmployeeSignUpDetailsType & { employee_id: string }) => {
+  const { employee_name, employee_id } = employee_info;
+  const stmtInsert = db.prepare(`
+    INSERT INTO project_workload (organisation_id, employee_id, employee_name, no_of_project)
+    VALUES (?, ?, ?, ?)`);
+
+  stmtInsert.run(organisation_id, employee_id, employee_name, 0);
+};

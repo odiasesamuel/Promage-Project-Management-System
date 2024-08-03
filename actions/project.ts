@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { EmployeeOptions } from "@/components/form/newProjectForm";
-import { getAllEmployee } from "@/lib/employee";
 import { MultiValue } from "react-select";
 
 import { storeNewProject, reviewProject, deleteProject } from "@/lib/project";
@@ -16,14 +15,6 @@ export type newProjectFormValueType = {
   revenue: number;
   status: "Completed" | "On going" | "Delayed" | "At risk";
   progress: number;
-};
-
-export type EmployeeListType = {
-  id: string;
-  organisation_id: string;
-  employee_name: string;
-  employee_email: string;
-  job_title: string;
 };
 
 export const createNewProject = async (values: newProjectFormValueType, projectTeam: MultiValue<EmployeeOptions> | undefined, projectManagerId: string | undefined) => {
@@ -53,10 +44,4 @@ export const deleteProjectAction = async (organisation_id: string, project_id: n
   } catch (error) {
     return { success: false, message: "Failed to delete project" };
   }
-};
-
-export const getEmployeeList = async (organisation_id: string) => {
-  const employeeList: EmployeeListType[] = getAllEmployee(organisation_id);
-
-  return employeeList;
 };

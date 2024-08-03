@@ -80,9 +80,10 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
       employee_id: adminDetails.administrator_employee_id,
     };
 
+    const organisation_name = organisation_info.organisation_name;
     // Send welcome email to organisation
     const organisationSubject = "Welcome to Promage! Your Organization is Successfully Registered";
-    const organisationHtml = welcomeOrganisationEmailTemplate(organisation_id, organisation_info, adminDetails, employeeDetails);
+    const organisationHtml = welcomeOrganisationEmailTemplate(organisation_id, organisation_name, adminDetails, employeeDetails);
     const organisationEmailOptions: EmailOptions = {
       to: organisation_info.organisation_email,
       subject: organisationSubject,
@@ -92,7 +93,7 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
 
     // Send welcome email to the admin
     const adminSubject = "Welcome to Promage! Your Admin Account is Ready";
-    const adminHtml = welcomeAdminEmailTemplate(organisation_id, organisation_info, adminDetails);
+    const adminHtml = welcomeAdminEmailTemplate(organisation_id, organisation_name, adminDetails);
     const adminEmailOptions: EmailOptions = {
       to: adminDetails.administrator_email,
       subject: adminSubject,
@@ -100,10 +101,10 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
     };
     await sendEmail(adminEmailOptions);
 
-    // Send welcome email to the empployees
+    // Send welcome email to the employees
     const employeeSubject = "Welcome to Promage! Your Account Has Been Created";
     employeeDetails.forEach(async (employee) => {
-      const employeeHtml = welcomeEmployeeEmailTemplate(organisation_info, employee);
+      const employeeHtml = welcomeEmployeeEmailTemplate(organisation_name, employee);
       const employeeEmailOptions: EmailOptions = {
         to: employee.employee_email,
         subject: employeeSubject,

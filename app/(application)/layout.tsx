@@ -7,9 +7,8 @@ import Main from "@/components/layout/main";
 import { Toaster } from "@/components/ui/toaster";
 import { redirect } from "next/navigation";
 import { verifyAuth } from "@/lib/auth";
-import { getEmployeeByEmployeeId } from "@/lib/employee";
+import { getEmployeeByEmployeeId, getAllEmployee } from "@/lib/employee";
 import { EmployeeSignInDetailsType } from "@/actions/auth-action";
-import { getAllEmployee } from "@/lib/employee";
 
 export const metadata: Metadata = {
   title: "Promage",

@@ -23,7 +23,6 @@ import { EmployeeListType } from "@/app/(application)/layout";
 import { EditableProjectData } from "../columns";
 import DeleteProjectConfirmation from "../deleteProjectConfirmation";
 
-// Ensure this matches the schema
 type NewProjectFormProps = {
   employeeList: EmployeeListType[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;

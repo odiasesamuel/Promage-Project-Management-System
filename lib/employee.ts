@@ -6,12 +6,16 @@ export const getOrganisationByEmail = (email: string) => {
   return db.prepare("SELECT * FROM organisation WHERE organisation_email = ?").get(email);
 };
 
+export const getOrganisationByOrganisationId = (id: string) => {
+  return db.prepare("SELECT * FROM organisation WHERE organisation_id = ?").get(id);
+};
+
 export const getEmployeeByEmail = (email: string) => {
   return db.prepare("SELECT * FROM employee WHERE employee_email = ?").all(email);
 };
 
-export const getEmployeeByEmployeeId = (email: string) => {
-  return db.prepare("SELECT * FROM employee WHERE id = ?").get(email);
+export const getEmployeeByEmployeeId = (id: string) => {
+  return db.prepare("SELECT * FROM employee WHERE id = ?").get(id);
 };
 
 export const getAllEmployee = (organisation_id: string) => {
@@ -69,4 +73,22 @@ export const createEmployeeAccount = async (organisation_id: string, employee_in
   });
 
   return employee_details;
+};
+
+export const createSingleEmployeeAccount = async (organisation_id: string, employee_info: EmployeeSignUpDetailsType) => {
+  const { employee_name, employee_email, job_title } = employee_info;
+  const empNum = Math.floor(Math.random() * 900) + 100;
+  const empChar = generateRandomCharID(employee_name);
+  const employee_id = `${empChar}${empNum}`;
+  const stmtInsert = db.prepare(`
+     INSERT INTO employee (id, organisation_id, employee_name, employee_email, job_title)
+     VALUES (?, ?, ?, ?, ?)`);
+  stmtInsert.run(employee_id, organisation_id, employee_name, employee_email, job_title);
+
+  return {
+    employee_name,
+    employee_email,
+    employee_id,
+    job_title,
+  };
 };

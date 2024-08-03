@@ -10,6 +10,7 @@ const PageTitle = () => {
       {pathname === "/project" && "Project"}
       {pathname === "/task" && "Task"}
       {pathname === "/time-log" && "Time Log"}
+      {pathname === "/resource-mgnt" && "Resource Management"}
     </span>
   );
 };

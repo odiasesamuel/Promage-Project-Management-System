@@ -1,15 +1,14 @@
-import { EmployeeSignUpDetailsType, AdminDetailsType, OrganisationSignUpDetailsType } from "@/actions/auth-action";
+import { EmployeeSignUpDetailsType, AdminDetailsType } from "@/actions/auth-action";
 
 export const welcomeOrganisationEmailTemplate = (
   organisation_id: string,
-  organisation_info: OrganisationSignUpDetailsType,
+  organisation_name: string,
   adminDetails: AdminDetailsType,
   employeeDetails: (EmployeeSignUpDetailsType & {
     employee_id: string;
   })[]
 ) => {
   const { administrator_name, administrator_employee_id, administrator_email } = adminDetails;
-  const { organisation_name } = organisation_info;
 
   const employeeList = employeeDetails
     .map((employee) => {
@@ -48,9 +47,9 @@ export const welcomeOrganisationEmailTemplate = (
     `;
 };
 
-export const welcomeAdminEmailTemplate = (organisation_id: string, organisation_info: OrganisationSignUpDetailsType, adminDetails: AdminDetailsType) => {
+export const welcomeAdminEmailTemplate = (organisation_id: string, organisation_name: string, adminDetails: AdminDetailsType) => {
   const { administrator_name, administrator_employee_id, administrator_email } = adminDetails;
-  const { organisation_name } = organisation_info;
+
   return `
   <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
       <h2 style="color: #E65F2B;">Welcome to Promage!</h2>
@@ -83,13 +82,13 @@ export const welcomeAdminEmailTemplate = (organisation_id: string, organisation_
 };
 
 export const welcomeEmployeeEmailTemplate = (
-  organisation_info: OrganisationSignUpDetailsType,
+  organisation_name: string,
   employee: EmployeeSignUpDetailsType & {
     employee_id: string;
   }
 ) => {
   const { employee_name, employee_id, employee_email } = employee;
-  const { organisation_name } = organisation_info;
+
   return `
     <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
         <h2 style="color: #E65F2B;">Welcome to Promage!</h2>

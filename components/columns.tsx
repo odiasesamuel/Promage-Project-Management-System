@@ -11,7 +11,8 @@ import { Badge, BadgeProps } from "@/components/ui/badge";
 import { usePathname } from "next/navigation";
 import CreatNewProject from "./creatNewProject";
 import { useState, useEffect } from "react";
-import { getEmployeeList, EmployeeListType } from "@/actions/project";
+import {} from "@/actions/project";
+import { getEmployeeList, EmployeeListType } from "@/actions/employee";
 
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
