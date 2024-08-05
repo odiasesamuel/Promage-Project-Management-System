@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { EmployeeSignUpDetailsType } from "@/actions/auth-action";
-import { createSingleEmployeeAccount, getAllEmployee, getOrganisationByOrganisationId } from "@/lib/employee";
+import { createSingleEmployeeAccount, getAllEmployee, getOrganisationByOrganisationId, deleteEmployeeAccount, getEmployeeByEmployeeId } from "@/lib/employee";
 import { updateMetricsAfterAddingSingleEmployee, addProjectWorkloadDataAfterAddingSingleEmployee } from "@/lib/dashboard";
-import { welcomeEmployeeEmailTemplate } from "@/lib/email/templates";
+import { welcomeEmployeeEmailTemplate, removalFromOrganisationWorkspace } from "@/lib/email/templates";
 import { sendEmail, EmailOptions } from "@/lib/email/email";
 
 export type EmployeeListType = {
@@ -15,12 +15,45 @@ export type EmployeeListType = {
   job_title: string;
 };
 
+export type removeExistingEmployeeFormType = {
+  employee_id: string;
+  removal_reason: string;
+  notify: "Yes" | "No";
+};
+
+export const removeExistingEmployee = async (organisation_id: string, removedEmployeeInfo: removeExistingEmployeeFormType) => {
+  try {
+    const organisationDetails = await getOrganisationByOrganisationId(organisation_id);
+    const organisation_name = organisationDetails.organisation_name;
+
+    const employeeDetails = await getEmployeeByEmployeeId(removedEmployeeInfo.employee_id);
+
+    deleteEmployeeAccount(organisation_id, removedEmployeeInfo);
+
+    if ((removedEmployeeInfo.notify === "Yes")) {
+      // Send email notification to employee of removal
+      const employeeSubject = `Notification of Removal from ${organisation_name} Workspace`;
+      const employeeHtml = removalFromOrganisationWorkspace(organisationDetails.organisation_name, employeeDetails);
+      const employeeEmailOptions: EmailOptions = {
+        to: employeeDetails.employee_email,
+        subject: employeeSubject,
+        html: employeeHtml,
+      };
+      await sendEmail(employeeEmailOptions);
+    }
+
+    revalidatePath("/");
+    return { success: true, message: null };
+  } catch (error) {
+    return { success: false, message: "Failed to remove employee" };
+  }
+};
+
 export const addNewEmployee = async (organisation_id: string, employee_info: EmployeeSignUpDetailsType) => {
   try {
     const employeeList: EmployeeListType[] = await getAllEmployee(organisation_id);
 
     const isEmployeeAlreadyPartOfOrganisation = employeeList.some((employee) => employee.employee_email === employee_info.employee_email);
-    console.log(isEmployeeAlreadyPartOfOrganisation);
     if (isEmployeeAlreadyPartOfOrganisation) {
       console.log("Employee already part of your organisation");
       return { success: false, message: "Employee already part of your organisation" };

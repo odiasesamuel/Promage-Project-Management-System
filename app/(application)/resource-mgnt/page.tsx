@@ -6,6 +6,7 @@ import { EmployeeListType } from "../layout";
 import { Button } from "@/components/ui/button";
 import { getEmployeeInitials } from "@/utils/getEmployeeInitials";
 import AddEmployeeForm from "@/components/form/addEmployeeForm";
+import RemoveEmployeeForm from "@/components/form/removeEmployeeForm";
 
 const ResourceMgnt: React.FC<{}> = async () => {
   const result = await verifyAuth();
@@ -29,9 +30,7 @@ const ResourceMgnt: React.FC<{}> = async () => {
 
         <div className="my-20 ml-auto">
           <AddEmployeeForm organisation_id={organisation_id} />
-          <Button variant="destructive" className="ml-5">
-            Remove employee
-          </Button>
+          <RemoveEmployeeForm organisation_id={organisation_id} employeeList={employeeList} />
         </div>
       </div>
     </>

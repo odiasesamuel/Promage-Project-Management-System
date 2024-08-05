@@ -118,3 +118,32 @@ export const welcomeEmployeeEmailTemplate = (
       </div>
     `;
 };
+
+export const removalFromOrganisationWorkspace = (
+  organisation_name: string,
+  employee: EmployeeSignUpDetailsType & {
+    employee_id: string;
+  }
+) => {
+  const { employee_name } = employee;
+
+  return `
+    <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+        <p>Hello <strong>${employee_name}</strong>,</p>
+        <p>We hope this message finds you well. We are writing to inform you that your access to the <strong>${organisation_name}</strong> workspace in Promage has been removed.</p>
+        <p>If you have any questions or require further information, please feel free to reach out to your administrator.</p>
+  
+        <p>Best regards,</p>
+        <p>The Promage Team</p>
+        <div style="display: flex; align-items: center;">
+        <img 
+          src="https://raw.githubusercontent.com/odiasesamuel/Promage-Project-Management-System/feature/auth-api/assets/logo.png" 
+          alt="Logo of Promage" 
+          style="width: 36px; height: 35px;"
+      />
+        <h1 style="margin-left: 4px; font-size: 24px; font-weight: 500; color: black;">Promage</h1>
+      </div>
+  
+      </div>
+    `;
+};

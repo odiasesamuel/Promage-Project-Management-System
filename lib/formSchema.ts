@@ -66,4 +66,10 @@ const createNewProjectSchema = z.object({
   }),
 });
 
-export { signInFormSchema, organisationInfoSignUpFormSchema, employeeInfoSignUpFormSchema, metricInfoSignUpFormSchema, createNewProjectSchema };
+const removeEmployeeFormSchema = z.object({
+  employee_id: z.string().min(1, { message: "Employee is required" }),
+  removal_reason: z.string().min(1, { message: "Job title is required" }),
+  notify: z.enum(["Yes", "No"], { message: "Invalid notification status" }),
+});
+
+export { signInFormSchema, organisationInfoSignUpFormSchema, employeeInfoSignUpFormSchema, metricInfoSignUpFormSchema, createNewProjectSchema, removeEmployeeFormSchema };

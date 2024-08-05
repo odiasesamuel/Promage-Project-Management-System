@@ -1,6 +1,8 @@
 import db from "./db";
 import { OrganisationSignUpDetailsType, EmployeeSignUpDetailsType } from "@/actions/auth-action";
 import { generateRandomCharID } from "@/utils/generateRandomCharID";
+import { removeExistingEmployeeFormType } from "@/actions/employee";
+import { getQuarter } from "@/utils/dateUtils";
 
 export const getOrganisationByEmail = (email: string) => {
   return db.prepare("SELECT * FROM organisation WHERE organisation_email = ?").get(email);
@@ -91,4 +93,20 @@ export const createSingleEmployeeAccount = async (organisation_id: string, emplo
     employee_id,
     job_title,
   };
+};
+
+export const deleteEmployeeAccount = async (organisation_id: string, removedEmployeeInfo: removeExistingEmployeeFormType) => {
+  const currentDate = new Date();
+  const currentQuarter = getQuarter(currentDate);
+
+  const stmtDelete = db.prepare(`DELETE FROM employee WHERE organisation_id = ? AND id = ?`);
+
+  const stmtUpdateMetric = db.prepare(`
+    UPDATE metric
+    SET resource = resource - 1
+    WHERE organisation_id = ? AND quarter = ?
+  `);
+
+  stmtDelete.run(organisation_id, removedEmployeeInfo.employee_id);
+  stmtUpdateMetric.run(organisation_id, currentQuarter);
 };

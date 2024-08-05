@@ -14,21 +14,16 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 
-type AddEmployeeForm = {
+type AddEmployeeFormType = {
   organisation_id: string;
 };
 
-const AddEmployeeForm: React.FC<AddEmployeeForm> = ({ organisation_id }) => {
+const AddEmployeeForm: React.FC<AddEmployeeFormType> = ({ organisation_id }) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof employeeInfoSignUpFormSchema>>({
     resolver: zodResolver(employeeInfoSignUpFormSchema),
-    defaultValues: {
-      employee_name: "",
-      employee_email: "",
-      job_title: "",
-    },
   });
 
   const { toast } = useToast();
@@ -60,51 +55,50 @@ const AddEmployeeForm: React.FC<AddEmployeeForm> = ({ organisation_id }) => {
             <DialogTitle>Add a new employee</DialogTitle>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
-              <div className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="employee_name"
-                  render={({ field }) => (
-                    <FormItem className="text-black w-full">
-                      <FormLabel>Employee name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Kunle Ojo" {...field} className="p-3" aria-label="Employee Name" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-wrap gap-4 justify-between">
+              <FormField
+                control={form.control}
+                name="employee_name"
+                render={({ field }) => (
+                  <FormItem className="text-black w-full">
+                    <FormLabel>Employee name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Kunle Ojo" {...field} className="p-3" aria-label="Employee Name" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="employee_email"
-                  render={({ field }) => (
-                    <FormItem className="text-black w-full">
-                      <FormLabel>Employee email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="kunleojo@gmail.com" {...field} className="p-3" aria-label="Employee Email" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name="employee_email"
+                render={({ field }) => (
+                  <FormItem className="text-black w-full">
+                    <FormLabel>Employee email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="kunleojo@gmail.com" {...field} className="p-3" aria-label="Employee Email" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="job_title"
-                  render={({ field }) => (
-                    <FormItem className="text-black w-full">
-                      <FormLabel>Job title</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Software engineer" {...field} className="p-3" aria-label="Job Title" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <FormField
+                control={form.control}
+                name="job_title"
+                render={({ field }) => (
+                  <FormItem className="text-black w-full">
+                    <FormLabel>Job title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Software engineer" {...field} className="p-3" aria-label="Job Title" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" className="w-full mt-5" disabled={isLoading}>
                 Submit
                 {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
               </Button>

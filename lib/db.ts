@@ -17,7 +17,7 @@ db.exec(`
     employee_name TEXT,
     employee_email TEXT,
     job_title TEXT,
-    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE CASCADE
   );
 `);
 
@@ -26,7 +26,7 @@ db.exec(`
   id TEXT NOT NULL PRIMARY KEY,
   expires_at INTEGER NOT NULL,
   user_id TEXT NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES employee(id) ON DELETE SET NULL
+  FOREIGN KEY (user_id) REFERENCES employee(id) ON DELETE CASCADE
 )`);
 
 db.exec(`
@@ -40,7 +40,7 @@ db.exec(`
     status TEXT,
     progress INTEGER,
     project_team TEXT,
-    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE CASCADE
   );
 `);
 
@@ -53,7 +53,7 @@ db.exec(`
     project INTEGER,
     time INTEGER,
     resource INTEGER,
-    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE CASCADE
   );
 `);
 
@@ -65,7 +65,7 @@ db.exec(`
     completed_project INTEGER,
     delayed_project INTEGER,
     ongoing_project INTEGER,
-    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE CASCADE
   );
 `);
 
@@ -73,12 +73,12 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS task_list (
     task_id INTEGER PRIMARY KEY AUTOINCREMENT,
     organisation_id TEXT,
-    assigned_to INTEGER,
+    assigned_to TEXT,
     description TEXT,
     checked TEXT,
     approval TEXT,
-    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL,
-    FOREIGN KEY (assigned_to) REFERENCES employee(id)
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE CASCADE,
+    FOREIGN KEY (assigned_to) REFERENCES employee(id) ON DELETE CASCADE
   );
 `);
 
@@ -86,11 +86,11 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS project_workload (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     organisation_id TEXT,
-    employee_id INTEGER,
+    employee_id TEXT,
     employee_name TEXT,
     no_of_project INTEGER,
-    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE SET NULL,
-    FOREIGN KEY (employee_id) REFERENCES employee(id)
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE CASCADE,
+    FOREIGN KEY (employee_id) REFERENCES employee(id) ON DELETE CASCADE
   );
 `);
 
