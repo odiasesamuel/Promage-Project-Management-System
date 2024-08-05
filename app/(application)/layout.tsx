@@ -40,7 +40,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <div className="text-white grid grid-cols-[repeat(12,_1fr)] grid-rows-[auto_1fr] min-h-screen">
           <Header className="bg-[#ebdfd7] col-start-3 col-end-13 px-[3%] border-b border-[#D8CDC6]" employeeDetails={employeeDetails}></Header>
-          <NavBar className="bg-[#060606] col-start-1 col-end-3 row-start-1 row-end-3" employeeList={employeeList}></NavBar>
+          <NavBar className="bg-[#060606] col-start-1 col-end-3 row-start-1 row-end-3" employeeList={employeeList} employeeDetails={employeeDetails}></NavBar>
           <Main className="bg-[#ebdfd7] col-start-3 col-end-13 px-[3%] overflow-y-auto">{children}</Main>
         </div>
         <Toaster />

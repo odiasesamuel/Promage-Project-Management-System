@@ -19,13 +19,15 @@ import sidebarBavArrow from "@/assets/arrow.svg";
 import LogoutConfirmation from "../logoutConfirmation";
 import { LogOut } from "lucide-react";
 import { EmployeeListType } from "@/app/(application)/layout";
+import { EmployeeSignInDetailsType } from "@/actions/auth-action";
 
 type NavBarProps = {
   className?: string;
   employeeList: EmployeeListType[];
+  employeeDetails: EmployeeSignInDetailsType;
 };
 
-const NavBar: React.FC<NavBarProps> = ({ className, employeeList }) => {
+const NavBar: React.FC<NavBarProps> = ({ className, employeeList, employeeDetails }) => {
   return (
     <>
       <div className={`${className} relative`}>
@@ -57,12 +59,11 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeList }) => {
           <NavLink activeIcon={timeLogIconActive} notActiveIcon={timeLogIconNotActive} href="/time-log" alt="time log icon">
             Time log
           </NavLink>
-          <NavLink activeIcon={resourceMgtIconActive} notActiveIcon={resourceMgtIconNotActive} href="/resource-mgnt" alt="time log icon">
-            Resource mgnt
-          </NavLink>
-          <NavLink activeIcon={usersIconActive} notActiveIcon={usersIconNotActive} href="/users" alt="time log icon">
-            Users
-          </NavLink>
+          {employeeDetails.job_title === "Administrator" && (
+            <NavLink activeIcon={resourceMgtIconActive} notActiveIcon={resourceMgtIconNotActive} href="/resource-mgnt" alt="time log icon">
+              Resource mgnt
+            </NavLink>
+          )}
           <LogoutConfirmation>
             <div className="ml-4 flex items-center gap-2 absolute bottom-10 cursor-pointer">
               <LogOut />

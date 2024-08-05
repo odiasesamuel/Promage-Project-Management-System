@@ -8,7 +8,7 @@ const PageTitle = () => {
     <span>
       {pathname === "/dashboard" && "Dashboard"}
       {pathname === "/project" && "Project"}
-      {pathname === "/task" && "Task"}
+      {pathname === "/tasks" && "Task"}
       {pathname === "/time-log" && "Time Log"}
       {pathname === "/resource-mgnt" && "Resource Management"}
     </span>
