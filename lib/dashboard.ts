@@ -32,7 +32,7 @@ export const addMetricsOnSignUp = async (organisation_id: string, metric_info: M
   const currentDate = new Date();
   const currentQuarter = getQuarter(currentDate);
   const previousQuarter = getPreviousQuarter(currentQuarter);
-  const current_no_employee = employeeDetails.length;
+  const current_no_employee = employeeDetails.length + 1;
 
   const quarters = ["Q1", "Q2", "Q3", "Q4"];
 
