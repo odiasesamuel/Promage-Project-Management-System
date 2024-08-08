@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { reviewTaskFormSchema } from "@/lib/formSchema";
-import { reviewTaskAction, deleteTaskAction } from "@/actions/task";
+import { reviewTaskAction, deleteTaskAction, createNewTask } from "@/actions/task";
 import { EmployeeListType } from "@/app/(application)/layout";
 
 import { Button } from "@/components/ui/button";
@@ -21,13 +21,13 @@ import DeleteProjectConfirmation from "../deleteProjectConfirmation";
 type ReviewTaskFormType = {
   employeeList: EmployeeListType[];
   editableTaskData?: EditableTaskData;
+  assigned_by?: string;
 };
 
-const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTaskData }) => {
+const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTaskData, assigned_by }) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const organisation_id = employeeList[0].organisation_id;
-  const task_id = editableTaskData.task_id;
   // console.log(editableTaskData);
 
   const form = useForm<z.infer<typeof reviewTaskFormSchema>>({
@@ -35,17 +35,19 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTa
     defaultValues: {
       task_description: editableTaskData?.taskDescription,
       assigned_to: editableTaskData?.assignedTo,
-      checked: editableTaskData?.checked,
-      status: editableTaskData?.status,
+      checked: editableTaskData ? editableTaskData.checked : "No",
+      status: editableTaskData ? editableTaskData?.status : "On going",
     },
   });
 
   const { toast } = useToast();
   async function onSubmit(values: z.infer<typeof reviewTaskFormSchema>) {
     setIsLoading(true);
-    const result = editableTaskData ? await reviewTaskAction(organisation_id, values, task_id) : null;
+    const result = editableTaskData ? await reviewTaskAction(organisation_id, values, editableTaskData.task_id) : await createNewTask(organisation_id, values, assigned_by!);
+
     setOpen(false);
     setIsLoading(false);
+    form.reset();
     if (!result.success) {
       toast({
         variant: "destructive",
@@ -58,7 +60,8 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTa
   }
 
   async function deleteTaskHandler(e: React.MouseEvent<HTMLButtonElement>) {
-    const result = await deleteTaskAction(organisation_id, task_id);
+    setOpen(false);
+    const result = await deleteTaskAction(organisation_id, editableTaskData?.task_id);
     if (!result.success) {
       toast({
         variant: "destructive",
@@ -73,13 +76,17 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTa
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="secondary" size="sm" className="bg-inherit text-xs border border-[#0000001f] text-black font-normal">
-            Review
-          </Button>
+          {editableTaskData ? (
+            <Button variant="secondary" size="sm" className="bg-inherit text-xs border border-[#0000001f] text-black font-normal">
+              Review
+            </Button>
+          ) : (
+            <Button>Assign task</Button>
+          )}
         </DialogTrigger>
         <DialogContent className="max-w-xl">
           <DialogHeader>
-            <DialogTitle>Review Task</DialogTitle>
+            <DialogTitle>{editableTaskData ? "Review task" : "Assign task"}</DialogTitle>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-wrap gap-4 justify-between">
@@ -122,50 +129,53 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTa
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="checked"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Checked</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Yes" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Yes">Yes</SelectItem>
-                        <SelectItem value="No">No</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="On going" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Approved">Approved</SelectItem>
-                        <SelectItem value="In review">In review</SelectItem>
-                        <SelectItem value="On going">On going</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {editableTaskData && (
+                <FormField
+                  control={form.control}
+                  name="checked"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Checked</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value} disabled>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Yes" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Yes">Yes</SelectItem>
+                          <SelectItem value="No">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              {editableTaskData && (
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Status</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="On going" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Approved">Approved</SelectItem>
+                          <SelectItem value="In review">In review</SelectItem>
+                          <SelectItem value="On going">On going</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               {editableTaskData ? (
                 <div className="w-full flex justify-between mt-5">
@@ -180,7 +190,7 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTa
                 </div>
               ) : (
                 <Button type="submit" className="w-full mt-5">
-                  Create Task
+                  Assign Task
                 </Button>
               )}
             </form>

@@ -20,7 +20,6 @@ const TaskPage = async () => {
   const employeeList: EmployeeListType[] = getAllEmployee(organisation_id);
 
   const taskList: TaskListType[] = getTaskListAssignedByMe(organisation_id, employee_id);
-  console.log(taskList);
   const updateTaskListWithEmployeeName = taskList.map((task) => {
     const assignedToEmployee = getEmployeeByEmployeeId(task.assigned_to);
 
@@ -34,7 +33,7 @@ const TaskPage = async () => {
     <>
       <Card className="bg-[#F2EAE5] mt-12">
         <CardContent>
-          <DataTable columns={columns} data={updateTaskListWithEmployeeName} employeeList={employeeList} className="" />
+          <DataTable columns={columns} data={updateTaskListWithEmployeeName} employeeList={employeeList} assigned_by={taskList[0].assigned_by} />
         </CardContent>
       </Card>
     </>

@@ -55,7 +55,6 @@ export const addNewEmployee = async (organisation_id: string, employee_info: Emp
 
     const isEmployeeAlreadyPartOfOrganisation = employeeList.some((employee) => employee.employee_email === employee_info.employee_email);
     if (isEmployeeAlreadyPartOfOrganisation) {
-      console.log("Employee already part of your organisation");
       return { success: false, message: "Employee already part of your organisation" };
     }
 

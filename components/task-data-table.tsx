@@ -20,12 +20,11 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   employeeList?: EmployeeListType[];
-  dataTableHeading?: string;
   className?: string;
+  assigned_by: string;
 }
 
-export function DataTable<TData, TValue>({ columns, data, employeeList, dataTableHeading, className }: DataTableProps<TData, TValue>) {
-  const pathname = usePathname();
+export function DataTable<TData, TValue>({ columns, data, employeeList, className, assigned_by }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
@@ -46,9 +45,8 @@ export function DataTable<TData, TValue>({ columns, data, employeeList, dataTabl
 
   return (
     <div className={className}>
-      <div className="flex items-center justify-between py-4">
-        <h1 className="font-semibold">{dataTableHeading}</h1>
-        <div className="flex items-center">{/* <ReviewTaskForm /> */}</div>
+      <div className="flex justify-end py-4 mr-10">
+        <ReviewTaskForm employeeList={employeeList!} assigned_by={assigned_by} />
       </div>
       <div className="rounded-md">
         <Table>
