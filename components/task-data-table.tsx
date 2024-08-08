@@ -27,15 +27,6 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({ columns, data, employeeList, dataTableHeading, className }: DataTableProps<TData, TValue>) {
   const pathname = usePathname();
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = React.useState<string>("");
-
-  const customFilterFunction = (row: any, columnId: string, filterValue: string) => {
-    const projectName = row.original.project_name.toLowerCase();
-    const projectManager = row.original.project_manager.toLowerCase();
-    const searchValue = filterValue.toLowerCase();
-
-    return projectName.includes(searchValue) || projectManager.includes(searchValue);
-  };
 
   const table = useReactTable({
     data,
@@ -47,26 +38,17 @@ export function DataTable<TData, TValue>({ columns, data, employeeList, dataTabl
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
-      globalFilter,
     },
-    globalFilterFn: customFilterFunction,
     meta: {
       employeeList,
     },
   });
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setGlobalFilter(event.target.value);
-  };
-
   return (
     <div className={className}>
       <div className="flex items-center justify-between py-4">
         <h1 className="font-semibold">{dataTableHeading}</h1>
-        <div className="flex items-center">
-          {/* <ReviewTaskForm /> */}
-          <Input placeholder="Filter project..." value={globalFilter} onChange={handleFilterChange} className="h-10 w-[300px] pl-12 ml-8 pr-5 text-sm placeholder:text-sm rounded-full bg-white focus:outline-none" />
-        </div>
+        <div className="flex items-center">{/* <ReviewTaskForm /> */}</div>
       </div>
       <div className="rounded-md">
         <Table>

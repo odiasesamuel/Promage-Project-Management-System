@@ -2,32 +2,13 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { formatDateInProjectSummary } from "@/utils/dateUtils";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
 
 import { Button } from "@/components/ui/button";
 import { Badge, BadgeProps } from "@/components/ui/badge";
-import { usePathname } from "next/navigation";
-import CreatNewProject from "./creatNewProject";
 import { EmployeeListType } from "@/actions/employee";
 import { TaskListType } from "./taskList";
-import { getEmployeeByEmployeeId } from "@/lib/employee";
 import ReviewTaskForm from "./form/reviewTaskForm";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type ProjectListType = {
-  project_id: number;
-  organisation_id: string;
-  project_name: string;
-  project_manager: string;
-  revenue: number;
-  due_date: string;
-  status: string;
-  progress: number;
-  project_team: string;
-};
 
 export type EditableTaskData = {
   task_id: number;
@@ -43,11 +24,6 @@ export const columns: ColumnDef<TaskListType>[] = [
     header: "Task description",
     cell: (info) => info.getValue(),
   },
-  // {
-  //   accessorKey: "assigned_to",
-  //   header: "Assigned to",
-  //   cell: (info) => info.getValue(),
-  // },
   {
     accessorKey: "assigned_to_name",
     header: "Assigned to",
@@ -130,7 +106,6 @@ export const columns: ColumnDef<TaskListType>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row, table }) => {
-      const pathname = usePathname();
       const employeeList = table.options.meta?.employeeList as EmployeeListType[];
 
       const task_id: number = row.getValue("task_id");
@@ -147,22 +122,7 @@ export const columns: ColumnDef<TaskListType>[] = [
         status,
       };
 
-      // return <>{<ReviewTaskButton employeeList={employeeList} editableProjectData={editableProjectData} />}</>;
-
       return <ReviewTaskForm editableTaskData={editableTaskData} employeeList={employeeList} />;
     },
   },
 ];
-
-// export const ReviewTaskButton: React.FC<{ employeeList: EmployeeListType[]; editableProjectData: EditableProjectData }> = ({ employeeList, editableProjectData }) => {
-//   const projectFormHeading = "Review project";
-//   return (
-//     <>
-//       <CreatNewProject employeeList={employeeList} projectFormHeading={projectFormHeading} editableProjectData={editableProjectData}>
-//         <Button variant="secondary" size="sm" className="bg-inherit text-xs border border-[#0000001f] text-black font-normal">
-//           Review
-//         </Button>
-//       </CreatNewProject>
-//     </>
-//   );
-// };

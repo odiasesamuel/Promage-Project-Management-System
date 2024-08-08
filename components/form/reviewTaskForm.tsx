@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { reviewTaskFormSchema } from "@/lib/formSchema";
-import { removeExistingEmployee } from "@/actions/employee";
+import { reviewTaskAction, deleteTaskAction } from "@/actions/task";
 import { EmployeeListType } from "@/app/(application)/layout";
 
 import { Button } from "@/components/ui/button";
@@ -19,15 +19,16 @@ import { EditableTaskData } from "../task-columns";
 import DeleteProjectConfirmation from "../deleteProjectConfirmation";
 
 type ReviewTaskFormType = {
-  organisation_id?: string;
   employeeList: EmployeeListType[];
   editableTaskData?: EditableTaskData;
 };
 
-const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ organisation_id, employeeList, editableTaskData }) => {
+const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTaskData }) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  console.log(editableTaskData);
+  const organisation_id = employeeList[0].organisation_id;
+  const task_id = editableTaskData.task_id;
+  // console.log(editableTaskData);
 
   const form = useForm<z.infer<typeof reviewTaskFormSchema>>({
     resolver: zodResolver(reviewTaskFormSchema),
@@ -42,10 +43,9 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ organisation_id, employe
   const { toast } = useToast();
   async function onSubmit(values: z.infer<typeof reviewTaskFormSchema>) {
     setIsLoading(true);
-    const result = await removeExistingEmployee(organisation_id, values);
+    const result = editableTaskData ? await reviewTaskAction(organisation_id, values, task_id) : null;
     setOpen(false);
     setIsLoading(false);
-    form.reset();
     if (!result.success) {
       toast({
         variant: "destructive",
@@ -54,6 +54,18 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ organisation_id, employe
         duration: 3000,
       });
     } else {
+    }
+  }
+
+  async function deleteTaskHandler(e: React.MouseEvent<HTMLButtonElement>) {
+    const result = await deleteTaskAction(organisation_id, task_id);
+    if (!result.success) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: result.message,
+        duration: 3000,
+      });
     }
   }
 
@@ -116,7 +128,7 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ organisation_id, employe
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>Checked</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Yes" />
@@ -160,7 +172,7 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ organisation_id, employe
                   <Button type="submit" className="w-[45%]">
                     Review Task
                   </Button>
-                  <DeleteProjectConfirmation>
+                  <DeleteProjectConfirmation deleteHandler={deleteTaskHandler} content="task">
                     <Button type="button" variant="destructive" className="w-[45%]">
                       Delete Task
                     </Button>

@@ -284,7 +284,7 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
             <Button type="submit" className="w-[45%]">
               Review Project
             </Button>
-            <DeleteProjectConfirmation deleteProjectHandler={deleteProjectHandler}>
+            <DeleteProjectConfirmation deleteHandler={deleteProjectHandler} content="project">
               <Button type="button" variant="destructive" className="w-[45%]">
                 Delete Project
               </Button>

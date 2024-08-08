@@ -1,4 +1,4 @@
-import { columns, ProjectListType } from "../../../components/task-columns";
+import { columns } from "../../../components/task-columns";
 import { getProjectSummary, getTaskListAssignedByMe } from "@/lib/dashboard";
 import { redirect } from "next/navigation";
 import { verifyAuth } from "@/lib/auth";
@@ -18,8 +18,6 @@ const TaskPage = async () => {
   const organisation_id = employeeDetails.organisation_id;
   const employee_id = employeeDetails.id;
   const employeeList: EmployeeListType[] = getAllEmployee(organisation_id);
-
-  const projectList: ProjectListType[] = getProjectSummary(organisation_id);
 
   const taskList: TaskListType[] = getTaskListAssignedByMe(organisation_id, employee_id);
   console.log(taskList);

@@ -13,8 +13,8 @@ export type TaskListType = {
   assigned_by: string;
   assigned_to: string;
   assigned_to_name?: string;
-  checked: string;
-  status: string;
+  checked: "Yes" | "No";
+  status: "Approved" | "On going" | "In review";
 };
 
 type TasklistProps = {
