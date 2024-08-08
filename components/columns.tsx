@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { formatDateInProjectSummary } from "@/utils/dateUtils";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -10,11 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge, BadgeProps } from "@/components/ui/badge";
 import { usePathname } from "next/navigation";
 import CreatNewProject from "./creatNewProject";
-import { useState, useEffect } from "react";
-import {} from "@/actions/project";
-import { getEmployeeList, EmployeeListType } from "@/actions/employee";
-
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { EmployeeListType } from "@/actions/employee";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -63,7 +59,7 @@ export const columns: ColumnDef<ProjectListType>[] = [
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           Status
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-1 h-4 w-4" />
         </Button>
       );
     },

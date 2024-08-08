@@ -68,8 +68,15 @@ const createNewProjectSchema = z.object({
 
 const removeEmployeeFormSchema = z.object({
   employee_id: z.string().min(1, { message: "Employee is required" }),
-  removal_reason: z.string().min(1, { message: "Job title is required" }),
+  removal_reason: z.string().min(1, { message: "Reason for removal is required" }),
   notify: z.enum(["Yes", "No"], { message: "Invalid notification status" }),
 });
 
-export { signInFormSchema, organisationInfoSignUpFormSchema, employeeInfoSignUpFormSchema, metricInfoSignUpFormSchema, createNewProjectSchema, removeEmployeeFormSchema };
+const reviewTaskFormSchema = z.object({
+  task_description: z.string().min(1, { message: "Task description is required" }),
+  assigned_to: z.string().min(1, { message: "Employee is required" }),
+  checked: z.enum(["Yes", "No"], { message: "Invalid notification status" }),
+  status: z.enum(["Approved", "On going", "In review"], { message: "Invalid status" }),
+});
+
+export { signInFormSchema, organisationInfoSignUpFormSchema, employeeInfoSignUpFormSchema, metricInfoSignUpFormSchema, createNewProjectSchema, removeEmployeeFormSchema, reviewTaskFormSchema };

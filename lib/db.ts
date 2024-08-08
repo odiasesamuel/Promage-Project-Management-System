@@ -70,16 +70,19 @@ db.exec(`
 `);
 
 db.exec(`
-  CREATE TABLE IF NOT EXISTS task_list (
-    task_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    organisation_id TEXT,
-    assigned_to TEXT,
-    description TEXT,
-    checked TEXT,
-    approval TEXT,
-    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE CASCADE,
-    FOREIGN KEY (assigned_to) REFERENCES employee(id) ON DELETE CASCADE
-  );
+CREATE TABLE IF NOT EXISTS task_list (
+  task_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  organisation_id TEXT,
+  description TEXT,
+  assigned_by TEXT,
+  assigned_to TEXT,
+  checked TEXT,
+  status TEXT,
+  FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE CASCADE,
+  FOREIGN KEY (assigned_by) REFERENCES employee(id) ON DELETE CASCADE,
+  FOREIGN KEY (assigned_to) REFERENCES employee(id) ON DELETE CASCADE
+);
+
 `);
 
 db.exec(`
@@ -146,35 +149,35 @@ db.exec(`
 //     ('KUN456', 98, 25, 8, 65),
 //     ('LAM789', 60, 15, 20, 25);
 
-//   INSERT INTO task_list (organisation_id, assigned_to, description, checked, approval)
+//  INSERT INTO task_list (organisation_id, assigned_by, assigned_to, description, checked, status)
 //   VALUES
-//     ('BOL123', 'ALI123', 'Implement Authentication Module', 'Yes', 'Approved'),
-//     ('BOL123', 'ALI123', 'Develop API Endpoints', 'No', 'In review'),
-//     ('BOL123', 'ALI123', 'Setup CI/CD Pipeline', 'Yes', 'On going'),
-//     ('BOL123', 'BOB456', 'Create Frontend Components', 'No', 'In review'),
-//     ('BOL123', 'BOB456', 'Design Database Schema', 'Yes', 'In review'),
-//     ('BOL123', 'BOB456', 'Write Unit Tests', 'No', 'In review'),
-//     ('BOL123', 'CHA789', 'Optimize Backend Performance', 'Yes', 'On going'),
-//     ('BOL123', 'CHA789', 'Implement Caching Strategy', 'No', 'Approved'),
-//     ('BOL123', 'CHA789', 'Integrate Third-party Services', 'Yes', 'On going'),
-//     ('KUN456', 'DAV101', 'Setup Project Environment', 'No', 'Approved'),
-//     ('KUN456', 'DAV101', 'Develop User Management System', 'Yes', 'In review'),
-//     ('KUN456', 'DAV101', 'Create Reporting Dashboard', 'No', 'On going'),
-//     ('KUN456', 'EVE202', 'Implement Security Features', 'Yes', 'In review'),
-//     ('KUN456', 'EVE202', 'Conduct Code Reviews', 'No', 'In review'),
-//     ('KUN456', 'EVE202', 'Prepare Deployment Scripts', 'Yes', 'In review'),
-//     ('KUN456', 'FRA303', 'Implement Payment Gateway', 'No', 'On going'),
-//     ('KUN456', 'FRA303', 'Develop Notification System', 'Yes', 'Approved'),
-//     ('KUN456', 'FRA303', 'Create Data Migration Plan', 'No', 'On going'),
-//     ('LAM789', 'GRA404', 'Implement Logging System', 'Yes', 'Approved'),
-//     ('LAM789', 'GRA404', 'Setup Monitoring Tools', 'No', 'In review'),
-//     ('LAM789', 'GRA404', 'Conduct Performance Testing', 'Yes', 'On going'),
-//     ('LAM789', 'HAN505', 'Develop Mobile App Interface', 'No', 'In review'),
-//     ('LAM789', 'HAN505', 'Implement Push Notifications', 'Yes', 'In review'),
-//     ('LAM789', 'HAN505', 'Create User Onboarding Process', 'No', 'In review'),
-//     ('LAM789', 'IVY606', 'Design User Authentication Flow', 'Yes', 'On going'),
-//     ('LAM789', 'IVY606', 'Implement Role-based Access Control', 'No', 'Approved'),
-//     ('LAM789', 'IVY606', 'Setup Automated Backups', 'Yes', 'On going');
+//     ('BOL123', 'ALI123', 'BOB456', 'Implement Authentication Module', 'Yes', 'Approved'),
+//     ('BOL123', 'ALI123', 'CHA789', 'Develop API Endpoints', 'No', 'In review'),
+//     ('BOL123', 'ALI123', 'CHA789', 'Setup CI/CD Pipeline', 'Yes', 'On going'),
+//     ('BOL123', 'ALI123', 'BOB456', 'Create Frontend Components', 'No', 'In review'),
+//     ('BOL123', 'ALI123', 'CHA789', 'Design Database Schema', 'Yes', 'In review'),
+//     ('BOL123', 'BOB456', 'ALI123', 'Write Unit Tests', 'No', 'In review'),
+//     ('BOL123', 'BOB456', 'CHA789', 'Optimize Backend Performance', 'Yes', 'On going'),
+//     ('BOL123', 'BOB456', 'ALI123', 'Implement Caching Strategy', 'No', 'Approved'),
+//     ('BOL123', 'BOB456', 'ALI123', 'Integrate Third-party Services', 'Yes', 'On going'),
+//     ('KUN456', 'DAV101', 'DAV101', 'Setup Project Environment', 'No', 'Approved'),
+//     ('KUN456', 'DAV101', 'DAV101', 'Develop User Management System', 'Yes', 'In review'),
+//     ('KUN456', 'DAV101', 'DAV101', 'Create Reporting Dashboard', 'No', 'On going'),
+//     ('KUN456', 'DAV101', 'EVE202', 'Implement Security Features', 'Yes', 'In review'),
+//     ('KUN456', 'DAV101', 'EVE202', 'Conduct Code Reviews', 'No', 'In review'),
+//     ('KUN456', 'DAV101', 'EVE202', 'Prepare Deployment Scripts', 'Yes', 'In review'),
+//     ('KUN456', 'EVE202', 'FRA303', 'Implement Payment Gateway', 'No', 'On going'),
+//     ('KUN456', 'EVE202', 'FRA303', 'Develop Notification System', 'Yes', 'Approved'),
+//     ('KUN456', 'EVE202', 'FRA303', 'Create Data Migration Plan', 'No', 'On going'),
+//     ('LAM789', 'GRA404', 'GRA404', 'Implement Logging System', 'Yes', 'Approved'),
+//     ('LAM789', 'GRA404', 'GRA404', 'Setup Monitoring Tools', 'No', 'In review'),
+//     ('LAM789', 'GRA404', 'GRA404', 'Conduct Performance Testing', 'Yes', 'On going'),
+//     ('LAM789', 'GRA404', 'HAN505', 'Develop Mobile App Interface', 'No', 'In review'),
+//     ('LAM789', 'GRA404', 'HAN505', 'Implement Push Notifications', 'Yes', 'In review'),
+//     ('LAM789', 'GRA404', 'HAN505', 'Create User Onboarding Process', 'No', 'In review'),
+//     ('LAM789', 'HAN505', 'IVY606', 'Design User Authentication Flow', 'Yes', 'On going'),
+//     ('LAM789', 'HAN505', 'IVY606', 'Implement Role-based Access Control', 'No', 'Approved'),
+//     ('LAM789', 'HAN505', 'IVY606', 'Setup Automated Backups', 'Yes', 'On going');
 
 //   INSERT INTO project_workload (organisation_id, employee_id, employee_name, no_of_project)
 //   VALUES

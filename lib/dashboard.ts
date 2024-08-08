@@ -18,9 +18,14 @@ export const getProgress = (organisation_id: string) => {
   return stmt.all(organisation_id);
 };
 
-export const getTaskList = (employee_id: string) => {
-  const stmt = db.prepare("SELECT * FROM task_list WHERE assigned_to = ?");
-  return stmt.all(employee_id);
+export const getTaskListAssignedToMe = (organisation_id: string, employee_id: string) => {
+  const stmt = db.prepare("SELECT * FROM task_list WHERE organisation_id = ? AND assigned_to = ?");
+  return stmt.all(organisation_id, employee_id);
+};
+
+export const getTaskListAssignedByMe = (organisation_id: string, employee_id: string) => {
+  const stmt = db.prepare("SELECT * FROM task_list WHERE organisation_id = ? AND assigned_by = ?");
+  return stmt.all(organisation_id, employee_id);
 };
 
 export const getProjectWorkLoad = (organisation_id: string) => {

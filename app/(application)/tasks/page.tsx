@@ -1,38 +1,44 @@
+import { columns, ProjectListType } from "../../../components/task-columns";
+import { getProjectSummary, getTaskListAssignedByMe } from "@/lib/dashboard";
 import { redirect } from "next/navigation";
 import { verifyAuth } from "@/lib/auth";
 import { getEmployeeByEmployeeId, getAllEmployee } from "@/lib/employee";
 import { EmployeeSignInDetailsType } from "@/actions/auth-action";
+import { DataTable } from "../../../components/task-data-table";
+import { Card, CardContent } from "@/components/ui/card";
 import { EmployeeListType } from "../layout";
-import { Button } from "@/components/ui/button";
-import { getEmployeeInitials } from "@/utils/getEmployeeInitials";
-import AddEmployeeForm from "@/components/form/addEmployeeForm";
-import RemoveEmployeeForm from "@/components/form/removeEmployeeForm";
+import { TaskListType } from "@/components/taskList";
 
-const TaskPage: React.FC<{}> = async () => {
+const TaskPage = async () => {
   const result = await verifyAuth();
   if (!result.user) {
     return redirect("/");
   }
   const employeeDetails: EmployeeSignInDetailsType = getEmployeeByEmployeeId(result.user.id);
   const organisation_id = employeeDetails.organisation_id;
+  const employee_id = employeeDetails.id;
   const employeeList: EmployeeListType[] = getAllEmployee(organisation_id);
+
+  const projectList: ProjectListType[] = getProjectSummary(organisation_id);
+
+  const taskList: TaskListType[] = getTaskListAssignedByMe(organisation_id, employee_id);
+  console.log(taskList);
+  const updateTaskListWithEmployeeName = taskList.map((task) => {
+    const assignedToEmployee = getEmployeeByEmployeeId(task.assigned_to);
+
+    return {
+      ...task,
+      assigned_to_name: assignedToEmployee.employee_name,
+    };
+  });
 
   return (
     <>
-      <div className="flex flex-col mt-10">
-        <div className="flex flex-wrap gap-10">
-          {employeeList.map((employee) => (
-            <div key={employee.id} className="flex items-center justify-center bg-[#F2EAE5] text-[#E65F2B] text-6xl w-[200px] h-[200px] rounded-full">
-              {getEmployeeInitials(employee.employee_name)}
-            </div>
-          ))}
-        </div>
-
-        <div className="my-20 ml-auto">
-          <AddEmployeeForm organisation_id={organisation_id} />
-          <RemoveEmployeeForm organisation_id={organisation_id} employeeList={employeeList} />
-        </div>
-      </div>
+      <Card className="bg-[#F2EAE5] mt-12">
+        <CardContent>
+          <DataTable columns={columns} data={updateTaskListWithEmployeeName} employeeList={employeeList} className="" />
+        </CardContent>
+      </Card>
     </>
   );
 };

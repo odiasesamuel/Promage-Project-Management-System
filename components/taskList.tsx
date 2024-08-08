@@ -9,10 +9,12 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 export type TaskListType = {
   task_id: number;
   organisation_id: string;
-  assigned_to: string;
   description: string;
+  assigned_by: string;
+  assigned_to: string;
+  assigned_to_name?: string;
   checked: string;
-  approval: string;
+  status: string;
 };
 
 type TasklistProps = {
@@ -37,8 +39,8 @@ const TaskList: React.FC<TasklistProps> = ({ data }) => {
 
   return (
     <ul>
-      {data.slice(startIndex, endIndex).map(({ task_id, description, checked, approval }) => {
-        const variant: BadgeProps["variant"] = approval === "Approved" ? "success" : approval === "In review" ? "danger" : approval === "On going" ? "onGoing" : "onGoing";
+      {data.slice(startIndex, endIndex).map(({ task_id, description, checked, status }) => {
+        const variant: BadgeProps["variant"] = status === "Approved" ? "success" : status === "In review" ? "danger" : status === "On going" ? "onGoing" : "onGoing";
 
         return (
           <li className="flex items-center mb-3 w-[85%]" key={task_id}>
@@ -47,7 +49,7 @@ const TaskList: React.FC<TasklistProps> = ({ data }) => {
               {description}
             </label>
             <Badge variant={variant} className="ml-auto">
-              {approval}
+              {status}
             </Badge>
           </li>
         );

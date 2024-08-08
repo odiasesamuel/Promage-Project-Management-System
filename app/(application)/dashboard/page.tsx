@@ -6,7 +6,7 @@ import { DataTable } from "../../../components/data-table";
 import OverallProgress from "@/components/overallProgress";
 import ProjectWorkload from "@/components/projectWorkload";
 import TaskList from "@/components/taskList";
-import { getProjectSummary, getProgress, getTaskList } from "@/lib/dashboard";
+import { getProjectSummary, getProgress, getTaskListAssignedToMe } from "@/lib/dashboard";
 import { redirect } from "next/navigation";
 import { verifyAuth } from "@/lib/auth";
 import { getEmployeeByEmployeeId } from "@/lib/employee";
@@ -25,7 +25,7 @@ const Home = async () => {
 
   const projectList: ProjectListType[] = getProjectSummary(organisation_id);
   const progress: ProgressDataType[] = getProgress(organisation_id);
-  const taskList: TaskListType[] = getTaskList(employee_id);
+  const taskList: TaskListType[] = getTaskListAssignedToMe(organisation_id, employee_id);
 
   return (
     <div className="text-black">
