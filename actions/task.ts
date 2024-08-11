@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { reviewTask, deleteTask, storeNewTask } from "@/lib/task";
+import { reviewTask, deleteTask, storeNewTask, checkCompletedTask } from "@/lib/task";
 import { z } from "zod";
 import { reviewTaskFormSchema } from "@/lib/formSchema";
 
@@ -34,5 +34,16 @@ export const deleteTaskAction = async (organisation_id: string, task_id: number 
     return { success: true, message: null };
   } catch (error) {
     return { success: false, message: "Failed to delete task" };
+  }
+};
+
+export const checkCompletedTaskAction = async (organisation_id: string, employee_id: string, task_id: number, checked: string) => {
+  try {
+    await checkCompletedTask(organisation_id, employee_id, task_id, checked);
+
+    revalidatePath("/dashboard");
+    return { success: true, message: null };
+  } catch (error) {
+    return { success: false, message: "Failed to check task" };
   }
 };

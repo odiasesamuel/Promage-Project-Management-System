@@ -28,3 +28,15 @@ export const deleteTask = async (organisation_id: string, task_id: number | unde
 
   stmtDelete.run(organisation_id, task_id);
 };
+
+export const checkCompletedTask = async (organisation_id: string, employee_id: string, task_id: number, checked: string) => {
+  console.log(organisation_id, employee_id, task_id, checked);
+
+  const stmtUpdate = db.prepare(`
+    UPDATE task_list
+    SET checked = ?
+    WHERE organisation_id = ? AND assigned_to = ? AND task_id = ?
+    `);
+
+  stmtUpdate.run(checked, organisation_id, employee_id, task_id);
+};

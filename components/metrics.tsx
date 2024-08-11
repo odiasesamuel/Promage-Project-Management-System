@@ -70,7 +70,7 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
 
   return (
     <div className="flex justify-between">
-      <Card className="w-[24%] h-[200px] bg-[#F2EAE5]">
+      <Card className="w-[32%] h-[200px] bg-[#F2EAE5]">
         <CardHeader className="pt-4 pb-2">
           <CardDescription>
             <Image src={revenueIcon} alt="revenue icon" />
@@ -78,7 +78,7 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-semibold mb-3">{total_revenue}</p>
+          <p className="text-2xl font-semibold mb-3">{total_revenue}<span className="text-base ml-1">/{previousQuarterRevenue}</span></p>
           <div className="flex gap-x-1">
             <Image src={revenueArrow} alt="arrow" />
             <p className="text-xs">
@@ -87,7 +87,7 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
           </div>
         </CardContent>
       </Card>
-      <Card className="w-[24%] h-[200px] bg-[#F2EAE5]">
+      <Card className="w-[32%] h-[200px] bg-[#F2EAE5]">
         <CardHeader className="pt-4 pb-2">
           <CardDescription>
             <Image src={projectIcon} alt="project icon" />
@@ -107,7 +107,8 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
           </div>
         </CardContent>
       </Card>
-      <Card className="w-[24%] h-[200px] bg-[#F2EAE5]">
+      {/* Implement Time sheet later */}
+      {/* <Card className="w-[24%] h-[200px] bg-[#F2EAE5]">
         <CardHeader className="pt-4 pb-2">
           <CardDescription>
             <Image src={timespentIcon} alt="time spent icon" />
@@ -126,8 +127,8 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
             </p>
           </div>
         </CardContent>
-      </Card>
-      <Card className="w-[24%] h-[200px] bg-[#F2EAE5]">
+      </Card> */}
+      <Card className="w-[32%] h-[200px] bg-[#F2EAE5]">
         <CardHeader className="pt-4 pb-2">
           <CardDescription>
             <Image src={resourceIcon} alt="resource icon" />

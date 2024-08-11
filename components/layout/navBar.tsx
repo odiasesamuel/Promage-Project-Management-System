@@ -1,5 +1,5 @@
 import Image from "next/image";
-import NavLink from "../navLink";
+import NavLink from "./navLink";
 import CreatNewProject from "../creatNewProject";
 import logoIcon from "@/assets/logo.svg";
 import newProjectIcon from "@/assets/crosss.svg";
@@ -56,9 +56,10 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeList, employeeDetail
           <NavLink activeIcon={taskIconActive} notActiveIcon={taskIconNotActive} href="/tasks" alt="task icon">
             Tasks
           </NavLink>
-          <NavLink activeIcon={timeLogIconActive} notActiveIcon={timeLogIconNotActive} href="/time-log" alt="time log icon">
+          {/* Implement time sheet at a later date */}
+          {/* <NavLink activeIcon={timeLogIconActive} notActiveIcon={timeLogIconNotActive} href="/time-log" alt="time log icon">
             Time log
-          </NavLink>
+          </NavLink> */}
           {employeeDetails.job_title === "Administrator" && (
             <NavLink activeIcon={resourceMgtIconActive} notActiveIcon={resourceMgtIconNotActive} href="/resource-mgnt" alt="time log icon">
               Resource mgnt
