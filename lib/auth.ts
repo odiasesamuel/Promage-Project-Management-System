@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { Lucia } from "lucia";
+import { Lucia, TimeSpan } from "lucia";
 import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
 import db from "./db";
 import cron from "node-cron";
@@ -10,6 +10,7 @@ const adapter = new BetterSqlite3Adapter(db, {
 });
 
 const lucia = new Lucia(adapter, {
+  sessionExpiresIn: new TimeSpan(8, "h"),
   sessionCookie: {
     expires: false,
     attributes: {
