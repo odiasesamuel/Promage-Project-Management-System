@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { EmployeeSignUpDetailsType } from "@/actions/auth-action";
-import { createSingleEmployeeAccount, getAllEmployee, getOrganisationByOrganisationId, deleteEmployeeAccount, getEmployeeByEmployeeId } from "@/lib/employee";
+import { createSingleEmployeeAccount, getAllEmployee, getOrganisationByOrganisationId, deleteEmployeeAccount, getEmployeeByEmployeeId, clearOrganisationData } from "@/lib/employee";
 import { updateMetricsAfterAddingSingleEmployee, addProjectWorkloadDataAfterAddingSingleEmployee } from "@/lib/dashboard";
 import { welcomeEmployeeEmailTemplate, removalFromOrganisationWorkspace } from "@/lib/email/templates";
 import { sendEmail, EmailOptions } from "@/lib/email/email";
@@ -30,7 +30,7 @@ export const removeExistingEmployee = async (organisation_id: string, removedEmp
 
     deleteEmployeeAccount(organisation_id, removedEmployeeInfo);
 
-    if ((removedEmployeeInfo.notify === "Yes")) {
+    if (removedEmployeeInfo.notify === "Yes") {
       // Send email notification to employee of removal
       const employeeSubject = `Notification of Removal from ${organisation_name} Workspace`;
       const employeeHtml = removalFromOrganisationWorkspace(organisationDetails.organisation_name, employeeDetails);
@@ -85,4 +85,9 @@ export const getEmployeeList = async (organisation_id: string) => {
   const employeeList: EmployeeListType[] = getAllEmployee(organisation_id);
 
   return employeeList;
+};
+
+export const clearOrganisationDataAction = (organisation_id: string) => {
+  clearOrganisationData(organisation_id);
+  revalidatePath("/dashboard");
 };

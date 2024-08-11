@@ -110,3 +110,41 @@ export const deleteEmployeeAccount = async (organisation_id: string, removedEmpl
   stmtDelete.run(organisation_id, removedEmployeeInfo.employee_id);
   stmtUpdateMetric.run(organisation_id, currentQuarter);
 };
+
+export const clearOrganisationData = async (organisation_id: string) => {
+  // Update metrics data to 0
+  const stmtClearMetricData = db.prepare(`
+    UPDATE metric
+    SET total_revenue = 0, project = 0, time = 0
+    WHERE organisation_id = ?
+    `);
+
+  stmtClearMetricData.run(organisation_id);
+
+  // Clear Project Data
+  const stmtClearProjectData = db.prepare(`DELETE FROM project WHERE  organisation_id = ?`);
+
+  stmtClearProjectData.run(organisation_id);
+
+  // Update progress data to 0
+  const stmtClearProgressData = db.prepare(`
+    UPDATE progress
+    SET total_project = 0, completed_project = 0, delayed_project = 0, ongoing_project = 0
+    WHERE organisation_id = ?
+    `);
+
+  stmtClearProgressData.run(organisation_id);
+
+  // Clear Task
+  const stmtClearTask = db.prepare(`DELETE FROM task_list WHERE organisation_id = ?`);
+  stmtClearTask.run(organisation_id);
+
+  // Set Project workload to 0
+  const stmtClearProjectWorkLoad = db.prepare(`
+    UPDATE project_workload
+    SET no_of_project = 0
+    WHERE organisation_id = ?
+    `);
+
+  stmtClearProjectWorkLoad.run(organisation_id);
+};

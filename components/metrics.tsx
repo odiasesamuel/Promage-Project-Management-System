@@ -50,22 +50,22 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
   const total_revenue = formatCurrency(currentQuarterMetrics.total_revenue);
   const currentQuarterRevenue = currentQuarterMetrics.total_revenue;
   const previousQuarterRevenue = previousQuarterMetrics.total_revenue;
-  const revenuePercentageChange = Math.abs((currentQuarterRevenue - previousQuarterRevenue) / previousQuarterRevenue) * 100;
+  const revenuePercentageChange = previousQuarterRevenue === 0 ? 0 : Math.abs((currentQuarterRevenue - previousQuarterRevenue) / previousQuarterRevenue) * 100;
   const revenueArrow = currentQuarterRevenue > previousQuarterRevenue ? incrementArrow : decrementArrow;
 
   const currentQuarterProject = currentQuarterMetrics.project;
   const previousQuarterProject = previousQuarterMetrics.project;
-  const projectPercentageChange = Math.abs((currentQuarterProject - previousQuarterProject) / previousQuarterProject) * 100;
+  const projectPercentageChange = previousQuarterProject === 0 ? 0 : Math.abs((currentQuarterProject - previousQuarterProject) / previousQuarterProject) * 100;
   const projectArrow = currentQuarterProject > previousQuarterProject ? incrementArrow : decrementArrow;
 
   const currentQuarterTime = currentQuarterMetrics.time;
   const previousQuarterTime = previousQuarterMetrics.time;
-  const timePercentageChange = Math.abs((currentQuarterTime - previousQuarterTime) / previousQuarterTime) * 100;
+  const timePercentageChange = previousQuarterTime === 0 ? 0 : Math.abs((currentQuarterTime - previousQuarterTime) / previousQuarterTime) * 100;
   const timeArrow = currentQuarterTime > previousQuarterTime ? incrementArrow : decrementArrow;
 
   const currentQuarterResource = currentQuarterMetrics.resource;
   const previousQuarterResource = previousQuarterMetrics.resource;
-  const resourcePercentageChange = Math.abs((currentQuarterResource - previousQuarterResource) / previousQuarterResource) * 100;
+  const resourcePercentageChange = previousQuarterResource === 0 ? 0 : Math.abs((currentQuarterResource - previousQuarterResource) / previousQuarterResource) * 100;
   const resourceArrow = currentQuarterResource > previousQuarterResource ? incrementArrow : decrementArrow;
 
   return (
@@ -78,7 +78,10 @@ const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-semibold mb-3">{total_revenue}<span className="text-base ml-1">/{previousQuarterRevenue}</span></p>
+          <p className="text-2xl font-semibold mb-3">
+            {total_revenue}
+            <span className="text-base ml-1">/{previousQuarterRevenue}</span>
+          </p>
           <div className="flex gap-x-1">
             <Image src={revenueArrow} alt="arrow" />
             <p className="text-xs">

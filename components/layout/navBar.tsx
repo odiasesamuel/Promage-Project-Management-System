@@ -17,9 +17,11 @@ import usersIconActive from "@/assets/usersactive.svg";
 import usersIconNotActive from "@/assets/users.svg";
 import sidebarBavArrow from "@/assets/arrow.svg";
 import LogoutConfirmation from "../logoutConfirmation";
+import ClearDataConfirmation from "../clearDataConfirmation";
 import { LogOut } from "lucide-react";
 import { EmployeeListType } from "@/app/(application)/layout";
 import { EmployeeSignInDetailsType } from "@/actions/auth-action";
+import { Button } from "../ui/button";
 
 type NavBarProps = {
   className?: string;
@@ -65,12 +67,19 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeList, employeeDetail
               Resource mgnt
             </NavLink>
           )}
-          <LogoutConfirmation>
-            <div className="ml-4 flex items-center gap-2 absolute bottom-10 cursor-pointer">
-              <LogOut />
-              <span className="text-[#F1F1F1] text-sm">Sign out</span>
-            </div>
-          </LogoutConfirmation>
+          <div className="ml-4 absolute bottom-10">
+            {
+              <ClearDataConfirmation organisation_id={employeeDetails.organisation_id}>
+                <Button variant="destructive">Clear data</Button>
+              </ClearDataConfirmation>
+            }
+            <LogoutConfirmation>
+              <div className="flex items-center gap-2  cursor-pointer mt-5">
+                <LogOut />
+                <span className="text-[#F1F1F1] text-sm">Sign out</span>
+              </div>
+            </LogoutConfirmation>
+          </div>
         </nav>
       </div>
     </>
