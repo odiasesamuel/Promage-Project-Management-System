@@ -3,8 +3,9 @@
 import { signout } from "@/actions/auth-action";
 import { useRouter } from "next/navigation";
 import { AlertDialogAction } from "./ui/alert-dialog";
+import { clearOrganisationDataAction } from "@/actions/employee";
 
-const ConfirmLogoutButton = () => {
+export const ConfirmLogoutButton = () => {
   const router = useRouter();
   const logoutHandler = async () => {
     const result = await signout();
@@ -13,4 +14,9 @@ const ConfirmLogoutButton = () => {
   return <AlertDialogAction onClick={logoutHandler}>Confirm</AlertDialogAction>;
 };
 
-export default ConfirmLogoutButton;
+export const ConfirmClearDataButton: React.FC<{ organisation_id: string }> = ({ organisation_id }) => {
+  const logoutHandler = () => {
+    clearOrganisationDataAction(organisation_id);
+  };
+  return <AlertDialogAction onClick={logoutHandler}>Confirm</AlertDialogAction>;
+};

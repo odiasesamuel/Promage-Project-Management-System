@@ -21,7 +21,7 @@ import { createNewProject, reviewProjectAction, deleteProjectAction } from "@/ac
 import { useToast } from "@/components/ui/use-toast";
 import { EmployeeListType } from "@/app/(application)/layout";
 import { EditableProjectData } from "../columns";
-import DeleteProjectConfirmation from "../deleteProjectConfirmation";
+import { DeleteProjectOrTaskConfirmation } from "../confirmationDialog";
 
 type NewProjectFormProps = {
   employeeList: EmployeeListType[];
@@ -284,11 +284,11 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
             <Button type="submit" className="w-[45%]">
               Review Project
             </Button>
-            <DeleteProjectConfirmation deleteHandler={deleteProjectHandler} content="project">
+            <DeleteProjectOrTaskConfirmation deleteHandler={deleteProjectHandler} content="project">
               <Button type="button" variant="destructive" className="w-[45%]">
                 Delete Project
               </Button>
-            </DeleteProjectConfirmation>
+            </DeleteProjectOrTaskConfirmation>
           </div>
         ) : (
           <Button type="submit" className="w-full mt-5">

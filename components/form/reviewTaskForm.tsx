@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 import { EditableTaskData } from "../task-columns";
-import DeleteProjectConfirmation from "../deleteProjectConfirmation";
+import { DeleteProjectOrTaskConfirmation } from "../confirmationDialog";
 
 type ReviewTaskFormType = {
   employeeList: EmployeeListType[];
@@ -182,11 +182,11 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTa
                   <Button type="submit" className="w-[45%]">
                     Review Task
                   </Button>
-                  <DeleteProjectConfirmation deleteHandler={deleteTaskHandler} content="task">
+                  <DeleteProjectOrTaskConfirmation deleteHandler={deleteTaskHandler} content="task">
                     <Button type="button" variant="destructive" className="w-[45%]">
                       Delete Task
                     </Button>
-                  </DeleteProjectConfirmation>
+                  </DeleteProjectOrTaskConfirmation>
                 </div>
               ) : (
                 <Button type="submit" className="w-full mt-5">
