@@ -3,7 +3,6 @@ import { verifyAuth } from "@/lib/auth";
 import { getEmployeeByEmployeeId, getAllEmployee } from "@/lib/employee";
 import { EmployeeSignInDetailsType } from "@/actions/auth-action";
 import { EmployeeListType } from "../layout";
-import { Button } from "@/components/ui/button";
 import { getEmployeeInitials } from "@/utils/getEmployeeInitials";
 import AddEmployeeForm from "@/components/form/addEmployeeForm";
 import RemoveEmployeeForm from "@/components/form/removeEmployeeForm";
