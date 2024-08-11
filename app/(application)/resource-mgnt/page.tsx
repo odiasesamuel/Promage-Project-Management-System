@@ -15,6 +15,9 @@ const ResourceMgnt: React.FC<{}> = async () => {
   const employeeDetails: EmployeeSignInDetailsType = getEmployeeByEmployeeId(result.user.id);
   const organisation_id = employeeDetails.organisation_id;
   const employeeList: EmployeeListType[] = getAllEmployee(organisation_id);
+  if (employeeDetails.job_title !== "Administrator") {
+    redirect("/dashboard");
+  }
 
   return (
     <>
