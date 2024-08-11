@@ -97,6 +97,16 @@ db.exec(`
   );
 `);
 
+db.exec(`
+   CREATE TABLE IF NOT EXISTS task_note (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    organisation_id TEXT,
+    employee_id TEXT,
+    note TEXT,
+    FOREIGN KEY (organisation_id) REFERENCES organisation(organisation_id) ON DELETE CASCADE,
+    FOREIGN KEY (employee_id) REFERENCES employee(id) ON DELETE CASCADE
+  );`);
+
 // db.exec(`
 //   INSERT INTO organisation (organisation_id, organisation_name, organisation_email)
 //   VALUES
@@ -191,6 +201,16 @@ db.exec(`
 //   ('LAM789', 'HAN505', 'Hank Moore', 3),
 //   ('LAM789', 'IVY606', 'Ivy Taylor', 4);
 
+//   INSERT INTO task_note (organisation_id, employee_id, note) VALUES
+// ('BOL123', 'ALI123', 'Note for Alice Johnson'),
+// ('BOL123', 'BOB456', 'Note for Bob Smith'),
+// ('BOL123', 'CHA789', 'Note for Charlie Brown'),
+// ('KUN456', 'DAV101', 'Note for David Williams'),
+// ('KUN456', 'EVE202', 'Note for Eve Davis'),
+// ('KUN456', 'FRA303', 'Note for Frank Miller'),
+// ('LAM789', 'GRA404', 'Note for Grace Wilson'),
+// ('LAM789', 'HAN505', 'Note for Hank Moore'),
+// ('LAM789', 'IVY606', 'Note for Ivy Taylor');
 //  `);
 
 export default db;

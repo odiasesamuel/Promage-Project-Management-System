@@ -84,6 +84,24 @@ export const addProjectWorkloadDataOnSignUp = async (organisation_id: string, ad
   });
 };
 
+export const addNoteDataOnSignUp = async (organisation_id: string, adminDetails: AdminDetailsType, employeeDetails: (EmployeeSignUpDetailsType & { employee_id: string })[]) => {
+  const { administrator_employee_id } = adminDetails;
+  const stmtInsert = db.prepare(`
+    INSERT INTO task_note (organisation_id, employee_id, note)
+    VALUES (?, ?, ?)`);
+
+  stmtInsert.run(organisation_id, administrator_employee_id, "");
+
+  employeeDetails.forEach((employee) => {
+    const { employee_name, employee_id } = employee;
+    const stmtInsert = db.prepare(`
+    INSERT INTO task_note (organisation_id, employee_id, note)
+    VALUES (?, ?, ?)`);
+
+    stmtInsert.run(organisation_id, employee_id, "");
+  });
+};
+
 export const updateMetricsAfterAddingSingleEmployee = async (organisation_id: string, employee_info: EmployeeSignUpDetailsType) => {
   const currentDate = new Date();
   const currentQuarter = getQuarter(currentDate);

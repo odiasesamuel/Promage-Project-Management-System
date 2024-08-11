@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { reviewTask, deleteTask, storeNewTask, checkCompletedTask } from "@/lib/task";
+import { reviewTask, deleteTask, storeNewTask, checkCompletedTask, getNoteContent, saveNote, clearNote } from "@/lib/task";
 import { z } from "zod";
 import { reviewTaskFormSchema } from "@/lib/formSchema";
 
@@ -45,5 +45,32 @@ export const checkCompletedTaskAction = async (organisation_id: string, employee
     return { success: true, message: null };
   } catch (error) {
     return { success: false, message: "Failed to check task" };
+  }
+};
+
+export const getNoteContentAction = async (organisation_id: string, employee_id: string) => {
+  const note = await getNoteContent(organisation_id, employee_id);
+  return note;
+};
+
+export const saveNoteAction = async (organisation_id: string, employee_id: string, note: string) => {
+  try {
+    await saveNote(organisation_id, employee_id, note);
+
+    revalidatePath("/dashboard");
+    return { success: true, message: null };
+  } catch (error) {
+    return { success: false, message: "Failed to save note" };
+  }
+};
+
+export const clearNoteAction = async (organisation_id: string, employee_id: string) => {
+  try {
+    await clearNote(organisation_id, employee_id);
+
+    revalidatePath("/dashboard");
+    return { success: true, message: null };
+  } catch (error) {
+    return { success: false, message: "Failed to clear note" };
   }
 };

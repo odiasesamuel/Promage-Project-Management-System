@@ -48,7 +48,7 @@ const Home = async () => {
       <div className="flex justify-between my-6">
         <Card className="w-[64%] bg-[#F2EAE5] self-start min-h-[300px]">
           <CardHeader className="pt-6 pb-4">
-            <CardTitle>Today Task</CardTitle>
+            <CardTitle>Task</CardTitle>
           </CardHeader>
           <CardContent>
             <TabContent taskList={taskList} organisation_id={organisation_id} employee_id={employee_id} />

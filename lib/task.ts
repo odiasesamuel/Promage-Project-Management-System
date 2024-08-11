@@ -40,3 +40,26 @@ export const checkCompletedTask = async (organisation_id: string, employee_id: s
 
   stmtUpdate.run(checked, organisation_id, employee_id, task_id);
 };
+
+export const getNoteContent = (organisation_id: string, employee_id: string) => {
+  return db.prepare(`SELECT * FROM task_note WHERE organisation_id = ? AND employee_id = ?`).get(organisation_id, employee_id);
+};
+
+export const saveNote = async (organisation_id: string, employee_id: string, note: string) => {
+  const stmtUpdate = db.prepare(`
+    UPDATE task_note
+    SET note = ?
+    WHERE organisation_id = ? AND employee_id = ?
+  `);
+
+  stmtUpdate.run(note, organisation_id, employee_id);
+};
+
+export const clearNote = async (organisation_id: string, employee_id: string) => {
+  const stmtClearNote = db.prepare(`
+    UPDATE task_note
+    SET note = ?
+    WHERE organisation_id = ? AND employee_id = ?
+    `);
+  stmtClearNote.run("", organisation_id, employee_id);
+};

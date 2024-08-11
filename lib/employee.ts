@@ -139,6 +139,14 @@ export const clearOrganisationData = async (organisation_id: string) => {
   const stmtClearTask = db.prepare(`DELETE FROM task_list WHERE organisation_id = ?`);
   stmtClearTask.run(organisation_id);
 
+  // Clear Notes
+  const stmtClearNote = db.prepare(`
+    UPDATE task_note
+    SET note = ?
+    WHERE organisation_id = ? 
+    `);
+  stmtClearNote.run("", organisation_id);
+
   // Set Project workload to 0
   const stmtClearProjectWorkLoad = db.prepare(`
     UPDATE project_workload

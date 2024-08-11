@@ -40,7 +40,6 @@ const AddEmployeeForm: React.FC<AddEmployeeFormType> = ({ organisation_id }) => 
         description: result.message,
         duration: 3000,
       });
-    } else {
     }
   }
 

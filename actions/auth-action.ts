@@ -2,7 +2,7 @@
 
 import { getEmployeeByEmail, getOrganisationByEmail, createOrganisationAccount, createAdminEmployeeAccount, createEmployeeAccount } from "@/lib/employee";
 import { createAuthSession, destroySession } from "@/lib/auth";
-import { addMetricsOnSignUp, addProgressDataOnSignUp, addProjectWorkloadDataOnSignUp } from "@/lib/dashboard";
+import { addMetricsOnSignUp, addProgressDataOnSignUp, addProjectWorkloadDataOnSignUp, addNoteDataOnSignUp } from "@/lib/dashboard";
 import { welcomeEmployeeEmailTemplate, welcomeAdminEmailTemplate, welcomeOrganisationEmailTemplate } from "@/lib/email/templates";
 import { sendEmail, EmailOptions } from "@/lib/email/email";
 
@@ -74,6 +74,7 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
     await addMetricsOnSignUp(organisation_id, metric_info, employeeDetails);
     await addProgressDataOnSignUp(organisation_id);
     await addProjectWorkloadDataOnSignUp(organisation_id, adminDetails, employeeDetails);
+    await addNoteDataOnSignUp(organisation_id, adminDetails, employeeDetails);
 
     const administrator_login_details = {
       email: adminDetails.administrator_email,

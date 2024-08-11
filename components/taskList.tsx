@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import taskList from "@/data/taskList.json";
 import { Badge, BadgeProps } from "./ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
