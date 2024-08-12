@@ -1,0 +1,9 @@
+{
+    "crons": [
+      {
+        "path": "/api/clean_expired_session",
+        "schedule": "0 0 1 * *" 
+      }
+    ]
+  }
+  

@@ -26,9 +26,10 @@ type Metrics = {
 const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
   const metrics: Metrics[] = getMetrics(organisation_id);
 
-  // Or using route handlers
-  //   const response = await fetch('http://localhost:3000/api/metrics');
-  //   const metricsRouteHandler = await response.json();
+  // using route handlers To get the list of employees and their organisations
+  // const response = await fetch("http://localhost:3000/api/user_list");
+  // const metricsRouteHandler = await response.json();
+  // console.log(metricsRouteHandler);
 
   const currentDate = new Date();
   const currentQuarter = getQuarter(currentDate);
