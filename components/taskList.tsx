@@ -40,7 +40,6 @@ const TaskList: React.FC<TasklistProps> = ({ data, organisation_id, employee_id 
   };
 
   const handleCheckboxChange = (checked: boolean, task_id: number) => {
-    console.log(`${task_id} is now: ${checked ? "Yes" : "No"}`);
     const checkedString = checked ? "Yes" : "No";
     checkCompletedTaskAction(organisation_id, employee_id, task_id, checkedString);
   };

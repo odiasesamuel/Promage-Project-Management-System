@@ -68,7 +68,6 @@ const updateMetricProgressProjectworkloadTable = async (organisation_id: string,
     `);
 
     const getProjectWorkLoad: ProjectWorkloadType[] = stmtgetProjectWorkLoad.all(organisation_id);
-    console.log(getProjectWorkLoad);
 
     const stmtupdateProjectWorkload = db.prepare(`
       UPDATE project_workload

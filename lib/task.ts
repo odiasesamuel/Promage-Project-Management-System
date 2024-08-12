@@ -30,7 +30,6 @@ export const deleteTask = async (organisation_id: string, task_id: number | unde
 };
 
 export const checkCompletedTask = async (organisation_id: string, employee_id: string, task_id: number, checked: string) => {
-  console.log(organisation_id, employee_id, task_id, checked);
 
   const stmtUpdate = db.prepare(`
     UPDATE task_list

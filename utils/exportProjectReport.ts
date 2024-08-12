@@ -15,8 +15,6 @@ export const exportProjectReport = (data: ProjectListType[]) => {
       .map((member: any) => member.label)
       .join(", "),
   }));
-  console.log(data);
-  console.log(transformedData);
   const workbook = XLSX.utils.book_new();
   const worksheet = XLSX.utils.json_to_sheet(transformedData);
   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");

@@ -28,7 +28,6 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTa
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const organisation_id = employeeList[0].organisation_id;
-  // console.log(editableTaskData);
 
   const form = useForm<z.infer<typeof reviewTaskFormSchema>>({
     resolver: zodResolver(reviewTaskFormSchema),
