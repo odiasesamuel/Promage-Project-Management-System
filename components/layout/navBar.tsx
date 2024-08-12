@@ -67,11 +67,11 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeList, employeeDetail
             </NavLink>
           )}
           <div className="ml-4 absolute bottom-10">
-            {
+            {employeeDetails.job_title === "Administrator" && (
               <ClearDataConfirmation organisation_id={employeeDetails.organisation_id}>
                 <Button variant="destructive">Clear data</Button>
               </ClearDataConfirmation>
-            }
+            )}
             <LogoutConfirmation>
               <div className="flex items-center gap-2  cursor-pointer mt-5">
                 <LogOut />
