@@ -12,7 +12,7 @@ type AuthPageProps = {
   searchParams: SearchParams;
 };
 
-export function AuthPage({ searchParams }: AuthPageProps) {
+function AuthPage({ searchParams }: AuthPageProps) {
   const mode = searchParams.mode || "signin";
 
   return (

@@ -1,8 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useState } from "react";
-// const OrganisationInfoSignUpForm = dynamic(() => import("./organisationInfoSignUpForm"), { ssr: false });
 import OrganisationInfoSignUpForm from "./organisationInfoSignUpForm";
 import EmployeeInfoSignUpForm from "./employeeInfoSignUpForm";
 import MetricInfoSignUpForm from "./metricInfoSignUpForm";

@@ -1,4 +1,3 @@
-import projectWorkload from "@/data/projectWorkload.json";
 import { getProjectWorkLoad } from "@/lib/dashboard";
 
 type ProjectWorkloadDataType = {
