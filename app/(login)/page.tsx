@@ -26,7 +26,7 @@ export function AuthPage({ searchParams }: AuthPageProps) {
         {mode === "signup" && <SignUpForm />}
         {mode === "signin" && (
           <p className="text-black text-sm mt-6">
-            Don't have an account?
+            Don&apos;t have an account?
             <Link href="/?mode=signup" className="text-[#E65F2B] cursor-pointer underline underline-offset-4 ml-1">
               Sign up your organization
             </Link>

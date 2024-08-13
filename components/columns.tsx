@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { formatDateInProjectSummary } from "@/utils/dateUtils";
@@ -12,8 +13,6 @@ import { usePathname } from "next/navigation";
 import CreatNewProject from "./creatNewProject";
 import { EmployeeListType } from "@/actions/employee";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type ProjectListType = {
   project_id: number;
   organisation_id: string;
@@ -35,6 +34,46 @@ export type EditableProjectData = {
   progress: number;
   dueDate: Date;
   projectTeam: string;
+};
+
+const ReviewProjectButton: React.FC<{ employeeList: EmployeeListType[]; editableProjectData: EditableProjectData }> = ({ employeeList, editableProjectData }) => {
+  const projectFormHeading = "Review project";
+  return (
+    <>
+      <CreatNewProject employeeList={employeeList} projectFormHeading={projectFormHeading} editableProjectData={editableProjectData}>
+        <Button variant="secondary" size="sm" className="bg-inherit text-xs border border-[#0000001f] text-black font-normal">
+          Review
+        </Button>
+      </CreatNewProject>
+    </>
+  );
+};
+
+const ActionsCell: React.FC<{ row: any; table: any }> = ({ row, table }) => {
+  const pathname = usePathname();
+  const employeeList = table.options.meta?.employeeList as EmployeeListType[];
+
+  const project_id: number = row.getValue("project_id");
+  const projectName: string = row.getValue("project_name");
+  const projectManager: string = row.getValue("project_manager");
+  const status: "Completed" | "On going" | "Delayed" | "At risk" = row.getValue("status");
+  const revenue: number = row.getValue("revenue");
+  const progress: number = row.getValue("progress");
+  const dueDate: Date = row.getValue("due_date");
+  const projectTeam: string = row.getValue("project_team");
+
+  const editableProjectData = {
+    project_id,
+    projectName,
+    projectManager,
+    status,
+    revenue,
+    progress,
+    dueDate,
+    projectTeam,
+  };
+
+  return <>{pathname === "/project" && <ReviewProjectButton employeeList={employeeList} editableProjectData={editableProjectData} />}</>;
 };
 
 export const columns: ColumnDef<ProjectListType>[] = [
@@ -129,7 +168,6 @@ export const columns: ColumnDef<ProjectListType>[] = [
     },
   },
   {
-    // Hidden column for project id
     accessorKey: "project_id",
     header: () => null,
     cell: () => null,
@@ -137,7 +175,6 @@ export const columns: ColumnDef<ProjectListType>[] = [
     enableSorting: false,
   },
   {
-    // Hidden column for revenue
     accessorKey: "revenue",
     header: () => null,
     cell: () => null,
@@ -145,7 +182,6 @@ export const columns: ColumnDef<ProjectListType>[] = [
     enableSorting: false,
   },
   {
-    // Hidden column for project Team
     accessorKey: "project_team",
     header: () => null,
     cell: () => null,
@@ -155,44 +191,6 @@ export const columns: ColumnDef<ProjectListType>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row, table }) => {
-      const pathname = usePathname();
-      const employeeList = table.options.meta?.employeeList as EmployeeListType[];
-
-      const project_id: number = row.getValue("project_id");
-      const projectName: string = row.getValue("project_name");
-      const projectManager: string = row.getValue("project_manager");
-      const status: "Completed" | "On going" | "Delayed" | "At risk" = row.getValue("status");
-      const revenue: number = row.getValue("revenue");
-      const progress: number = row.getValue("progress");
-      const dueDate: Date = row.getValue("due_date");
-      const projectTeam: string = row.getValue("project_team");
-
-      const editableProjectData = {
-        project_id,
-        projectName,
-        projectManager,
-        status,
-        revenue,
-        progress,
-        dueDate,
-        projectTeam,
-      };
-
-      return <>{pathname === "/project" && <ReviewProjectButton employeeList={employeeList} editableProjectData={editableProjectData} />}</>;
-    },
+    cell: (props) => <ActionsCell {...props} />,
   },
 ];
-
-export const ReviewProjectButton: React.FC<{ employeeList: EmployeeListType[]; editableProjectData: EditableProjectData }> = ({ employeeList, editableProjectData }) => {
-  const projectFormHeading = "Review project";
-  return (
-    <>
-      <CreatNewProject employeeList={employeeList} projectFormHeading={projectFormHeading} editableProjectData={editableProjectData}>
-        <Button variant="secondary" size="sm" className="bg-inherit text-xs border border-[#0000001f] text-black font-normal">
-          Review
-        </Button>
-      </CreatNewProject>
-    </>
-  );
-};

@@ -13,7 +13,7 @@ const Introduction: React.FC<{}> = () => {
           <Image src={logoIcon} alt="Logo of promage" priority />
           <h1 className="ml-1 text-2xl font-medium text-black">Promage</h1>
         </div>
-        <p className="text-[#9A9A9A] text-sm text-center">Streamline your workflows, and elevate your team's productivity with intuitive tools and real-time collaboration.</p>
+        <p className="text-[#9A9A9A] text-sm text-center">Streamline your workflows, and elevate your team&apos;s productivity with intuitive tools and real-time collaboration.</p>
       </div>
     </>
   );
