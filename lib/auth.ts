@@ -1,12 +1,7 @@
 import { cookies } from "next/headers";
 import { Lucia, TimeSpan } from "lucia";
 import { NodePostgresAdapter } from "@lucia-auth/adapter-postgresql";
-import pg from "pg";
-
-// Initialize PostgreSQL client
-const pool = new pg.Pool({
-  connectionString: process.env.SUPABASE_CONNECTION_STRING,
-});
+import { pool } from "./supabaseClient";
 
 const adapter = new NodePostgresAdapter(pool, {
   user: "employee",
@@ -160,4 +155,3 @@ export const deleteExpiredSessions = () => {
 // export const deleteExpiredSessions = () => {
 //   lucia.deleteExpiredSessions();
 // };
-
