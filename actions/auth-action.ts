@@ -47,12 +47,12 @@ export type MetricSignUpDetailsType = {
 
 export const login = async (values: ValueType) => {
   try {
-    // const existingUsers: EmployeeSignInDetailsType[] = getEmployeeByEmail(values.email);
-    // if (existingUsers.length === 0) throw new Error("Could not authenticate employee, please check your credentials.");
+    const existingUsers: EmployeeSignInDetailsType[] = await getEmployeeByEmail(values.email);
+    if (existingUsers.length === 0) throw new Error("Could not authenticate employee, please check your credentials.");
 
-    // const matchingUser = existingUsers.find((user) => user.id === values.employee_id);
+    const matchingUser = existingUsers.find((user) => user.id === values.employee_id);
 
-    // if (!matchingUser) throw new Error("Could not authenticate employee, please check your credentials.");
+    if (!matchingUser) throw new Error("Could not authenticate employee, please check your credentials.");
 
     await createAuthSession(values.employee_id);
 
@@ -64,7 +64,7 @@ export const login = async (values: ValueType) => {
 
 export const signup = async (organisation_info: OrganisationSignUpDetailsType, employee_info: EmployeeSignUpDetailsType[], metric_info: MetricSignUpDetailsType) => {
   try {
-    const existingOrganisation: OrganisationSignUpDetailsType = getOrganisationByEmail(organisation_info.organisation_email);
+    const existingOrganisation: OrganisationSignUpDetailsType = await getOrganisationByEmail(organisation_info.organisation_email);
     if (existingOrganisation) throw new Error("This organisation has already been registered");
     const organisation_id = await createOrganisationAccount(organisation_info);
     const adminDetails = await createAdminEmployeeAccount(organisation_id, organisation_info);

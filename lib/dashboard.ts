@@ -1,4 +1,5 @@
 import db from "./db";
+import { pool } from "./supabaseClient";
 import { MetricSignUpDetailsType } from "@/actions/auth-action";
 import { getQuarter, getPreviousQuarter } from "@/utils/dateUtils";
 import { EmployeeSignUpDetailsType, AdminDetailsType } from "@/actions/auth-action";
@@ -43,63 +44,65 @@ export const addMetricsOnSignUp = async (organisation_id: string, metric_info: M
 
   const { last_quarter_revenue, last_quarter_project, last_quarter_time, last_quarter_resources } = metric_info;
 
-  const stmtInsert = db.prepare(`
+  const stmtInsert = `
     INSERT INTO metric (organisation_id, quarter, total_revenue, project, time, resource)
-    VALUES (?, ?, ?, ?, ?, ?)`);
+    VALUES ($1, $2, $3, $4, $5, $6);
+  `;
 
-  quarters.forEach((quarter) => {
+  const insertPromises = quarters.map((quarter) => {
+    let total_revenue = 0;
+    let project = 0;
+    let time = 0;
+    let resource = 0;
+
     if (quarter === previousQuarter) {
-      stmtInsert.run(organisation_id, quarter, last_quarter_revenue, last_quarter_project, last_quarter_time, last_quarter_resources);
+      total_revenue = last_quarter_revenue;
+      project = last_quarter_project;
+      time = last_quarter_time;
+      resource = last_quarter_resources;
     } else if (quarter === currentQuarter) {
-      stmtInsert.run(organisation_id, currentQuarter, 0, 0, 0, current_no_employee);
-    } else {
-      stmtInsert.run(organisation_id, quarter, 0, 0, 0, 0);
+      resource = current_no_employee;
     }
+
+    return pool.query(stmtInsert, [organisation_id, quarter, total_revenue, project, time, resource]);
   });
+
+  await Promise.all(insertPromises);
 };
 
 export const addProgressDataOnSignUp = async (organisation_id: string) => {
-  const stmtInsert = db.prepare(`
+  const stmtInsert = `
     INSERT INTO progress (organisation_id, total_project, completed_project, delayed_project, ongoing_project)
-    VALUES (?, ?, ?, ?, ?)`);
+    VALUES ($1, $2, $3, $4, $5);
+  `;
 
-  stmtInsert.run(organisation_id, 0, 0, 0, 0);
+  await pool.query(stmtInsert, [organisation_id, 0, 0, 0, 0]);
 };
 
 export const addProjectWorkloadDataOnSignUp = async (organisation_id: string, adminDetails: AdminDetailsType, employeeDetails: (EmployeeSignUpDetailsType & { employee_id: string })[]) => {
   const { administrator_name, administrator_employee_id } = adminDetails;
-  const stmtInsert = db.prepare(`
+
+  const stmtInsert = `
     INSERT INTO project_workload (organisation_id, employee_id, employee_name, no_of_project)
-    VALUES (?, ?, ?, ?)`);
+    VALUES ($1, $2, $3, $4);
+  `;
 
-  stmtInsert.run(organisation_id, administrator_employee_id, administrator_name, 0);
+  const insertPromises = [pool.query(stmtInsert, [organisation_id, administrator_employee_id, administrator_name, 0]), ...employeeDetails.map((employee) => pool.query(stmtInsert, [organisation_id, employee.employee_id, employee.employee_name, 0]))];
 
-  employeeDetails.forEach((employee) => {
-    const { employee_name, employee_id } = employee;
-    const stmtInsert = db.prepare(`
-      INSERT INTO project_workload (organisation_id, employee_id, employee_name, no_of_project)
-      VALUES (?, ?, ?, ?)`);
-
-    stmtInsert.run(organisation_id, employee_id, employee_name, 0);
-  });
+  await Promise.all(insertPromises);
 };
 
 export const addNoteDataOnSignUp = async (organisation_id: string, adminDetails: AdminDetailsType, employeeDetails: (EmployeeSignUpDetailsType & { employee_id: string })[]) => {
   const { administrator_employee_id } = adminDetails;
-  const stmtInsert = db.prepare(`
+
+  const stmtInsert = `
     INSERT INTO task_note (organisation_id, employee_id, note)
-    VALUES (?, ?, ?)`);
+    VALUES ($1, $2, $3);
+  `;
 
-  stmtInsert.run(organisation_id, administrator_employee_id, "");
+  const insertPromises = [pool.query(stmtInsert, [organisation_id, administrator_employee_id, ""]), ...employeeDetails.map((employee) => pool.query(stmtInsert, [organisation_id, employee.employee_id, ""]))];
 
-  employeeDetails.forEach((employee) => {
-    const { employee_name, employee_id } = employee;
-    const stmtInsert = db.prepare(`
-    INSERT INTO task_note (organisation_id, employee_id, note)
-    VALUES (?, ?, ?)`);
-
-    stmtInsert.run(organisation_id, employee_id, "");
-  });
+  await Promise.all(insertPromises);
 };
 
 export const updateMetricsAfterAddingSingleEmployee = async (organisation_id: string, employee_info: EmployeeSignUpDetailsType) => {
