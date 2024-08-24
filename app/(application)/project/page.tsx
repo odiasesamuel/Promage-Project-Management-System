@@ -13,11 +13,11 @@ const ProjectPage = async () => {
   if (!result.user) {
     return redirect("/");
   }
-  const employeeDetails: EmployeeSignInDetailsType = getEmployeeByEmployeeId(result.user.id);
+  const employeeDetails: EmployeeSignInDetailsType = await getEmployeeByEmployeeId(result.user.id);
   const organisation_id = employeeDetails.organisation_id;
-  const employeeList: EmployeeListType[] = getAllEmployee(organisation_id);
+  const employeeList: EmployeeListType[] = await getAllEmployee(organisation_id);
 
-  const projectList: ProjectListType[] = getProjectSummary(organisation_id);
+  const projectList: ProjectListType[] = await getProjectSummary(organisation_id);
 
   return (
     <>

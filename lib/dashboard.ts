@@ -1,37 +1,36 @@
-import db from "./db";
 import { pool } from "./supabaseClient";
 import { MetricSignUpDetailsType } from "@/actions/auth-action";
 import { getQuarter, getPreviousQuarter } from "@/utils/dateUtils";
 import { EmployeeSignUpDetailsType, AdminDetailsType } from "@/actions/auth-action";
 
-export const getMetrics = (organisation_id: string) => {
-  const stmt = db.prepare("SELECT * FROM metric WHERE organisation_id	 = ?");
-  return stmt.all(organisation_id);
+export const getMetrics = async (organisation_id: string) => {
+  const result = await pool.query("SELECT * FROM metric WHERE organisation_id	 = $1", [organisation_id]);
+  return result.rows;
 };
 
-export const getProjectSummary = (organisation_id: string) => {
-  const stmt = db.prepare("SELECT * FROM project WHERE organisation_id = ?");
-  return stmt.all(organisation_id);
+export const getProjectSummary = async (organisation_id: string) => {
+  const result = await pool.query("SELECT * FROM project WHERE organisation_id = $1", [organisation_id]);
+  return result.rows;
 };
 
-export const getProgress = (organisation_id: string) => {
-  const stmt = db.prepare("SELECT * FROM progress WHERE organisation_id = ?");
-  return stmt.all(organisation_id);
+export const getProgress = async (organisation_id: string) => {
+  const result = await pool.query("SELECT * FROM progress WHERE organisation_id = $1", [organisation_id]);
+  return result.rows;
 };
 
-export const getTaskListAssignedToMe = (organisation_id: string, employee_id: string) => {
-  const stmt = db.prepare("SELECT * FROM task_list WHERE organisation_id = ? AND assigned_to = ?");
-  return stmt.all(organisation_id, employee_id);
+export const getTaskListAssignedToMe = async (organisation_id: string, employee_id: string) => {
+  const result = await pool.query("SELECT * FROM task_list WHERE organisation_id = $1 AND assigned_to = $2", [organisation_id, employee_id]);
+  return result.rows;
 };
 
-export const getTaskListAssignedByMe = (organisation_id: string, employee_id: string) => {
-  const stmt = db.prepare("SELECT * FROM task_list WHERE organisation_id = ? AND assigned_by = ?");
-  return stmt.all(organisation_id, employee_id);
+export const getTaskListAssignedByMe = async (organisation_id: string, employee_id: string) => {
+  const result = await pool.query("SELECT * FROM task_list WHERE organisation_id = $1 AND assigned_by = $2", [organisation_id, employee_id]);
+  return result.rows;
 };
 
-export const getProjectWorkLoad = (organisation_id: string) => {
-  const stmt = db.prepare("SELECT * FROM project_workload WHERE organisation_id	 = ?");
-  return stmt.all(organisation_id);
+export const getProjectWorkLoad = async (organisation_id: string) => {
+  const result = await pool.query("SELECT * FROM project_workload WHERE organisation_id	 = $1", [organisation_id]);
+  return result.rows;
 };
 
 export const addMetricsOnSignUp = async (organisation_id: string, metric_info: MetricSignUpDetailsType, employeeDetails: (EmployeeSignUpDetailsType & { employee_id: string })[]) => {
@@ -105,24 +104,26 @@ export const addNoteDataOnSignUp = async (organisation_id: string, adminDetails:
   await Promise.all(insertPromises);
 };
 
-export const updateMetricsAfterAddingSingleEmployee = async (organisation_id: string, employee_info: EmployeeSignUpDetailsType) => {
+export const updateMetricsAfterAddingSingleEmployee = async (organisation_id: string) => {
   const currentDate = new Date();
   const currentQuarter = getQuarter(currentDate);
 
-  const stmtupdatequarter = db.prepare(`
-      UPDATE metric
-      SET resource = resource + 1
-      WHERE organisation_id = ? AND quarter = ?
-    `);
+  const stmtUpdateQuarter = `
+    UPDATE metric
+    SET resource = resource + 1
+    WHERE organisation_id = $1 AND quarter = $2;
+  `;
 
-  stmtupdatequarter.run(organisation_id, currentQuarter);
+  await pool.query(stmtUpdateQuarter, [organisation_id, currentQuarter]);
 };
 
 export const addProjectWorkloadDataAfterAddingSingleEmployee = async (organisation_id: string, employee_info: EmployeeSignUpDetailsType & { employee_id: string }) => {
   const { employee_name, employee_id } = employee_info;
-  const stmtInsert = db.prepare(`
-    INSERT INTO project_workload (organisation_id, employee_id, employee_name, no_of_project)
-    VALUES (?, ?, ?, ?)`);
 
-  stmtInsert.run(organisation_id, employee_id, employee_name, 0);
+  const stmtInsert = `
+    INSERT INTO project_workload (organisation_id, employee_id, employee_name, no_of_project)
+    VALUES ($1, $2, $3, $4);
+  `;
+
+  await pool.query(stmtInsert, [organisation_id, employee_id, employee_name, 0]);
 };

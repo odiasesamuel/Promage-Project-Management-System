@@ -22,7 +22,7 @@ export type ProjectListType = {
   due_date: string;
   status: string;
   progress: number;
-  project_team: string;
+  project_team: string[];
 };
 
 export type EditableProjectData = {

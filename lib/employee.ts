@@ -1,18 +1,17 @@
-import db from "./db";
+import { pool } from "./supabaseClient";
 import { OrganisationSignUpDetailsType, EmployeeSignUpDetailsType } from "@/actions/auth-action";
 import { generateRandomCharID } from "@/utils/generateRandomCharID";
 import { removeExistingEmployeeFormType } from "@/actions/employee";
 import { getQuarter } from "@/utils/dateUtils";
-import { pool } from "./supabaseClient";
 
 export const getOrganisationByEmail = async (email: string) => {
-  // return db.prepare("SELECT * FROM organisation WHERE organisation_email = ?").get(email);
   const result = await pool.query("SELECT * FROM organisation WHERE organisation_email = $1", [email]);
   return result.rows[0];
 };
 
-export const getOrganisationByOrganisationId = (id: string) => {
-  return db.prepare("SELECT * FROM organisation WHERE organisation_id = ?").get(id);
+export const getOrganisationByOrganisationId = async (id: string) => {
+  const result = await pool.query("SELECT * FROM organisation WHERE organisation_id = $1", [id]);
+  return result.rows[0];
 };
 
 export const getEmployeeByEmail = async (email: string) => {
@@ -20,12 +19,14 @@ export const getEmployeeByEmail = async (email: string) => {
   return result.rows;
 };
 
-export const getEmployeeByEmployeeId = (id: string) => {
-  return db.prepare("SELECT * FROM employee WHERE id = ?").get(id);
+export const getEmployeeByEmployeeId = async (id: string) => {
+  const result = await pool.query("SELECT * FROM employee WHERE id = $1", [id]);
+  return result.rows[0];
 };
 
-export const getAllEmployee = (organisation_id: string) => {
-  return db.prepare("SELECT * FROM employee WHERE organisation_id = ?").all(organisation_id);
+export const getAllEmployee = async (organisation_id: string) => {
+  const result = await pool.query("SELECT * FROM employee WHERE organisation_id = $1", [organisation_id]);
+  return result.rows;
 };
 
 export const createOrganisationAccount = async (organisation_info: OrganisationSignUpDetailsType) => {
@@ -93,10 +94,13 @@ export const createSingleEmployeeAccount = async (organisation_id: string, emplo
   const empNum = Math.floor(Math.random() * 900) + 100;
   const empChar = generateRandomCharID(employee_name);
   const employee_id = `${empChar}${empNum}`;
-  const stmtInsert = db.prepare(`
-     INSERT INTO employee (id, organisation_id, employee_name, employee_email, job_title)
-     VALUES (?, ?, ?, ?, ?)`);
-  stmtInsert.run(employee_id, organisation_id, employee_name, employee_email, job_title);
+
+  const stmtInsert = `
+    INSERT INTO employee (id, organisation_id, employee_name, employee_email, job_title)
+    VALUES ($1, $2, $3, $4, $5);
+  `;
+
+  await pool.query(stmtInsert, [employee_id, organisation_id, employee_name, employee_email, job_title]);
 
   return {
     employee_name,
@@ -110,60 +114,65 @@ export const deleteEmployeeAccount = async (organisation_id: string, removedEmpl
   const currentDate = new Date();
   const currentQuarter = getQuarter(currentDate);
 
-  const stmtDelete = db.prepare(`DELETE FROM employee WHERE organisation_id = ? AND id = ?`);
-
-  const stmtUpdateMetric = db.prepare(`
+  const stmtDelete = `
+    DELETE FROM employee
+    WHERE organisation_id = $1 AND id = $2;
+  `;
+  const stmtUpdateMetric = `
     UPDATE metric
     SET resource = resource - 1
-    WHERE organisation_id = ? AND quarter = ?
-  `);
+    WHERE organisation_id = $1 AND quarter = $2;
+  `;
 
-  stmtDelete.run(organisation_id, removedEmployeeInfo.employee_id);
-  stmtUpdateMetric.run(organisation_id, currentQuarter);
+  await pool.query(stmtDelete, [organisation_id, removedEmployeeInfo.employee_id]);
+  await pool.query(stmtUpdateMetric, [organisation_id, currentQuarter]);
 };
 
 export const clearOrganisationData = async (organisation_id: string) => {
   // Update metrics data to 0
-  const stmtClearMetricData = db.prepare(`
+  const stmtClearMetricData = `
     UPDATE metric
     SET total_revenue = 0, project = 0, time = 0
-    WHERE organisation_id = ?
-    `);
-
-  stmtClearMetricData.run(organisation_id);
+    WHERE organisation_id = $1;
+  `;
 
   // Clear Project Data
-  const stmtClearProjectData = db.prepare(`DELETE FROM project WHERE  organisation_id = ?`);
-
-  stmtClearProjectData.run(organisation_id);
+  const stmtClearProjectData = `
+    DELETE FROM project
+    WHERE organisation_id = $1;
+  `;
 
   // Update progress data to 0
-  const stmtClearProgressData = db.prepare(`
+  const stmtClearProgressData = `
     UPDATE progress
     SET total_project = 0, completed_project = 0, delayed_project = 0, ongoing_project = 0
-    WHERE organisation_id = ?
-    `);
-
-  stmtClearProgressData.run(organisation_id);
+    WHERE organisation_id = $1;
+  `;
 
   // Clear Task
-  const stmtClearTask = db.prepare(`DELETE FROM task_list WHERE organisation_id = ?`);
-  stmtClearTask.run(organisation_id);
+  const stmtClearTask = `
+    DELETE FROM task_list
+    WHERE organisation_id = $1;
+  `;
 
   // Clear Notes
-  const stmtClearNote = db.prepare(`
+  const stmtClearNote = `
     UPDATE task_note
-    SET note = ?
-    WHERE organisation_id = ? 
-    `);
-  stmtClearNote.run("", organisation_id);
+    SET note = ''
+    WHERE organisation_id = $1;
+  `;
 
   // Set Project workload to 0
-  const stmtClearProjectWorkLoad = db.prepare(`
+  const stmtClearProjectWorkLoad = `
     UPDATE project_workload
     SET no_of_project = 0
-    WHERE organisation_id = ?
-    `);
+    WHERE organisation_id = $1;
+  `;
 
-  stmtClearProjectWorkLoad.run(organisation_id);
+  await pool.query(stmtClearMetricData, [organisation_id]);
+  await pool.query(stmtClearProjectData, [organisation_id]);
+  await pool.query(stmtClearProgressData, [organisation_id]);
+  await pool.query(stmtClearTask, [organisation_id]);
+  await pool.query(stmtClearNote, [organisation_id]);
+  await pool.query(stmtClearProjectWorkLoad, [organisation_id]);
 };

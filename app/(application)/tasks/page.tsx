@@ -14,20 +14,22 @@ const TaskPage = async () => {
   if (!result.user) {
     return redirect("/");
   }
-  const employeeDetails: EmployeeSignInDetailsType = getEmployeeByEmployeeId(result.user.id);
+  const employeeDetails: EmployeeSignInDetailsType = await getEmployeeByEmployeeId(result.user.id);
   const organisation_id = employeeDetails.organisation_id;
   const employee_id = employeeDetails.id;
-  const employeeList: EmployeeListType[] = getAllEmployee(organisation_id);
+  const employeeList: EmployeeListType[] = await getAllEmployee(organisation_id);
 
-  const taskList: TaskListType[] = getTaskListAssignedByMe(organisation_id, employee_id);
-  const updateTaskListWithEmployeeName = taskList.map((task) => {
-    const assignedToEmployee = getEmployeeByEmployeeId(task.assigned_to);
+  const taskList: TaskListType[] = await getTaskListAssignedByMe(organisation_id, employee_id);
+  const updateTaskListWithEmployeeName = await Promise.all(
+    taskList.map(async (task) => {
+      const assignedToEmployee = await getEmployeeByEmployeeId(task.assigned_to);
 
-    return {
-      ...task,
-      assigned_to_name: assignedToEmployee.employee_name,
-    };
-  });
+      return {
+        ...task,
+        assigned_to_name: assignedToEmployee.employee_name,
+      };
+    })
+  );
 
   return (
     <>

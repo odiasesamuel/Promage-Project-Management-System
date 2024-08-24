@@ -35,7 +35,8 @@ export type EmployeeOptions = {
 };
 
 export function NewProjectForm({ employeeList, setOpen, editableProjectData }: NewProjectFormProps) {
-  const [selectedEmployee, setSelectedEmployee] = useState<MultiValue<EmployeeOptions>>(editableProjectData?.projectTeam ? JSON.parse(editableProjectData.projectTeam) : []);
+  const editableProjectDataTeam: any = editableProjectData?.projectTeam ? editableProjectData.projectTeam : [];
+  const [selectedEmployee, setSelectedEmployee] = useState<MultiValue<EmployeeOptions>>(editableProjectDataTeam);
   const [progressDisabled, setProgressDisabled] = useState<boolean>(false);
 
   const selectedEmployeeHandler = (selectedOptions: MultiValue<EmployeeOptions>) => {

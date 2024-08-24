@@ -76,8 +76,6 @@ export const destroySession = async () => {
 export const deleteExpiredSessions = () => {
   lucia.deleteExpiredSessions();
 };
-
-// import { cookies } from "next/headers";
 // import { Lucia, TimeSpan } from "lucia";
 // import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
 // import db from "./db";

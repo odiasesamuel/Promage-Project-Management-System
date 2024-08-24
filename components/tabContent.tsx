@@ -18,7 +18,7 @@ type NoteDataType = {
 };
 
 const TabContent: React.FC<TabContentType> = async ({ taskList, organisation_id, employee_id }) => {
-  const note: NoteDataType = getNoteContent(organisation_id, employee_id);
+  const note: NoteDataType = await getNoteContent(organisation_id, employee_id);
   const noteContent = note.note;
 
   return (

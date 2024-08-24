@@ -32,8 +32,8 @@ export default async function RootLayout({
   if (!result.user) {
     return redirect("/");
   }
-  const employeeDetails: EmployeeSignInDetailsType = getEmployeeByEmployeeId(result.user.id);
-  const employeeList: EmployeeListType[] = getAllEmployee(employeeDetails.organisation_id);
+  const employeeDetails: EmployeeSignInDetailsType = await getEmployeeByEmployeeId(result.user.id);
+  const employeeList: EmployeeListType[] = await getAllEmployee(employeeDetails.organisation_id);
 
   return (
     <html lang="en">

@@ -1,64 +1,66 @@
-import db from "./db";
+import { pool } from "./supabaseClient";
 import { z } from "zod";
 import { reviewTaskFormSchema } from "@/lib/formSchema";
 
 export const storeNewTask = async (organisation_id: string, values: z.infer<typeof reviewTaskFormSchema>, assigned_by: string) => {
   const { task_description, assigned_to, checked, status } = values;
-  const stmtInsert = db.prepare(`
+  const query = `
     INSERT INTO task_list (organisation_id, assigned_by, assigned_to, description, checked, status)
-    VALUES (?, ?, ?, ?, ?, ?)
-`);
-
-  stmtInsert.run(organisation_id, assigned_by, assigned_to, task_description, checked, status);
+    VALUES ($1, $2, $3, $4, $5, $6)
+  `;
+  await pool.query(query, [organisation_id, assigned_by, assigned_to, task_description, checked, status]);
 };
 
 export const reviewTask = async (organisation_id: string, values: z.infer<typeof reviewTaskFormSchema>, task_id: number) => {
   const { task_description, assigned_to, checked, status } = values;
-  const stmtUpdate = db.prepare(`
+  const query = `
     UPDATE task_list
-    SET description = ?, assigned_to = ?, checked = ?, status = ?
-    WHERE organisation_id = ? AND task_id = ?
-    `);
-
-  stmtUpdate.run(task_description, assigned_to, checked, status, organisation_id, task_id);
+    SET description = $1, assigned_to = $2, checked = $3, status = $4
+    WHERE organisation_id = $5 AND task_id = $6
+  `;
+  await pool.query(query, [task_description, assigned_to, checked, status, organisation_id, task_id]);
 };
 
 export const deleteTask = async (organisation_id: string, task_id: number | undefined) => {
-  const stmtDelete = db.prepare(`DELETE FROM task_list WHERE organisation_id = ? AND task_id = ?`);
-
-  stmtDelete.run(organisation_id, task_id);
+  const query = `
+    DELETE FROM task_list
+    WHERE organisation_id = $1 AND task_id = $2
+  `;
+  await pool.query(query, [organisation_id, task_id]);
 };
 
 export const checkCompletedTask = async (organisation_id: string, employee_id: string, task_id: number, checked: string) => {
-
-  const stmtUpdate = db.prepare(`
+  const query = `
     UPDATE task_list
-    SET checked = ?
-    WHERE organisation_id = ? AND assigned_to = ? AND task_id = ?
-    `);
-
-  stmtUpdate.run(checked, organisation_id, employee_id, task_id);
+    SET checked = $1
+    WHERE organisation_id = $2 AND assigned_to = $3 AND task_id = $4
+  `;
+  await pool.query(query, [checked, organisation_id, employee_id, task_id]);
 };
 
-export const getNoteContent = (organisation_id: string, employee_id: string) => {
-  return db.prepare(`SELECT * FROM task_note WHERE organisation_id = ? AND employee_id = ?`).get(organisation_id, employee_id);
+export const getNoteContent = async (organisation_id: string, employee_id: string) => {
+  const query = `
+    SELECT * FROM task_note
+    WHERE organisation_id = $1 AND employee_id = $2
+  `;
+  const result = await pool.query(query, [organisation_id, employee_id]);
+  return result.rows[0];
 };
 
 export const saveNote = async (organisation_id: string, employee_id: string, note: string) => {
-  const stmtUpdate = db.prepare(`
+  const query = `
     UPDATE task_note
-    SET note = ?
-    WHERE organisation_id = ? AND employee_id = ?
-  `);
-
-  stmtUpdate.run(note, organisation_id, employee_id);
+    SET note = $1
+    WHERE organisation_id = $2 AND employee_id = $3
+  `;
+  await pool.query(query, [note, organisation_id, employee_id]);
 };
 
 export const clearNote = async (organisation_id: string, employee_id: string) => {
-  const stmtClearNote = db.prepare(`
+  const query = `
     UPDATE task_note
-    SET note = ?
-    WHERE organisation_id = ? AND employee_id = ?
-    `);
-  stmtClearNote.run("", organisation_id, employee_id);
+    SET note = ''
+    WHERE organisation_id = $1 AND employee_id = $2
+  `;
+  await pool.query(query, [organisation_id, employee_id]);
 };

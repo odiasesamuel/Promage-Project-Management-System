@@ -12,8 +12,8 @@ type ProjectWorkloadProps = {
   organisation_id: string;
 };
 
-const ProjectWorkload: React.FC<ProjectWorkloadProps> = ({ organisation_id }) => {
-  const data: ProjectWorkloadDataType[] = getProjectWorkLoad(organisation_id);
+const ProjectWorkload: React.FC<ProjectWorkloadProps> = async ({ organisation_id }) => {
+  const data: ProjectWorkloadDataType[] = await getProjectWorkLoad(organisation_id);
   const maxProjects = data.reduce((max, employee) => (employee.no_of_project > max ? employee.no_of_project : max), -Infinity);
 
   return (

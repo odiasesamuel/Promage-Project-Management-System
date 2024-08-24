@@ -11,9 +11,7 @@ export const exportProjectReport = (data: ProjectListType[]) => {
     "Due Date": formatDateInProjectSummary(project.due_date),
     Status: project.status,
     Progress: `${project.progress}%`,
-    "Project Team": JSON.parse(project.project_team)
-      .map((member: any) => member.label)
-      .join(", "),
+    "Project Team": project.project_team.map((member: any) => member.label).join(", "),
   }));
   const workbook = XLSX.utils.book_new();
   const worksheet = XLSX.utils.json_to_sheet(transformedData);

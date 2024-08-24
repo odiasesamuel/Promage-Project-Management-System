@@ -18,13 +18,13 @@ const Home = async () => {
   if (!result.user) {
     return redirect("/");
   }
-  const employeeDetails: EmployeeSignInDetailsType = getEmployeeByEmployeeId(result.user.id);
+  const employeeDetails: EmployeeSignInDetailsType = await getEmployeeByEmployeeId(result.user.id);
   const organisation_id = employeeDetails.organisation_id;
   const employee_id = employeeDetails.id;
 
-  const projectList: ProjectListType[] = getProjectSummary(organisation_id);
-  const progress: ProgressDataType[] = getProgress(organisation_id);
-  const taskList: TaskListType[] = getTaskListAssignedToMe(organisation_id, employee_id);
+  const projectList: ProjectListType[] = await getProjectSummary(organisation_id);
+  const progress: ProgressDataType[] = await getProgress(organisation_id);
+  const taskList: TaskListType[] = await getTaskListAssignedToMe(organisation_id, employee_id);
 
   return (
     <div className="text-black">

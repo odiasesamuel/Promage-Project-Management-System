@@ -24,7 +24,7 @@ type Metrics = {
 };
 
 const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
-  const metrics: Metrics[] = getMetrics(organisation_id);
+  const metrics: Metrics[] = await getMetrics(organisation_id);
 
   // using route handlers To get the list of employees and their organisations
   // const response = await fetch("http://localhost:3000/api/user_list");

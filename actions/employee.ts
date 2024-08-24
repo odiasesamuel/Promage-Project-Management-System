@@ -28,7 +28,7 @@ export const removeExistingEmployee = async (organisation_id: string, removedEmp
 
     const employeeDetails = await getEmployeeByEmployeeId(removedEmployeeInfo.employee_id);
 
-    deleteEmployeeAccount(organisation_id, removedEmployeeInfo);
+    await deleteEmployeeAccount(organisation_id, removedEmployeeInfo);
 
     if (removedEmployeeInfo.notify === "Yes") {
       // Send email notification to employee of removal
@@ -59,7 +59,7 @@ export const addNewEmployee = async (organisation_id: string, employee_info: Emp
     }
 
     const employeeDetails = await createSingleEmployeeAccount(organisation_id, employee_info);
-    await updateMetricsAfterAddingSingleEmployee(organisation_id, employeeDetails);
+    await updateMetricsAfterAddingSingleEmployee(organisation_id);
     await addProjectWorkloadDataAfterAddingSingleEmployee(organisation_id, employeeDetails);
 
     const organisationDetails = await getOrganisationByOrganisationId(organisation_id);
@@ -82,12 +82,12 @@ export const addNewEmployee = async (organisation_id: string, employee_info: Emp
 };
 
 export const getEmployeeList = async (organisation_id: string) => {
-  const employeeList: EmployeeListType[] = getAllEmployee(organisation_id);
+  const employeeList: EmployeeListType[] = await getAllEmployee(organisation_id);
 
   return employeeList;
 };
 
-export const clearOrganisationDataAction = (organisation_id: string) => {
-  clearOrganisationData(organisation_id);
+export const clearOrganisationDataAction = async (organisation_id: string) => {
+  await clearOrganisationData(organisation_id);
   revalidatePath("/dashboard");
 };
