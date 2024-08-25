@@ -49,12 +49,14 @@ export function DataTable<TData, TValue>({ columns, data, employeeList, classNam
         <ReviewTaskForm employeeList={employeeList!} assigned_by={assigned_by} />
       </div>
       <div className="rounded-md">
-        <Table>
+        <Table className="w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="border-b-2 border-[#D8D1CD]">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
+                  <TableHead key={header.id} className="text-left px-2">
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
                 ))}
               </TableRow>
             ))}
@@ -63,8 +65,10 @@ export function DataTable<TData, TValue>({ columns, data, employeeList, classNam
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  {row.getVisibleCells().map((cell, cellIndex) => (
+                    <TableCell key={cell.id} className={cellIndex === 2 ? "px-8" : cellIndex === 3 ? "px-4" : "px-2"}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))
