@@ -15,8 +15,8 @@ export const ConfirmLogoutButton = () => {
 };
 
 export const ConfirmClearDataButton: React.FC<{ organisation_id: string }> = ({ organisation_id }) => {
-  const logoutHandler = () => {
+  const clearDataHandler = () => {
     clearOrganisationDataAction(organisation_id);
   };
-  return <AlertDialogAction onClick={logoutHandler}>Confirm</AlertDialogAction>;
+  return <AlertDialogAction onClick={clearDataHandler}>Confirm</AlertDialogAction>;
 };

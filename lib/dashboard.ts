@@ -127,3 +127,14 @@ export const addProjectWorkloadDataAfterAddingSingleEmployee = async (organisati
 
   await pool.query(stmtInsert, [organisation_id, employee_id, employee_name, 0]);
 };
+
+export const updateNoteDataAfterAddingSingleEmployee = async (organisation_id: string, employee_info: EmployeeSignUpDetailsType & { employee_id: string }) => {
+  const { employee_name, employee_id } = employee_info;
+
+  const stmtInsert = `
+  INSERT INTO task_note (organisation_id, employee_id, note)
+  VALUES ($1, $2, $3);
+`;
+
+  await pool.query(stmtInsert, [organisation_id, employee_id, ""]);
+};

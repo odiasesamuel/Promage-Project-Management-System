@@ -62,7 +62,7 @@ export const welcomeAdminEmailTemplate = (organisation_id: string, organisation_
       </ul>
       <p>Please keep this information secure. You can log in to your admin account using the link below:</p>
     	<p style="text-align: center; padding: 10px 0;">
-        <a href="https://promage.com/login" style="background-color: #E65F2B; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Log In to Your Account</a>
+        <a href="https://promage-project-management-system.onrender.com" style="background-color: #E65F2B; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Log In to Your Account</a>
       </p>
       <p>Once logged in, you can start adding projects, assigning tasks, and monitoring your organization's progress.</p>
 
@@ -100,7 +100,7 @@ export const welcomeEmployeeEmailTemplate = (
         </ul>
         <p>Please keep this information secure. You can log in to your employee account using the link below:</p>
           <p style="text-align: center; padding: 10px 0;">
-          <a href="https://promage.com/login" style="background-color: #E65F2B; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Log In to Your Account</a>
+          <a href="https://promage-project-management-system.onrender.com" style="background-color: #E65F2B; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Log In to Your Account</a>
         </p>
         <p>Once logged in, you can start adding projects, assigning tasks, and monitoring your organization's progress.</p>
   

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { EmployeeSignUpDetailsType } from "@/actions/auth-action";
 import { createSingleEmployeeAccount, getAllEmployee, getOrganisationByOrganisationId, deleteEmployeeAccount, getEmployeeByEmployeeId, clearOrganisationData } from "@/lib/employee";
-import { updateMetricsAfterAddingSingleEmployee, addProjectWorkloadDataAfterAddingSingleEmployee } from "@/lib/dashboard";
+import { updateMetricsAfterAddingSingleEmployee, addProjectWorkloadDataAfterAddingSingleEmployee, updateNoteDataAfterAddingSingleEmployee } from "@/lib/dashboard";
 import { welcomeEmployeeEmailTemplate, removalFromOrganisationWorkspace } from "@/lib/email/templates";
 import { sendEmail, EmailOptions } from "@/lib/email/email";
 
@@ -61,6 +61,7 @@ export const addNewEmployee = async (organisation_id: string, employee_info: Emp
     const employeeDetails = await createSingleEmployeeAccount(organisation_id, employee_info);
     await updateMetricsAfterAddingSingleEmployee(organisation_id);
     await addProjectWorkloadDataAfterAddingSingleEmployee(organisation_id, employeeDetails);
+    await updateNoteDataAfterAddingSingleEmployee(organisation_id, employeeDetails);
 
     const organisationDetails = await getOrganisationByOrganisationId(organisation_id);
 
