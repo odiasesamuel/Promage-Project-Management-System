@@ -9,7 +9,7 @@ export const getMetrics = async (organisation_id: string) => {
 };
 
 export const getProjectSummary = async (organisation_id: string) => {
-  const result = await pool.query("SELECT * FROM project WHERE organisation_id = $1", [organisation_id]);
+  const result = await pool.query("SELECT * FROM project WHERE organisation_id = $1 ORDER BY created_at DESC", [organisation_id]);
   return result.rows;
 };
 
@@ -19,12 +19,12 @@ export const getProgress = async (organisation_id: string) => {
 };
 
 export const getTaskListAssignedToMe = async (organisation_id: string, employee_id: string) => {
-  const result = await pool.query("SELECT * FROM task_list WHERE organisation_id = $1 AND assigned_to = $2", [organisation_id, employee_id]);
+  const result = await pool.query("SELECT * FROM task_list WHERE organisation_id = $1 AND assigned_to = $2 ORDER BY created_at DESC", [organisation_id, employee_id]);
   return result.rows;
 };
 
 export const getTaskListAssignedByMe = async (organisation_id: string, employee_id: string) => {
-  const result = await pool.query("SELECT * FROM task_list WHERE organisation_id = $1 AND assigned_by = $2", [organisation_id, employee_id]);
+  const result = await pool.query("SELECT * FROM task_list WHERE organisation_id = $1 AND assigned_by = $2 ORDER BY created_at DESC", [organisation_id, employee_id]);
   return result.rows;
 };
 
