@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { pool } from "@/lib/supabaseClient";
+import { pool } from "@/lib/db";
 
 export const GET = async () => {
   const stmt = `SELECT organisation.organisation_name, employee.employee_name
