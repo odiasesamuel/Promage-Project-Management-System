@@ -37,7 +37,7 @@ export const welcomeOrganisationEmailTemplate = (
         <p>The Promage Team</p>
         <div style="display: flex; align-items: center;">
           <img 
-            src="https://raw.githubusercontent.com/odiasesamuel/Promage-Project-Management-System/feature/auth-api/assets/logo.png" 
+            src="https://raw.githubusercontent.com/odiasesamuel/Promage-Project-Management-System/main/assets/logo.png" 
             alt="Logo of Promage" 
             style="width: 36px; height: 35px;"
           />
@@ -70,7 +70,7 @@ export const welcomeAdminEmailTemplate = (organisation_id: string, organisation_
       <p>The Promage Team</p>
   	<div style="display: flex; align-items: center;">
   	<img 
-        src="https://raw.githubusercontent.com/odiasesamuel/Promage-Project-Management-System/feature/auth-api/assets/logo.png" 
+        src="https://raw.githubusercontent.com/odiasesamuel/Promage-Project-Management-System/main/assets/logo.png" 
         alt="Logo of Promage" 
         style="width: 36px; height: 35px;"
     />
@@ -108,7 +108,7 @@ export const welcomeEmployeeEmailTemplate = (
         <p>The Promage Team</p>
         <div style="display: flex; align-items: center;">
         <img 
-          src="https://raw.githubusercontent.com/odiasesamuel/Promage-Project-Management-System/feature/auth-api/assets/logo.png" 
+          src="https://raw.githubusercontent.com/odiasesamuel/Promage-Project-Management-System/main/assets/logo.png" 
           alt="Logo of Promage" 
           style="width: 36px; height: 35px;"
       />
@@ -137,7 +137,7 @@ export const removalFromOrganisationWorkspace = (
         <p>The Promage Team</p>
         <div style="display: flex; align-items: center;">
         <img 
-          src="https://raw.githubusercontent.com/odiasesamuel/Promage-Project-Management-System/feature/auth-api/assets/logo.png" 
+          src="https://raw.githubusercontent.com/odiasesamuel/Promage-Project-Management-System/main/assets/logo.png" 
           alt="Logo of Promage" 
           style="width: 36px; height: 35px;"
       />
