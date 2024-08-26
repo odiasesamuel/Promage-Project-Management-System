@@ -1,4 +1,4 @@
-import { pool } from "./supabaseClient";
+import { pool } from "./db";
 import { OrganisationSignUpDetailsType, EmployeeSignUpDetailsType } from "@/actions/auth-action";
 import { generateRandomCharID } from "@/utils/generateRandomCharID";
 import { removeExistingEmployeeFormType } from "@/actions/employee";

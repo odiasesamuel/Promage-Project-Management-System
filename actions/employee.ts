@@ -88,6 +88,11 @@ export const getEmployeeList = async (organisation_id: string) => {
   return employeeList;
 };
 
+export const getEmployeeByEmployeeIdAction = async (id: string) => {
+  const employee = await getEmployeeByEmployeeId(id);
+  return employee;
+};
+
 export const clearOrganisationDataAction = async (organisation_id: string) => {
   await clearOrganisationData(organisation_id);
   revalidatePath("/dashboard");

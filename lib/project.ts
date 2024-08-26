@@ -1,4 +1,4 @@
-import { pool } from "./supabaseClient";
+import { pool } from "./db";
 import { newProjectFormValueType } from "@/actions/project";
 import { EmployeeOptions } from "@/components/form/newProjectForm";
 import { MultiValue } from "react-select";

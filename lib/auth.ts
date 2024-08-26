@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { Lucia, TimeSpan } from "lucia";
 import { NodePostgresAdapter } from "@lucia-auth/adapter-postgresql";
-import { pool } from "./supabaseClient";
+import { pool } from "./db";
 
 const adapter = new NodePostgresAdapter(pool, {
   user: "employee",

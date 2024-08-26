@@ -26,7 +26,6 @@ type ReviewTaskFormType = {
 
 const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTaskData, assigned_by }) => {
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const organisation_id = employeeList[0].organisation_id;
 
   const form = useForm<z.infer<typeof reviewTaskFormSchema>>({
@@ -41,12 +40,9 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTa
 
   const { toast } = useToast();
   async function onSubmit(values: z.infer<typeof reviewTaskFormSchema>) {
-    setIsLoading(true);
+    setOpen(false);
     const result = editableTaskData ? await reviewTaskAction(organisation_id, values, editableTaskData.task_id) : await createNewTask(organisation_id, values, assigned_by!);
 
-    setOpen(false);
-    setIsLoading(false);
-    form.reset();
     if (!result.success) {
       toast({
         variant: "destructive",

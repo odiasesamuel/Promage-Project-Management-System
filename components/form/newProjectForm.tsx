@@ -22,7 +22,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { EmployeeListType } from "@/app/(application)/layout";
 import { EditableProjectData } from "../columns";
 import { DeleteProjectOrTaskConfirmation } from "../confirmationDialog";
-import { Loader2 } from "lucide-react";
 
 type NewProjectFormProps = {
   employeeList: EmployeeListType[];
@@ -63,14 +62,13 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
 
   const { toast } = useToast();
 
-  const [isLoading, setIsLoading] = useState("");
   async function onSubmit(values: z.infer<typeof createNewProjectSchema>) {
     // Submit and Create a new Project
     const projectManager = employeeList.find((employee) => employee.employee_name === values.projectManager);
     const projectManagerId = projectManager?.id;
     try {
       if (editableProjectData) {
-        setIsLoading("review_project");
+        setOpen(false);
         await reviewProjectAction(
           {
             organisation_id: employeeList[0].organisation_id,
@@ -81,10 +79,8 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
           projectManagerId,
           editableProjectData.project_id
         );
-        setIsLoading("");
-        setOpen(false);
       } else {
-        setIsLoading("create_project");
+        setOpen(false);
         await createNewProject(
           {
             organisation_id: employeeList[0].organisation_id,
@@ -94,8 +90,6 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
           selectedEmployee,
           projectManagerId
         );
-        setIsLoading("");
-        setOpen(false);
         toast({
           title: "Project created successfully",
           description: "Your project has been created.",
@@ -288,9 +282,8 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
 
         {editableProjectData ? (
           <div className="w-full flex justify-between mt-5">
-            <Button type="submit" className="w-[45%]" disabled={isLoading === "review_project"}>
+            <Button type="submit" className="w-[45%]">
               Review Project
-              {isLoading === "review_project" && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
             </Button>
             <DeleteProjectOrTaskConfirmation deleteHandler={deleteProjectHandler} content="project">
               <Button type="button" variant="destructive" className="w-[45%]">
@@ -299,9 +292,8 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
             </DeleteProjectOrTaskConfirmation>
           </div>
         ) : (
-          <Button type="submit" className="w-full mt-5" disabled={isLoading === "create_project"}>
+          <Button type="submit" className="w-full mt-5">
             Create Project
-            {isLoading === "create_project" && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
           </Button>
         )}
       </form>

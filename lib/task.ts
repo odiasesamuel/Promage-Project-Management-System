@@ -1,4 +1,4 @@
-import { pool } from "./supabaseClient";
+import { pool } from "./db";
 import { z } from "zod";
 import { reviewTaskFormSchema } from "@/lib/formSchema";
 

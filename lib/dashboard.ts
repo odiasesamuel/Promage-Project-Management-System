@@ -1,4 +1,4 @@
-import { pool } from "./supabaseClient";
+import { pool } from "./db";
 import { MetricSignUpDetailsType } from "@/actions/auth-action";
 import { getQuarter, getPreviousQuarter } from "@/utils/dateUtils";
 import { EmployeeSignUpDetailsType, AdminDetailsType } from "@/actions/auth-action";

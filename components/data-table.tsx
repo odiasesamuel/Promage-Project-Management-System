@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { ColumnDef, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, TableMeta, RowData } from "@tanstack/react-table";
+import { supabase } from "@/lib/supabaseClient";
+import { useState, useEffect } from "react";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
@@ -17,15 +19,16 @@ import { EmployeeListType } from "@/app/(application)/layout";
 import { exportProjectReport } from "@/utils/exportProjectReport";
 import { ProjectListType } from "@/components/columns";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData extends ProjectListType, TValue> {
+  columns: ColumnDef<ProjectListType, any>[];
   data: TData[];
   employeeList?: EmployeeListType[];
   dataTableHeading?: string;
   className?: string;
 }
 
-export function DataTable<TData, TValue>({ columns, data, employeeList, dataTableHeading, className }: DataTableProps<TData, TValue>) {
+export function DataTable<TData extends ProjectListType, TValue>({ columns, data, employeeList, dataTableHeading, className }: DataTableProps<TData, TValue>) {
+  const [project, setProject] = useState<ProjectListType[]>(data);
   const pathname = usePathname();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
@@ -38,8 +41,39 @@ export function DataTable<TData, TValue>({ columns, data, employeeList, dataTabl
     return projectName.includes(searchValue) || projectManager.includes(searchValue);
   };
 
+  useEffect(() => {
+    const channel = supabase
+      .channel("custom-all-channel")
+      .on("postgres_changes", { event: "*", schema: "public", table: "project" }, (payload) => {
+        const newProject = payload.new as ProjectListType;
+
+        setProject((prevProjects) => {
+          let updatedProjects;
+          switch (payload.eventType) {
+            case "INSERT":
+              updatedProjects = [newProject, ...prevProjects];
+              break;
+            case "UPDATE":
+              updatedProjects = prevProjects.map((project) => (project.project_id === newProject.project_id ? newProject : project));
+              break;
+            case "DELETE":
+              updatedProjects = prevProjects.filter((project) => project.project_id !== payload.old.project_id);
+              break;
+            default:
+              updatedProjects = prevProjects;
+          }
+          return updatedProjects;
+        });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   const table = useReactTable({
-    data,
+    data: project,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -61,7 +95,7 @@ export function DataTable<TData, TValue>({ columns, data, employeeList, dataTabl
   };
 
   const exportReportHandler = () => {
-    exportProjectReport(data as ProjectListType[]);
+    exportProjectReport(project);
   };
 
   return (

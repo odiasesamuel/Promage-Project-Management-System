@@ -2,6 +2,9 @@
 
 import * as React from "react";
 import { ColumnDef, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, TableMeta, RowData } from "@tanstack/react-table";
+import { supabase } from "@/lib/supabaseClient";
+import { useState, useEffect } from "react";
+import { getEmployeeByEmployeeIdAction } from "@/actions/employee";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
@@ -13,20 +16,62 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { EmployeeListType } from "@/app/(application)/layout";
 import ReviewTaskForm from "./form/reviewTaskForm";
+import { TaskListType } from "./taskList";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData extends TaskListType, TValue> {
+  columns: ColumnDef<TaskListType, any>[];
   data: TData[];
   employeeList?: EmployeeListType[];
   className?: string;
   assigned_by: string;
 }
 
-export function DataTable<TData, TValue>({ columns, data, employeeList, className, assigned_by }: DataTableProps<TData, TValue>) {
+export function DataTable<TData extends TaskListType, TValue>({ columns, data, employeeList, className, assigned_by }: DataTableProps<TData, TValue>) {
+  const [task, setTask] = useState<TaskListType[]>(data);
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
+  useEffect(() => {
+    const channel = supabase
+      .channel("custom-all-channel")
+      .on("postgres_changes", { event: "*", schema: "public", table: "task_list" }, async (payload) => {
+        let newTask = payload.new as TaskListType;
+        const assignedToEmployee = await getEmployeeByEmployeeIdAction(newTask.assigned_to);
+
+        setTask((prevTasks) => {
+          let updatedTasks;
+          switch (payload.eventType) {
+            case "INSERT":
+              newTask = {
+                ...newTask,
+                assigned_to_name: assignedToEmployee.employee_name,
+              };
+              updatedTasks = [newTask, ...prevTasks];
+              break;
+            case "UPDATE":
+              newTask = {
+                ...newTask,
+                assigned_to_name: assignedToEmployee.employee_name,
+              };
+              updatedTasks = prevTasks.map((task) => (task.task_id === newTask.task_id ? newTask : task));
+              break;
+            case "DELETE":
+              updatedTasks = prevTasks.filter((task) => task.task_id !== payload.old.task_id);
+              break;
+            default:
+              updatedTasks = prevTasks;
+          }
+          return updatedTasks;
+        });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   const table = useReactTable({
-    data,
+    data: task,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
