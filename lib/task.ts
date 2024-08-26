@@ -12,13 +12,13 @@ export const storeNewTask = async (organisation_id: string, values: z.infer<type
 };
 
 export const reviewTask = async (organisation_id: string, values: z.infer<typeof reviewTaskFormSchema>, task_id: number) => {
-  const { task_description, assigned_to, checked, status } = values;
+  const { task_description, assigned_to, status } = values;
   const query = `
     UPDATE task_list
-    SET description = $1, assigned_to = $2, checked = $3, status = $4
-    WHERE organisation_id = $5 AND task_id = $6
+    SET description = $1, assigned_to = $2, status = $3
+    WHERE organisation_id = $4 AND task_id = $5
   `;
-  await pool.query(query, [task_description, assigned_to, checked, status, organisation_id, task_id]);
+  await pool.query(query, [task_description, assigned_to, status, organisation_id, task_id]);
 };
 
 export const deleteTask = async (organisation_id: string, task_id: number | undefined) => {
