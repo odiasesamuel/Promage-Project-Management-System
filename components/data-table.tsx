@@ -43,7 +43,7 @@ export function DataTable<TData extends ProjectListType, TValue>({ columns, data
 
   useEffect(() => {
     const channel = supabase
-      .channel("custom-all-channel")
+      .channel("project-channel")
       .on("postgres_changes", { event: "*", schema: "public", table: "project" }, (payload) => {
         const newProject = payload.new as ProjectListType;
 

@@ -1,4 +1,7 @@
-import { getMetrics } from "@/lib/dashboard";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { getQuarter, getPreviousQuarter } from "@/utils/dateUtils";
 import Image from "next/image";
@@ -10,10 +13,10 @@ import incrementArrow from "@/assets/incrementArrow.svg";
 import decrementArrow from "@/assets/decrementArrow.svg";
 
 type MetricsProps = {
-  organisation_id: string;
+  metricsData: MetricsType[];
 };
 
-type Metrics = {
+export type MetricsType = {
   metric_id: number;
   organisation_id: string;
   quarter: string;
@@ -23,13 +26,36 @@ type Metrics = {
   resource: number;
 };
 
-const Metrics: React.FC<MetricsProps> = async ({ organisation_id }) => {
-  const metrics: Metrics[] = await getMetrics(organisation_id);
-
+const Metrics: React.FC<MetricsProps> = ({ metricsData }) => {
   // using route handlers To get the list of employees and their organisations
   // const response = await fetch("http://localhost:3000/api/user_list");
   // const metricsRouteHandler = await response.json();
   // console.log(metricsRouteHandler);
+
+  // const metrics = useRef<MetricsType[]>(metricsData);
+  const [metrics, setMetrics] = useState<MetricsType[]>(metricsData);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("metric-channel")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "metric" }, (payload) => {
+        console.log(payload);
+        const newMetric = payload.new as MetricsType;
+
+        setMetrics((prevMetrics) => {
+          let updatedMetrics;
+
+          updatedMetrics = prevMetrics.map((metric) => (metric.metric_id === newMetric.metric_id ? newMetric : metric));
+
+          return updatedMetrics;
+        });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const currentDate = new Date();
   const currentQuarter = getQuarter(currentDate);

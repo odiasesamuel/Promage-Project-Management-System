@@ -5,11 +5,12 @@ import { DataTable } from "../../../components/data-table";
 import OverallProgress from "@/components/overallProgress";
 import ProjectWorkload from "@/components/projectWorkload";
 import TabContent from "@/components/tabContent";
-import { getProjectSummary, getProgress, getTaskListAssignedToMe } from "@/lib/dashboard";
+import { getProjectSummary, getProgress, getTaskListAssignedToMe, getMetrics } from "@/lib/dashboard";
 import { redirect } from "next/navigation";
 import { verifyAuth } from "@/lib/auth";
 import { getEmployeeByEmployeeId } from "@/lib/employee";
 import { EmployeeSignInDetailsType } from "@/actions/auth-action";
+import { MetricsType } from "@/components/metrics";
 import { ProgressDataType } from "@/components/overallProgress";
 import { TaskListType } from "@/components/taskList";
 
@@ -22,6 +23,7 @@ const Home = async () => {
   const organisation_id = employeeDetails.organisation_id;
   const employee_id = employeeDetails.id;
 
+  const metrics: MetricsType[] = await getMetrics(organisation_id);
   const projectList: ProjectListType[] = await getProjectSummary(organisation_id);
   const progress: ProgressDataType[] = await getProgress(organisation_id);
   const taskList: TaskListType[] = await getTaskListAssignedToMe(organisation_id, employee_id);
@@ -29,7 +31,7 @@ const Home = async () => {
   return (
     <div className="text-black">
       <h3 className="scroll-m-20 text-xl font-semibold tracking-tight my-5">Overview</h3>
-      <Metrics organisation_id={organisation_id} />
+      <Metrics metricsData={metrics} />
       <div className="flex justify-between my-6">
         <Card className="w-[64%] bg-[#F2EAE5]">
           <CardContent>
