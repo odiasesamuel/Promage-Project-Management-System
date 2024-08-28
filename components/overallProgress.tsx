@@ -2,6 +2,8 @@
 
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { supabase } from "@/lib/supabaseClient";
+import { useState, useEffect } from "react";
 
 export type ProgressDataType = {
   id: number;
@@ -12,10 +14,34 @@ export type ProgressDataType = {
 };
 
 type OverallProgressType = {
-  progress: ProgressDataType[];
+  progressData: ProgressDataType[];
 };
 
-const OverallProgress: React.FC<OverallProgressType> = ({ progress }) => {
+const OverallProgress: React.FC<OverallProgressType> = ({ progressData }) => {
+  const [progress, setProgress] = useState(progressData);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("progress-channel")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "progress" }, (payload) => {
+        console.log(payload);
+        const newProgress = payload.new as ProgressDataType;
+
+        setProgress((prevProgress) => {
+          let updatedProgress;
+
+          updatedProgress = prevProgress.map((progress) => (progress.id === newProgress.id ? newProgress : progress));
+
+          return updatedProgress;
+        });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   const total_project = progress[0].total_project === null ? 0 : progress[0].total_project;
   const completed_project = progress[0].completed_project === null ? 0 : progress[0].completed_project;
   const delayed_project = progress[0].delayed_project === null ? 0 : progress[0].delayed_project;
