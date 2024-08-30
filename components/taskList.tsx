@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
 import { Badge, BadgeProps } from "./ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
@@ -24,10 +25,33 @@ type TasklistProps = {
 };
 
 const TaskList: React.FC<TasklistProps> = ({ data, organisation_id, employee_id }) => {
+  const [taskList, setTaskList] = useState(data);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("task-channel")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "task_list" }, (payload) => {
+        const newTask = payload.new as TaskListType;
+
+        setTaskList((prevTask) => {
+          let updatedTaskList;
+
+          updatedTaskList = prevTask.map((task) => (task.task_id === newTask.task_id ? newTask : task));
+
+          return updatedTaskList;
+        });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   const rowsPerPage = 5;
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(rowsPerPage);
-  const pageCount = Math.ceil(data.length / rowsPerPage);
+  const pageCount = Math.ceil(taskList.length / rowsPerPage);
 
   const paginationPrevousHandler = () => {
     setStartIndex(startIndex - rowsPerPage);
@@ -46,7 +70,7 @@ const TaskList: React.FC<TasklistProps> = ({ data, organisation_id, employee_id 
 
   return (
     <ul>
-      {data.slice(startIndex, endIndex).map(({ task_id, description, checked, status }) => {
+      {taskList.slice(startIndex, endIndex).map(({ task_id, description, checked, status }) => {
         const variant: BadgeProps["variant"] = status === "Approved" ? "success" : status === "In review" ? "warning" : status === "On going" ? "onGoing" : "onGoing";
 
         return (
@@ -68,7 +92,7 @@ const TaskList: React.FC<TasklistProps> = ({ data, organisation_id, employee_id 
               <PaginationPrevious className={`${startIndex === 0 ? "pointer-events-none opacity-50" : undefined}`} onClick={paginationPrevousHandler} />
             </PaginationItem>
             <PaginationItem>
-              <PaginationNext className={endIndex === data.length ? "pointer-events-none opacity-50" : undefined} onClick={paginationNextHadler} />
+              <PaginationNext className={endIndex === taskList.length ? "pointer-events-none opacity-50" : undefined} onClick={paginationNextHadler} />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

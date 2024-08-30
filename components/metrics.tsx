@@ -39,7 +39,6 @@ const Metrics: React.FC<MetricsProps> = ({ metricsData }) => {
     const channel = supabase
       .channel("metric-channel")
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "metric" }, (payload) => {
-        console.log(payload);
         const newMetric = payload.new as MetricsType;
 
         setMetrics((prevMetrics) => {
