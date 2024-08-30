@@ -18,17 +18,16 @@ import usersIconNotActive from "@/assets/users.svg";
 import sidebarBavArrow from "@/assets/arrow.svg";
 import { LogoutConfirmation, ClearDataConfirmation } from "../confirmationDialog";
 import { LogOut } from "lucide-react";
-import { EmployeeListType } from "@/app/(application)/layout";
 import { EmployeeSignInDetailsType } from "@/actions/auth-action";
 import { Button } from "../ui/button";
 
 type NavBarProps = {
   className?: string;
-  employeeList: EmployeeListType[];
+  organisation_id: string;
   employeeDetails: EmployeeSignInDetailsType;
 };
 
-const NavBar: React.FC<NavBarProps> = ({ className, employeeList, employeeDetails }) => {
+const NavBar: React.FC<NavBarProps> = ({ className, organisation_id, employeeDetails }) => {
   return (
     <>
       <div className={`${className} relative`}>
@@ -39,7 +38,7 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeList, employeeDetail
             <Image src={sidebarBavArrow} alt="navigation sidebar icon" />
           </div>
         </div>
-        <CreatNewProject employeeList={employeeList} projectFormHeading="Create a new project">
+        <CreatNewProject organisation_id={organisation_id} projectFormHeading="Create a new project">
           <div className="bg-white w-[85%] h-[50px] ml-4 mt-16 mb-12 rounded-full flex items-center cursor-pointer">
             <Image src={newProjectIcon} alt="new project icon" className="mx-2" />
             <span className="text-sm text-black">

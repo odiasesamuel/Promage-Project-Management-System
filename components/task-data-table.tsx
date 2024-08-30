@@ -35,7 +35,6 @@ export function DataTable<TData extends TaskListType, TValue>({ columns, data, e
       .channel("task-channel")
       .on("postgres_changes", { event: "*", schema: "public", table: "task_list" }, async (payload) => {
         let newTask = payload.new as TaskListType;
-        console.log(payload);
         const assignedToEmployee = await getEmployeeByEmployeeIdAction(newTask.assigned_to);
 
         setTask((prevTasks) => {

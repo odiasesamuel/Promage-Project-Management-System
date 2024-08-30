@@ -3,17 +3,16 @@
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import NewProjectForm from "./form/newProjectForm";
 import { useState } from "react";
-import { EmployeeListType } from "@/app/(application)/layout";
 import { EditableProjectData } from "./columns";
 
 type CreatNewProjectProps = {
   children: React.ReactNode;
-  employeeList: EmployeeListType[];
+  organisation_id: string;
   projectFormHeading: string;
   editableProjectData?: EditableProjectData;
 };
 
-const CreatNewProject: React.FC<CreatNewProjectProps> = ({ children, employeeList, projectFormHeading, editableProjectData }) => {
+const CreatNewProject: React.FC<CreatNewProjectProps> = ({ children, organisation_id, projectFormHeading, editableProjectData }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -24,7 +23,7 @@ const CreatNewProject: React.FC<CreatNewProjectProps> = ({ children, employeeLis
           <DialogTitle>{projectFormHeading}</DialogTitle>
         </DialogHeader>
         <div className="flex items-center space-x-2">
-          <NewProjectForm employeeList={employeeList} setOpen={setOpen} editableProjectData={editableProjectData} />
+          <NewProjectForm organisation_id={organisation_id} setOpen={setOpen} editableProjectData={editableProjectData} />
         </div>
       </DialogContent>
     </Dialog>

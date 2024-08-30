@@ -24,7 +24,6 @@ const OverallProgress: React.FC<OverallProgressType> = ({ progressData }) => {
     const channel = supabase
       .channel("progress-channel")
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "progress" }, (payload) => {
-        console.log(payload);
         const newProgress = payload.new as ProgressDataType;
 
         setProgress((prevProgress) => {

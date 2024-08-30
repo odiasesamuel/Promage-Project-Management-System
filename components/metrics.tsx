@@ -76,22 +76,22 @@ const Metrics: React.FC<MetricsProps> = ({ metricsData }) => {
   const total_revenue = formatCurrency(currentQuarterMetrics.total_revenue);
   const currentQuarterRevenue = currentQuarterMetrics.total_revenue;
   const previousQuarterRevenue = previousQuarterMetrics.total_revenue;
-  const revenuePercentageChange = previousQuarterRevenue === 0 ? 0 : Math.abs((currentQuarterRevenue - previousQuarterRevenue) / previousQuarterRevenue) * 100;
+  const revenuePercentageChange = previousQuarterRevenue === 0 ? 100 : Math.abs((currentQuarterRevenue - previousQuarterRevenue) / previousQuarterRevenue) * 100;
   const revenueArrow = currentQuarterRevenue > previousQuarterRevenue ? incrementArrow : decrementArrow;
 
   const currentQuarterProject = currentQuarterMetrics.project;
   const previousQuarterProject = previousQuarterMetrics.project;
-  const projectPercentageChange = previousQuarterProject === 0 ? 0 : Math.abs((currentQuarterProject - previousQuarterProject) / previousQuarterProject) * 100;
+  const projectPercentageChange = previousQuarterProject === 0 ? 100 : Math.abs((currentQuarterProject - previousQuarterProject) / previousQuarterProject) * 100;
   const projectArrow = currentQuarterProject > previousQuarterProject ? incrementArrow : decrementArrow;
 
   const currentQuarterTime = currentQuarterMetrics.time;
   const previousQuarterTime = previousQuarterMetrics.time;
-  const timePercentageChange = previousQuarterTime === 0 ? 0 : Math.abs((currentQuarterTime - previousQuarterTime) / previousQuarterTime) * 100;
+  const timePercentageChange = previousQuarterTime === 0 ? 100 : Math.abs((currentQuarterTime - previousQuarterTime) / previousQuarterTime) * 100;
   const timeArrow = currentQuarterTime > previousQuarterTime ? incrementArrow : decrementArrow;
 
   const currentQuarterResource = currentQuarterMetrics.resource;
   const previousQuarterResource = previousQuarterMetrics.resource;
-  const resourcePercentageChange = previousQuarterResource === 0 ? 0 : Math.abs((currentQuarterResource - previousQuarterResource) / previousQuarterResource) * 100;
+  const resourcePercentageChange = previousQuarterResource === 0 ? 100 : Math.abs((currentQuarterResource - previousQuarterResource) / previousQuarterResource) * 100;
   const resourceArrow = currentQuarterResource > previousQuarterResource ? incrementArrow : decrementArrow;
 
   return (

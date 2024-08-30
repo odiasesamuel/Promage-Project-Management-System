@@ -42,7 +42,7 @@ export const removeExistingEmployee = async (organisation_id: string, removedEmp
       await sendEmail(employeeEmailOptions);
     }
 
-    revalidatePath("/");
+    revalidatePath("/resource-mgnt");
     return { success: true, message: null };
   } catch (error) {
     return { success: false, message: "Failed to remove employee" };
@@ -75,7 +75,7 @@ export const addNewEmployee = async (organisation_id: string, employee_info: Emp
     };
     await sendEmail(employeeEmailOptions);
 
-    revalidatePath("/");
+    revalidatePath("/resource-mgnt");
     return { success: true, message: null };
   } catch (error) {
     return { success: false, message: "Failed to add employee" };

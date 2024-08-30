@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useEmployeeList } from "@/hooks/useEmployeeList";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,12 +20,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { createNewProject, reviewProjectAction, deleteProjectAction } from "@/actions/project";
 import { useToast } from "@/components/ui/use-toast";
-import { EmployeeListType } from "@/app/(application)/layout";
 import { EditableProjectData } from "../columns";
 import { DeleteProjectOrTaskConfirmation } from "../confirmationDialog";
 
 type NewProjectFormProps = {
-  employeeList: EmployeeListType[];
+  organisation_id: string;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   editableProjectData?: EditableProjectData;
 };
@@ -34,7 +34,7 @@ export type EmployeeOptions = {
   label: string;
 };
 
-export function NewProjectForm({ employeeList, setOpen, editableProjectData }: NewProjectFormProps) {
+export function NewProjectForm({ organisation_id, setOpen, editableProjectData }: NewProjectFormProps) {
   const editableProjectDataTeam: any = editableProjectData?.projectTeam ? editableProjectData.projectTeam : [];
   const [selectedEmployee, setSelectedEmployee] = useState<MultiValue<EmployeeOptions>>(editableProjectDataTeam);
   const [progressDisabled, setProgressDisabled] = useState<boolean>(false);
@@ -43,6 +43,7 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
     setSelectedEmployee(selectedOptions);
   };
 
+  const employeeList = useEmployeeList(organisation_id);
   const employeeOptions = employeeList.map((employee) => ({
     value: employee.id,
     label: employee.employee_name,
