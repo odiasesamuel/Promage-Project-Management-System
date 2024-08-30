@@ -1,6 +1,9 @@
-import { getProjectWorkLoad } from "@/lib/dashboard";
+"use client";
 
-type ProjectWorkloadDataType = {
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
+
+export type ProjectWorkloadDataType = {
   id: number;
   organisation_id: string;
   employee_id: string;
@@ -9,16 +12,38 @@ type ProjectWorkloadDataType = {
 };
 
 type ProjectWorkloadProps = {
-  organisation_id: string;
+  projectWorkloadData: ProjectWorkloadDataType[];
 };
 
-const ProjectWorkload: React.FC<ProjectWorkloadProps> = async ({ organisation_id }) => {
-  const data: ProjectWorkloadDataType[] = await getProjectWorkLoad(organisation_id);
-  const maxProjects = data.reduce((max, employee) => (employee.no_of_project > max ? employee.no_of_project : max), -Infinity);
+const ProjectWorkload: React.FC<ProjectWorkloadProps> = ({ projectWorkloadData }) => {
+  const [projectWorkloadList, setProjectWorkloadList] = useState(projectWorkloadData);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("projectWorkload-channel")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "project_workload" }, (payload) => {
+        const newProjectWorkload = payload.new as ProjectWorkloadDataType;
+
+        setProjectWorkloadList((prevProjectWorload) => {
+          let projectWorkload;
+
+          projectWorkload = prevProjectWorload.map((projectWorkload) => (projectWorkload.id === newProjectWorkload.id ? newProjectWorkload : projectWorkload));
+
+          return projectWorkload;
+        });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const maxProjects = projectWorkloadList.reduce((max, employee) => (employee.no_of_project > max ? employee.no_of_project : max), -Infinity);
 
   return (
     <div className="flex justify-between min-h-[230px] flex-wrap gap-y-3">
-      {data.map((employee) => {
+      {projectWorkloadList.map((employee) => {
         const noCircle = employee.no_of_project % 2 === 0 ? Math.floor(employee.no_of_project / 2) - 1 : Math.floor(employee.no_of_project / 2);
         const employeeName = employee.employee_name.split(" ");
         const firstName = employeeName[0];

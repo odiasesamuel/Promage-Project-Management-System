@@ -5,6 +5,7 @@ import { EmployeeOptions } from "@/components/form/newProjectForm";
 import { MultiValue } from "react-select";
 
 import { storeNewProject, reviewProject, deleteProject } from "@/lib/project";
+import { getProjectWorkLoad } from "@/lib/dashboard";
 
 export type newProjectFormValueType = {
   organisation_id: string;
