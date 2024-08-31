@@ -38,14 +38,26 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeListData, employeeDe
   useEffect(() => {
     const channel = supabase
       .channel("create-project-form-channel")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "employee" }, (payload) => {
+      .on("postgres_changes", { event: "*", schema: "public", table: "employee" }, (payload) => {
+        console.log(payload);
         const newEmployee = payload.new as EmployeeListType;
 
         setEmployeeList((prevEmployee) => {
           let updatedEmployeeList;
 
-          updatedEmployeeList = prevEmployee.map((employee) => (employee.id === newEmployee.id ? newEmployee : employee));
-
+          switch (payload.eventType) {
+            case "INSERT":
+              updatedEmployeeList = [newEmployee, ...prevEmployee];
+              break;
+            case "UPDATE":
+              updatedEmployeeList = prevEmployee.map((project) => (project.id === newEmployee.id ? newEmployee : project));
+              break;
+            case "DELETE":
+              updatedEmployeeList = prevEmployee.filter((project) => project.id !== payload.old.id);
+              break;
+            default:
+              updatedEmployeeList = prevEmployee;
+          }
           return updatedEmployeeList;
         });
       })

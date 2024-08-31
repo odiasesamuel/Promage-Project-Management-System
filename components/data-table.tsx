@@ -69,15 +69,29 @@ export function DataTable<TData extends ProjectListType, TValue>({ columns, data
       .subscribe();
 
     const channel_employee_list = supabase
-      .channel("create-project-form-channel")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "employee" }, (payload) => {
+      .channel("review-project-form-channel")
+      .on("postgres_changes", { event: "*", schema: "public", table: "employee" }, (payload) => {
         const newEmployee = payload.new as EmployeeListType;
 
         setEmployeeList((prevEmployee) => {
           let updatedEmployeeList;
 
-          updatedEmployeeList = prevEmployee?.map((employee) => (employee.id === newEmployee.id ? newEmployee : employee));
+          switch (payload.eventType) {
+            case "INSERT":
+              if (prevEmployee) {
+                updatedEmployeeList = [newEmployee, ...prevEmployee];
+              }
 
+              break;
+            case "UPDATE":
+              updatedEmployeeList = prevEmployee?.map((project) => (project.id === newEmployee.id ? newEmployee : project));
+              break;
+            case "DELETE":
+              updatedEmployeeList = prevEmployee?.filter((project) => project.id !== payload.old.id);
+              break;
+            default:
+              updatedEmployeeList = prevEmployee;
+          }
           return updatedEmployeeList;
         });
       })

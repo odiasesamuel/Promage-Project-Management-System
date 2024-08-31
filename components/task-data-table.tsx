@@ -21,13 +21,14 @@ import { TaskListType } from "./taskList";
 interface DataTableProps<TData extends TaskListType, TValue> {
   columns: ColumnDef<TaskListType, any>[];
   data: TData[];
-  employeeList?: EmployeeListType[];
+  employeeListData?: EmployeeListType[];
   className?: string;
   assigned_by: string;
 }
 
-export function DataTable<TData extends TaskListType, TValue>({ columns, data, employeeList, className, assigned_by }: DataTableProps<TData, TValue>) {
+export function DataTable<TData extends TaskListType, TValue>({ columns, data, employeeListData, className, assigned_by }: DataTableProps<TData, TValue>) {
   const [task, setTask] = useState<TaskListType[]>(data);
+  const [employeeList, setEmployeeList] = useState(employeeListData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   useEffect(() => {
@@ -65,8 +66,39 @@ export function DataTable<TData extends TaskListType, TValue>({ columns, data, e
       })
       .subscribe();
 
+    const channel_employee_list = supabase
+      .channel("review-task-form-channel")
+      .on("postgres_changes", { event: "*", schema: "public", table: "employee" }, (payload) => {
+        console.log(payload);
+        const newEmployee = payload.new as EmployeeListType;
+
+        setEmployeeList((prevEmployee) => {
+          let updatedEmployeeList;
+
+          switch (payload.eventType) {
+            case "INSERT":
+              if (prevEmployee) {
+                updatedEmployeeList = [newEmployee, ...prevEmployee];
+              }
+
+              break;
+            case "UPDATE":
+              updatedEmployeeList = prevEmployee?.map((project) => (project.id === newEmployee.id ? newEmployee : project));
+              break;
+            case "DELETE":
+              updatedEmployeeList = prevEmployee?.filter((project) => project.id !== payload.old.id);
+              break;
+            default:
+              updatedEmployeeList = prevEmployee;
+          }
+          return updatedEmployeeList;
+        });
+      })
+      .subscribe();
+
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(channel_employee_list);
     };
   }, []);
 
