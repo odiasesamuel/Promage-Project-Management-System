@@ -22,13 +22,14 @@ import { ProjectListType } from "@/components/columns";
 interface DataTableProps<TData extends ProjectListType, TValue> {
   columns: ColumnDef<ProjectListType, any>[];
   data: TData[];
-  employeeList?: EmployeeListType[];
+  employeeListData?: EmployeeListType[];
   dataTableHeading?: string;
   className?: string;
 }
 
-export function DataTable<TData extends ProjectListType, TValue>({ columns, data, employeeList, dataTableHeading, className }: DataTableProps<TData, TValue>) {
+export function DataTable<TData extends ProjectListType, TValue>({ columns, data, employeeListData, dataTableHeading, className }: DataTableProps<TData, TValue>) {
   const [project, setProject] = useState<ProjectListType[]>(data);
+  const [employeeList, setEmployeeList] = useState(employeeListData);
   const pathname = usePathname();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
@@ -67,8 +68,24 @@ export function DataTable<TData extends ProjectListType, TValue>({ columns, data
       })
       .subscribe();
 
+    const channel_employee_list = supabase
+      .channel("create-project-form-channel")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "employee" }, (payload) => {
+        const newEmployee = payload.new as EmployeeListType;
+
+        setEmployeeList((prevEmployee) => {
+          let updatedEmployeeList;
+
+          updatedEmployeeList = prevEmployee?.map((employee) => (employee.id === newEmployee.id ? newEmployee : employee));
+
+          return updatedEmployeeList;
+        });
+      })
+      .subscribe();
+
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(channel_employee_list);
     };
   }, []);
 

@@ -23,7 +23,7 @@ const ProjectPage = async () => {
     <>
       <Card className="bg-[#F2EAE5] mt-12">
         <CardContent>
-          <DataTable columns={columns} data={projectList} employeeList={employeeList} className="" />
+          <DataTable columns={columns} data={projectList} employeeListData={employeeList} className="" />
         </CardContent>
       </Card>
     </>

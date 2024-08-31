@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import NavLink from "./navLink";
 import CreatNewProject from "../creatNewProject";
@@ -19,15 +22,40 @@ import sidebarBavArrow from "@/assets/arrow.svg";
 import { LogoutConfirmation, ClearDataConfirmation } from "../confirmationDialog";
 import { LogOut } from "lucide-react";
 import { EmployeeSignInDetailsType } from "@/actions/auth-action";
+import { EmployeeListType } from "@/app/(application)/layout";
 import { Button } from "../ui/button";
+import { supabase } from "@/lib/supabaseClient";
 
 type NavBarProps = {
   className?: string;
-  organisation_id: string;
+  employeeListData: EmployeeListType[];
   employeeDetails: EmployeeSignInDetailsType;
 };
 
-const NavBar: React.FC<NavBarProps> = ({ className, organisation_id, employeeDetails }) => {
+const NavBar: React.FC<NavBarProps> = ({ className, employeeListData, employeeDetails }) => {
+  const [employeeList, setEmployeeList] = useState(employeeListData);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("create-project-form-channel")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "employee" }, (payload) => {
+        const newEmployee = payload.new as EmployeeListType;
+
+        setEmployeeList((prevEmployee) => {
+          let updatedEmployeeList;
+
+          updatedEmployeeList = prevEmployee.map((employee) => (employee.id === newEmployee.id ? newEmployee : employee));
+
+          return updatedEmployeeList;
+        });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   return (
     <>
       <div className={`${className} relative`}>
@@ -38,7 +66,7 @@ const NavBar: React.FC<NavBarProps> = ({ className, organisation_id, employeeDet
             <Image src={sidebarBavArrow} alt="navigation sidebar icon" />
           </div>
         </div>
-        <CreatNewProject organisation_id={organisation_id} projectFormHeading="Create a new project">
+        <CreatNewProject employeeList={employeeList} projectFormHeading="Create a new project">
           <div className="bg-white w-[85%] h-[50px] ml-4 mt-16 mb-12 rounded-full flex items-center cursor-pointer">
             <Image src={newProjectIcon} alt="new project icon" className="mx-2" />
             <span className="text-sm text-black">

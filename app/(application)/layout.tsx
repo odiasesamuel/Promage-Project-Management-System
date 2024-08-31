@@ -33,13 +33,14 @@ export default async function RootLayout({
     return redirect("/");
   }
   const employeeDetails: EmployeeSignInDetailsType = await getEmployeeByEmployeeId(result.user.id);
+  const employeeList: EmployeeListType[] = await getAllEmployee(employeeDetails.organisation_id);
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <div className="text-white grid grid-cols-[repeat(12,_1fr)] grid-rows-[auto_1fr] min-h-screen">
           <Header className="bg-[#ebdfd7] col-start-3 col-end-13 px-[3%] border-b border-[#D8CDC6]" employeeDetails={employeeDetails}></Header>
-          <NavBar className="bg-[#060606] col-start-1 col-end-3 row-start-1 row-end-3" organisation_id={employeeDetails.organisation_id} employeeDetails={employeeDetails}></NavBar>
+          <NavBar className="bg-[#060606] col-start-1 col-end-3 row-start-1 row-end-3" employeeListData={employeeList} employeeDetails={employeeDetails}></NavBar>
           <Main className="bg-[#ebdfd7] col-start-3 col-end-13 px-[3%] overflow-y-auto">{children}</Main>
         </div>
         <Toaster />
@@ -47,7 +48,3 @@ export default async function RootLayout({
     </html>
   );
 }
-
-// grid-cols-[repeat(12,_1fr)]
-// col-[3_/_13] OR col-start-3 col-end-13
-// col-[3_/_13] OR col-start-3 col-end-13
