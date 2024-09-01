@@ -45,7 +45,7 @@ const Home = async () => {
             <CardTitle>Overall Progress</CardTitle>
           </CardHeader>
           <CardContent className="px-3">
-            <OverallProgress progressData={progress} />
+            <OverallProgress />
           </CardContent>
         </Card>
       </div>
