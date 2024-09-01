@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className=" text-white grid grid-cols-[repeat(12,_1fr)] grid-rows-[auto] min-h-screen">
+        <div className="text-white grid grid-cols-[repeat(12,_1fr)] grid-rows-[auto] min-h-screen">
           <div className="bg-[#ebdfd7] col-start-1 col-end-7 grid place-content-center md:hidden">
             <Introduction />
           </div>

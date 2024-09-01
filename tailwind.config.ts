@@ -21,6 +21,12 @@ const config = {
       xs: { max: "479px" }, // Extra small: max-width 479px and below
       "2xs": { max: "374px" }, // Extra extra small: max-width 374px and below
       "3xs": { max: "340px" }, // Extra extra small: max-width 374px and below
+
+      // sm: '640px', // Mobile-first: 640px and up
+      // md: '768px', // Mobile-first: 768px and up
+      // lg: '1024px', // Mobile-first: 1024px and up
+      // xl: '1280px', // Mobile-first: 1280px and up
+      // '2xl': '1536px', // Mobile-first: 1536px and up
     },
     extend: {
       colors: {
