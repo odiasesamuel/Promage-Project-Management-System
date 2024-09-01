@@ -8,11 +8,13 @@ import { MetricsType } from "@/components/metrics";
 import { ProgressDataType } from "@/components/overallProgress";
 import { ProjectWorkloadDataType } from "@/components/projectWorkload";
 import { TaskListType } from "@/components/taskList";
+import { NoteDataType } from "@/components/noteTabContent";
 import { EmployeeSignInDetailsType } from "@/actions/auth-action";
 import { getEmployeeByEmployeeIdAction, getEmployeeList } from "@/actions/employee";
 import { verifyAuthAction } from "@/actions/auth-action";
 import { useRouter } from "next/navigation";
 import { getMetricsAction, getProjectAction, getProgressAction, getTaskListAssignedToMeAction, getTaskListAssignedByMeAction, getProjectWorkloadAction } from "@/actions/dashboard";
+import { getNoteContentAction } from "@/actions/task";
 
 type EmployeeContextProps = {
   employeeList: EmployeeListType[];
@@ -25,6 +27,7 @@ type EmployeeContextProps = {
   employeeId: string;
   organisationId: string;
   employeeDetails: EmployeeSignInDetailsType;
+  note: NoteDataType;
 };
 
 const EmployeeContext = createContext<EmployeeContextProps | undefined>(undefined);
@@ -46,6 +49,12 @@ export const EmployeeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     employee_email: "",
     job_title: "",
   });
+  const [note, setNote] = useState<NoteDataType>({
+    id: 0,
+    organisation_id: "",
+    employee_id: "",
+    note: "",
+  });
   const router = useRouter();
 
   useEffect(() => {
@@ -61,7 +70,7 @@ export const EmployeeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const organisation_id = employeeDetails.organisation_id;
 
       // Fetch all necessary data in parallel
-      const [employeeList, metrics, project, progress, taskListAssignedByMe, taskListAssignedToMe, projectWorkload] = await Promise.all([getEmployeeList(organisation_id), getMetricsAction(organisation_id), getProjectAction(organisation_id), getProgressAction(organisation_id), getTaskListAssignedByMeAction(organisation_id, employee_id), getTaskListAssignedToMeAction(organisation_id, employee_id), getProjectWorkloadAction(organisation_id)]);
+      const [employeeList, metrics, project, progress, taskListAssignedByMe, taskListAssignedToMe, projectWorkload, note] = await Promise.all([getEmployeeList(organisation_id), getMetricsAction(organisation_id), getProjectAction(organisation_id), getProgressAction(organisation_id), getTaskListAssignedByMeAction(organisation_id, employee_id), getTaskListAssignedToMeAction(organisation_id, employee_id), getProjectWorkloadAction(organisation_id), getNoteContentAction(organisation_id, employee_id)]);
 
       // Update state
       setEmployeeId(employee_id);
@@ -81,6 +90,7 @@ export const EmployeeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setTask(taskWithNames);
       setTaskList(taskListAssignedToMe);
       setProjectWorkloadList(projectWorkload);
+      setNote(note);
     };
 
     checkAuthAndFetchApplicationData();
@@ -258,6 +268,7 @@ export const EmployeeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         employeeId,
         organisationId,
         employeeDetails,
+        note,
       }}
     >
       {children}

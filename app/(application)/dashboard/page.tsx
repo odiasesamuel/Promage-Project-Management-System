@@ -55,7 +55,7 @@ const Home = async () => {
             <CardTitle>Task</CardTitle>
           </CardHeader>
           <CardContent>
-            <TabContent taskList={taskList} organisation_id={organisation_id} employee_id={employee_id} />
+            <TabContent />
           </CardContent>
         </Card>
         <Card className="w-[34%] min-h-[330px] bg-[#F2EAE5]">

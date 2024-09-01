@@ -5,15 +5,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "./ui/button";
 import { saveNoteAction, clearNoteAction } from "@/actions/task";
 import { useToast } from "@/components/ui/use-toast";
+import { useEmployeeContext } from "@/context/employeeContext";
 
-type NoteTabContentType = {
+export type NoteDataType = {
+  id: number;
   organisation_id: string;
   employee_id: string;
-  defaultNoteContent: string;
+  note: string;
 };
 
-const NoteTabContent: React.FC<NoteTabContentType> = ({ organisation_id, employee_id, defaultNoteContent }) => {
+const NoteTabContent: React.FC<{}> = ({}) => {
+  const { organisationId: organisation_id, employeeId: employee_id, note } = useEmployeeContext();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const defaultNoteContent = note.note;
 
   const { toast } = useToast();
   const saveNoteHandler = async () => {

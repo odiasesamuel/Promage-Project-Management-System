@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { useState } from "react";
 import { Badge, BadgeProps } from "./ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { checkCompletedTaskAction } from "@/actions/task";
+import { useEmployeeContext } from "@/context/employeeContext";
 
 export type TaskListType = {
   task_id: number;
@@ -18,35 +18,8 @@ export type TaskListType = {
   status: "Approved" | "On going" | "In review";
 };
 
-type TasklistProps = {
-  data: TaskListType[];
-  organisation_id: string;
-  employee_id: string;
-};
-
-const TaskList: React.FC<TasklistProps> = ({ data, organisation_id, employee_id }) => {
-  const [taskList, setTaskList] = useState(data);
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("task-channel")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "task_list" }, (payload) => {
-        const newTask = payload.new as TaskListType;
-
-        setTaskList((prevTask) => {
-          let updatedTaskList;
-
-          updatedTaskList = prevTask.map((task) => (task.task_id === newTask.task_id ? newTask : task));
-
-          return updatedTaskList;
-        });
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+const TaskList: React.FC<{}> = ({}) => {
+  const { taskList, organisationId: organisation_id, employeeId: employee_id } = useEmployeeContext();
 
   const rowsPerPage = 5;
   const [startIndex, setStartIndex] = useState(0);
