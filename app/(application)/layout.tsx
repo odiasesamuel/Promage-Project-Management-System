@@ -5,10 +5,7 @@ import NavBar from "@/components/layout/navBar";
 import Header from "@/components/layout/header";
 import Main from "@/components/layout/main";
 import { Toaster } from "@/components/ui/toaster";
-import { redirect } from "next/navigation";
-import { verifyAuth } from "@/lib/auth";
-import { getEmployeeByEmployeeId, getAllEmployee } from "@/lib/employee";
-import { EmployeeSignInDetailsType } from "@/actions/auth-action";
+import { EmployeeProvider } from "@/context/employeeContext";
 
 export const metadata: Metadata = {
   title: "Promage",
@@ -28,20 +25,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const result = await verifyAuth();
-  if (!result.user) {
-    return redirect("/");
-  }
-  const employeeDetails: EmployeeSignInDetailsType = await getEmployeeByEmployeeId(result.user.id);
-  const employeeList: EmployeeListType[] = await getAllEmployee(employeeDetails.organisation_id);
-
   return (
     <html lang="en">
       <body className={inter.className}>
         <div className="text-white grid grid-cols-[repeat(12,_1fr)] grid-rows-[auto_1fr] min-h-screen">
-          <Header className="bg-[#ebdfd7] col-start-3 col-end-13 px-[3%] border-b border-[#D8CDC6]" employeeDetails={employeeDetails}></Header>
-          <NavBar className="bg-[#060606] col-start-1 col-end-3 row-start-1 row-end-3" employeeListData={employeeList} employeeDetails={employeeDetails}></NavBar>
-          <Main className="bg-[#ebdfd7] col-start-3 col-end-13 px-[3%] overflow-y-auto">{children}</Main>
+          <EmployeeProvider>
+            <Header className="bg-[#ebdfd7] col-start-3 col-end-13 px-[3%] border-b border-[#D8CDC6]"></Header>
+            <NavBar className="bg-[#060606] col-start-1 col-end-3 row-start-1 row-end-3"></NavBar>
+            <Main className="bg-[#ebdfd7] col-start-3 col-end-13 px-[3%] overflow-y-auto">{children}</Main>
+          </EmployeeProvider>
         </div>
         <Toaster />
       </body>

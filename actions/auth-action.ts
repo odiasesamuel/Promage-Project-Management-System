@@ -1,10 +1,11 @@
 "use server";
 
 import { getEmployeeByEmail, getOrganisationByEmail, createOrganisationAccount, createAdminEmployeeAccount, createEmployeeAccount } from "@/lib/employee";
-import { createAuthSession, destroySession } from "@/lib/auth";
+import { createAuthSession, destroySession, verifyAuth } from "@/lib/auth";
 import { addMetricsOnSignUp, addProgressDataOnSignUp, addProjectWorkloadDataOnSignUp, addNoteDataOnSignUp } from "@/lib/dashboard";
 import { welcomeEmployeeEmailTemplate, welcomeAdminEmailTemplate, welcomeOrganisationEmailTemplate } from "@/lib/email/templates";
 import { sendEmail, EmailOptions } from "@/lib/email/email";
+import { redirect } from "next/navigation";
 
 export type ValueType = {
   email: string;
@@ -123,4 +124,13 @@ export const signup = async (organisation_info: OrganisationSignUpDetailsType, e
 export const signout = async () => {
   await destroySession();
   return { success: true };
+};
+
+export const verifyAuthAction = async () => {
+  const result = await verifyAuth();
+  // if (!result.user) {
+  //   return redirect("/");
+  // }
+
+  return result;
 };

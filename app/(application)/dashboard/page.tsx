@@ -33,7 +33,7 @@ const Home = async () => {
   return (
     <div className="text-black">
       <h3 className="scroll-m-20 text-xl font-semibold tracking-tight my-5">Overview</h3>
-      <Metrics metricsData={metrics} />
+      <Metrics />
       <div className="flex justify-between my-6">
         <Card className="w-[64%] bg-[#F2EAE5]">
           <CardContent>

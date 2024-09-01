@@ -21,10 +21,9 @@ import { createNewProject, reviewProjectAction, deleteProjectAction } from "@/ac
 import { useToast } from "@/components/ui/use-toast";
 import { EditableProjectData } from "../columns";
 import { DeleteProjectOrTaskConfirmation } from "../confirmationDialog";
-import { EmployeeListType } from "@/app/(application)/layout";
+import { useEmployeeContext } from "@/context/employeeContext";
 
 type NewProjectFormProps = {
-  employeeList: EmployeeListType[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   editableProjectData?: EditableProjectData;
 };
@@ -34,7 +33,7 @@ export type EmployeeOptions = {
   label: string;
 };
 
-export function NewProjectForm({ employeeList, setOpen, editableProjectData }: NewProjectFormProps) {
+export function NewProjectForm({ setOpen, editableProjectData }: NewProjectFormProps) {
   const editableProjectDataTeam: any = editableProjectData?.projectTeam ? editableProjectData.projectTeam : [];
   const [selectedEmployee, setSelectedEmployee] = useState<MultiValue<EmployeeOptions>>(editableProjectDataTeam);
   const [progressDisabled, setProgressDisabled] = useState<boolean>(false);
@@ -42,6 +41,8 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
   const selectedEmployeeHandler = (selectedOptions: MultiValue<EmployeeOptions>) => {
     setSelectedEmployee(selectedOptions);
   };
+
+  const { employeeList } = useEmployeeContext();
 
   const employeeOptions = employeeList.map((employee) => ({
     value: employee.id,
