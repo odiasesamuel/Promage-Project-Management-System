@@ -20,15 +20,15 @@ const SignUpForm: React.FC<{}> = () => {
 
   return (
     <>
-      <div className="w-full flex items-center justify-between">
+      <div className="w-full h-[100px] md:h-[75px] flex items-center justify-between">
         <div className={`${formStep === "organisation_info" ? "bg-[#E65F2B]" : "bg-[#0606063f]"} w-[50px] h-[50px] rounded-full my-8 flex items-center justify-center cursor-pointer`} onClick={changeToOrganisationInfoHandler}>
           <span className="bg-[#FAFFFB] w-[40px] h-[40px] rounded-full my-8 text-black flex items-center justify-center text-lg">1</span>
         </div>
-        <div className="bg-[#060606] w-[34%] h-[2px]"></div>
+        <div className="bg-[#060606] w-[34%] lg:w-[30%] md:w-[34%] xs:w-[30%] 2xs:w-[28%] 3xs:w-[24%] h-[2px]"></div>
         <div className={`${formStep === "employee_info" ? "bg-[#E65F2B]" : "bg-[#0606063f]"} w-[50px] h-[50px] rounded-full my-8 flex items-center justify-center cursor-pointer`} onClick={changeToEmployeeInfoHandler}>
           <span className="bg-[#FAFFFB] w-[40px] h-[40px] rounded-full my-8 text-black flex items-center justify-center text-lg">2</span>
         </div>
-        <div className="bg-[#060606] w-[34%] h-[2px]"></div>
+        <div className="bg-[#060606] w-[34%] lg:w-[30%] md:w-[34%] xs:w-[30%] 2xs:w-[28%] 3xs:w-[24%] h-[2px]"></div>
         <div className={`${formStep === "metric_info" ? "bg-[#E65F2B]" : "bg-[#0606063f]"} w-[50px] h-[50px] rounded-full my-8 flex items-center justify-center cursor-pointer`} onClick={changeToMetricInfoHandler}>
           <span className="bg-[#FAFFFB] w-[40px] h-[40px] rounded-full my-8 text-black flex items-center justify-center text-lg">3</span>
         </div>
