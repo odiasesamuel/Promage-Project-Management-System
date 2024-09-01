@@ -37,7 +37,7 @@ const Home = async () => {
       <div className="flex justify-between my-6">
         <Card className="w-[64%] bg-[#F2EAE5]">
           <CardContent>
-            <DataTable columns={columns} data={projectList} dataTableHeading={"Project summary"} className="" />
+            <DataTable columns={columns} dataTableHeading={"Project summary"} />
           </CardContent>
         </Card>
         <Card className="w-[34%] h-[330px] bg-[#F2EAE5]">

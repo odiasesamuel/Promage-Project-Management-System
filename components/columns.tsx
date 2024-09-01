@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Badge, BadgeProps } from "@/components/ui/badge";
 import { usePathname } from "next/navigation";
 import CreatNewProject from "./creatNewProject";
-import { EmployeeListType } from "@/actions/employee";
 
 export type ProjectListType = {
   project_id: number;
@@ -36,11 +35,11 @@ export type EditableProjectData = {
   projectTeam: string;
 };
 
-const ReviewProjectButton: React.FC<{ employeeList: EmployeeListType[]; editableProjectData: EditableProjectData }> = ({ employeeList, editableProjectData }) => {
+const ReviewProjectButton: React.FC<{ editableProjectData: EditableProjectData }> = ({ editableProjectData }) => {
   const projectFormHeading = "Review project";
   return (
     <>
-      <CreatNewProject employeeList={employeeList} projectFormHeading={projectFormHeading} editableProjectData={editableProjectData}>
+      <CreatNewProject projectFormHeading={projectFormHeading} editableProjectData={editableProjectData}>
         <Button variant="secondary" size="sm" className="bg-inherit text-xs border border-[#0000001f] text-black font-normal">
           Review
         </Button>
@@ -51,7 +50,6 @@ const ReviewProjectButton: React.FC<{ employeeList: EmployeeListType[]; editable
 
 const ActionsCell: React.FC<{ row: any; table: any }> = ({ row, table }) => {
   const pathname = usePathname();
-  const employeeList = table.options.meta?.employeeList as EmployeeListType[];
 
   const project_id: number = row.getValue("project_id");
   const projectName: string = row.getValue("project_name");
@@ -73,7 +71,7 @@ const ActionsCell: React.FC<{ row: any; table: any }> = ({ row, table }) => {
     projectTeam,
   };
 
-  return <>{pathname === "/project" && <ReviewProjectButton employeeList={employeeList} editableProjectData={editableProjectData} />}</>;
+  return <>{pathname === "/project" && <ReviewProjectButton editableProjectData={editableProjectData} />}</>;
 };
 
 export const columns: ColumnDef<ProjectListType>[] = [

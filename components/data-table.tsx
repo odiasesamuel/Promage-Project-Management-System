@@ -2,34 +2,24 @@
 
 import * as React from "react";
 import { ColumnDef, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, TableMeta, RowData } from "@tanstack/react-table";
-import { supabase } from "@/lib/supabaseClient";
-import { useState, useEffect } from "react";
-
-declare module "@tanstack/react-table" {
-  interface TableMeta<TData extends RowData> {
-    employeeList: EmployeeListType[] | undefined;
-  }
-}
 
 import { usePathname } from "next/navigation";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { EmployeeListType } from "@/app/(application)/layout";
 import { exportProjectReport } from "@/utils/exportProjectReport";
 import { ProjectListType } from "@/components/columns";
+import { useEmployeeContext } from "@/context/employeeContext";
 
 interface DataTableProps<TData extends ProjectListType, TValue> {
   columns: ColumnDef<ProjectListType, any>[];
-  data: TData[];
-  employeeListData?: EmployeeListType[];
+  data?: TData[];
   dataTableHeading?: string;
   className?: string;
 }
 
-export function DataTable<TData extends ProjectListType, TValue>({ columns, data, employeeListData, dataTableHeading, className }: DataTableProps<TData, TValue>) {
-  const [project, setProject] = useState<ProjectListType[]>(data);
-  const [employeeList, setEmployeeList] = useState(employeeListData);
+export function DataTable<TData extends ProjectListType, TValue>({ columns, dataTableHeading, className }: DataTableProps<TData, TValue>) {
+  const { project } = useEmployeeContext();
   const pathname = usePathname();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
@@ -41,67 +31,6 @@ export function DataTable<TData extends ProjectListType, TValue>({ columns, data
 
     return projectName.includes(searchValue) || projectManager.includes(searchValue);
   };
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("project-channel")
-      .on("postgres_changes", { event: "*", schema: "public", table: "project" }, (payload) => {
-        const newProject = payload.new as ProjectListType;
-
-        setProject((prevProjects) => {
-          let updatedProjects;
-          switch (payload.eventType) {
-            case "INSERT":
-              updatedProjects = [newProject, ...prevProjects];
-              break;
-            case "UPDATE":
-              updatedProjects = prevProjects.map((project) => (project.project_id === newProject.project_id ? newProject : project));
-              break;
-            case "DELETE":
-              updatedProjects = prevProjects.filter((project) => project.project_id !== payload.old.project_id);
-              break;
-            default:
-              updatedProjects = prevProjects;
-          }
-          return updatedProjects;
-        });
-      })
-      .subscribe();
-
-    const channel_employee_list = supabase
-      .channel("review-project-form-channel")
-      .on("postgres_changes", { event: "*", schema: "public", table: "employee" }, (payload) => {
-        const newEmployee = payload.new as EmployeeListType;
-
-        setEmployeeList((prevEmployee) => {
-          let updatedEmployeeList;
-
-          switch (payload.eventType) {
-            case "INSERT":
-              if (prevEmployee) {
-                updatedEmployeeList = [newEmployee, ...prevEmployee];
-              }
-
-              break;
-            case "UPDATE":
-              updatedEmployeeList = prevEmployee?.map((project) => (project.id === newEmployee.id ? newEmployee : project));
-              break;
-            case "DELETE":
-              updatedEmployeeList = prevEmployee?.filter((project) => project.id !== payload.old.id);
-              break;
-            default:
-              updatedEmployeeList = prevEmployee;
-          }
-          return updatedEmployeeList;
-        });
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-      supabase.removeChannel(channel_employee_list);
-    };
-  }, []);
 
   const table = useReactTable({
     data: project,
@@ -116,9 +45,6 @@ export function DataTable<TData extends ProjectListType, TValue>({ columns, data
       globalFilter,
     },
     globalFilterFn: customFilterFunction,
-    meta: {
-      employeeList,
-    },
   });
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
