@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { useEmployeeContext } from "@/context/employeeContext";
 
 export type ProjectWorkloadDataType = {
   id: number;
@@ -11,33 +10,8 @@ export type ProjectWorkloadDataType = {
   no_of_project: number;
 };
 
-type ProjectWorkloadProps = {
-  projectWorkloadData: ProjectWorkloadDataType[];
-};
-
-const ProjectWorkload: React.FC<ProjectWorkloadProps> = ({ projectWorkloadData }) => {
-  const [projectWorkloadList, setProjectWorkloadList] = useState(projectWorkloadData);
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("projectWorkload-channel")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "project_workload" }, (payload) => {
-        const newProjectWorkload = payload.new as ProjectWorkloadDataType;
-
-        setProjectWorkloadList((prevProjectWorload) => {
-          let projectWorkload;
-
-          projectWorkload = prevProjectWorload.map((projectWorkload) => (projectWorkload.id === newProjectWorkload.id ? newProjectWorkload : projectWorkload));
-
-          return projectWorkload;
-        });
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+const ProjectWorkload: React.FC<{}> = () => {
+  const { projectWorkloadList } = useEmployeeContext();
 
   const maxProjects = projectWorkloadList.reduce((max, employee) => (employee.no_of_project > max ? employee.no_of_project : max), -Infinity);
 
