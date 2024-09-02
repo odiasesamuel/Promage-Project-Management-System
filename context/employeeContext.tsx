@@ -259,6 +259,35 @@ export const EmployeeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       })
       .subscribe();
 
+    const channel_task_note = supabase
+      .channel("task-note-channel")
+      .on("postgres_changes", { event: "*", schema: "public", table: "task_note" }, (payload) => {
+        const newTaskNote = payload.new as NoteDataType;
+
+        setNote((prevTaskNote) => {
+          let updatedTaskNote;
+
+          switch (payload.eventType) {
+            case "INSERT":
+              updatedTaskNote = newTaskNote;
+              break;
+            case "UPDATE":
+              updatedTaskNote = newTaskNote;
+              break;
+            case "DELETE":
+              updatedTaskNote = {
+                ...newTaskNote,
+                note: "",
+              };
+              break;
+            default:
+              updatedTaskNote = prevTaskNote;
+          }
+          return updatedTaskNote;
+        });
+      })
+      .subscribe();
+
     return () => {
       supabase.removeChannel(channel_employee_list);
       supabase.removeChannel(channel_project);
@@ -267,6 +296,7 @@ export const EmployeeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       supabase.removeChannel(channel_project_workload);
       supabase.removeChannel(channel_task_assigned_by_me);
       supabase.removeChannel(channel_task_assigned_to_me);
+      supabase.removeChannel(channel_task_note);
     };
   }, []);
 
