@@ -3,8 +3,7 @@
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useEmployeeContext } from "@/context/employeeContext";
-import { Skeleton } from "./ui/skeleton";
-import { ProgressTabSkeleton } from "./dashboardSkeleton";
+
 
 export type ProgressDataType = {
   id: number;
