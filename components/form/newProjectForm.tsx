@@ -42,7 +42,7 @@ export function NewProjectForm({ setOpen, editableProjectData }: NewProjectFormP
     setSelectedEmployee(selectedOptions);
   };
 
-  const { employeeList } = useEmployeeContext();
+  const { employeeList, organisationId} = useEmployeeContext();
 
   const employeeOptions = employeeList.map((employee) => ({
     value: employee.id,
@@ -72,7 +72,7 @@ export function NewProjectForm({ setOpen, editableProjectData }: NewProjectFormP
         setOpen(false);
         await reviewProjectAction(
           {
-            organisation_id: employeeList[0].organisation_id,
+            organisation_id: organisationId,
             ...values,
             dueDate: values.dueDate.toISOString(),
           },
@@ -84,7 +84,7 @@ export function NewProjectForm({ setOpen, editableProjectData }: NewProjectFormP
         setOpen(false);
         await createNewProject(
           {
-            organisation_id: employeeList[0].organisation_id,
+            organisation_id: organisationId,
             ...values,
             dueDate: values.dueDate.toISOString(),
           },
@@ -118,9 +118,8 @@ export function NewProjectForm({ setOpen, editableProjectData }: NewProjectFormP
 
   async function deleteProjectHandler(e: React.MouseEvent<HTMLButtonElement>) {
     setOpen(false);
-    const organisation_id = employeeList[0].organisation_id;
     const project_id = editableProjectData?.project_id;
-    const result = await deleteProjectAction(organisation_id, project_id);
+    const result = await deleteProjectAction(organisationId, project_id);
     if (!result.success) {
       toast({
         variant: "destructive",

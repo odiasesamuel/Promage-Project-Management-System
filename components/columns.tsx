@@ -48,7 +48,7 @@ const ReviewProjectButton: React.FC<{ editableProjectData: EditableProjectData }
   );
 };
 
-const ActionsCell: React.FC<{ row: any; table: any }> = ({ row, table }) => {
+const ActionsCell: React.FC<{ row: any; table: any }> = ({ row }) => {
   const pathname = usePathname();
 
   const project_id: number = row.getValue("project_id");

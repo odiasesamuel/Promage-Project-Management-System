@@ -1,106 +1,23 @@
 "use client";
 
-import * as React from "react";
 import { ColumnDef, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, TableMeta, RowData } from "@tanstack/react-table";
-import { supabase } from "@/lib/supabaseClient";
-import { useState, useEffect } from "react";
-import { getEmployeeByEmployeeIdAction } from "@/actions/employee";
-
-declare module "@tanstack/react-table" {
-  interface TableMeta<TData extends RowData> {
-    employeeList: EmployeeListType[] | undefined;
-  }
-}
+import { useState } from "react";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { EmployeeListType } from "@/app/(application)/layout";
 import ReviewTaskForm from "./form/reviewTaskForm";
 import { TaskListType } from "./taskList";
+import { useEmployeeContext } from "@/context/employeeContext";
 
 interface DataTableProps<TData extends TaskListType, TValue> {
   columns: ColumnDef<TaskListType, any>[];
-  data: TData[];
-  employeeListData?: EmployeeListType[];
+  data?: TData[];
   className?: string;
-  assigned_by: string;
 }
 
-export function DataTable<TData extends TaskListType, TValue>({ columns, data, employeeListData, className, assigned_by }: DataTableProps<TData, TValue>) {
-  const [task, setTask] = useState<TaskListType[]>(data);
-  const [employeeList, setEmployeeList] = useState(employeeListData);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("task-channel")
-      .on("postgres_changes", { event: "*", schema: "public", table: "task_list" }, async (payload) => {
-        let newTask = payload.new as TaskListType;
-        const assignedToEmployee = await getEmployeeByEmployeeIdAction(newTask.assigned_to);
-
-        setTask((prevTasks) => {
-          let updatedTasks;
-          switch (payload.eventType) {
-            case "INSERT":
-              newTask = {
-                ...newTask,
-                assigned_to_name: assignedToEmployee.employee_name,
-              };
-              updatedTasks = [newTask, ...prevTasks];
-              break;
-            case "UPDATE":
-              newTask = {
-                ...newTask,
-                assigned_to_name: assignedToEmployee.employee_name,
-              };
-              updatedTasks = prevTasks.map((task) => (task.task_id === newTask.task_id ? newTask : task));
-              break;
-            case "DELETE":
-              updatedTasks = prevTasks.filter((task) => task.task_id !== payload.old.task_id);
-              break;
-            default:
-              updatedTasks = prevTasks;
-          }
-          return updatedTasks;
-        });
-      })
-      .subscribe();
-
-    const channel_employee_list = supabase
-      .channel("review-task-form-channel")
-      .on("postgres_changes", { event: "*", schema: "public", table: "employee" }, (payload) => {
-        console.log(payload);
-        const newEmployee = payload.new as EmployeeListType;
-
-        setEmployeeList((prevEmployee) => {
-          let updatedEmployeeList;
-
-          switch (payload.eventType) {
-            case "INSERT":
-              if (prevEmployee) {
-                updatedEmployeeList = [newEmployee, ...prevEmployee];
-              }
-
-              break;
-            case "UPDATE":
-              updatedEmployeeList = prevEmployee?.map((project) => (project.id === newEmployee.id ? newEmployee : project));
-              break;
-            case "DELETE":
-              updatedEmployeeList = prevEmployee?.filter((project) => project.id !== payload.old.id);
-              break;
-            default:
-              updatedEmployeeList = prevEmployee;
-          }
-          return updatedEmployeeList;
-        });
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-      supabase.removeChannel(channel_employee_list);
-    };
-  }, []);
+export function DataTable<TData extends TaskListType, TValue>({ columns, className }: DataTableProps<TData, TValue>) {
+  const { isLoading, task } = useEmployeeContext();
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data: task,
@@ -113,15 +30,12 @@ export function DataTable<TData extends TaskListType, TValue>({ columns, data, e
     state: {
       sorting,
     },
-    meta: {
-      employeeList,
-    },
   });
 
   return (
     <div className={className}>
       <div className="flex justify-end py-4 mr-10">
-        <ReviewTaskForm employeeList={employeeList!} assigned_by={assigned_by} />
+        <ReviewTaskForm />
       </div>
       <div className="rounded-md">
         <Table className="w-full">
@@ -150,21 +64,23 @@ export function DataTable<TData extends TaskListType, TValue>({ columns, data, e
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  {isLoading ? "Loading..." : "No results."}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-          Previous
-        </Button>
-        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-          Next
-        </Button>
-      </div>
+      {!isLoading && (
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+            Previous
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

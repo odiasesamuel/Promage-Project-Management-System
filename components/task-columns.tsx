@@ -5,10 +5,8 @@ import { ArrowUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge, BadgeProps } from "@/components/ui/badge";
-import { EmployeeListType } from "@/actions/employee";
 import { TaskListType } from "./taskList";
 import ReviewTaskForm from "./form/reviewTaskForm";
-
 
 export type EditableTaskData = {
   task_id: number;
@@ -105,9 +103,7 @@ export const columns: ColumnDef<TaskListType>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row, table }) => {
-      const employeeList = table.options.meta?.employeeList as EmployeeListType[];
-
+    cell: ({ row }) => {
       const task_id: number = row.getValue("task_id");
       const taskDescription: string = row.getValue("description");
       const assignedTo: string = row.getValue("assigned_to");
@@ -122,7 +118,7 @@ export const columns: ColumnDef<TaskListType>[] = [
         status,
       };
 
-      return <ReviewTaskForm editableTaskData={editableTaskData} employeeList={employeeList} />;
+      return <ReviewTaskForm editableTaskData={editableTaskData} />;
     },
   },
 ];

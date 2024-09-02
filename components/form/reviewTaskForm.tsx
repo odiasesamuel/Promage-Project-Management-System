@@ -16,16 +16,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { EditableTaskData } from "../task-columns";
 import { DeleteProjectOrTaskConfirmation } from "../confirmationDialog";
+import { useEmployeeContext } from "@/context/employeeContext";
 
 type ReviewTaskFormType = {
-  employeeList: EmployeeListType[];
   editableTaskData?: EditableTaskData;
-  assigned_by?: string;
 };
 
-const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTaskData, assigned_by }) => {
+const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ editableTaskData }) => {
+  const { employeeList, employeeId: assigned_by, organisationId: organisation_id } = useEmployeeContext();
   const [open, setOpen] = useState(false);
-  const organisation_id = employeeList[0].organisation_id;
 
   const form = useForm<z.infer<typeof reviewTaskFormSchema>>({
     resolver: zodResolver(reviewTaskFormSchema),
@@ -40,7 +39,7 @@ const ReviewTaskForm: React.FC<ReviewTaskFormType> = ({ employeeList, editableTa
   const { toast } = useToast();
   async function onSubmit(values: z.infer<typeof reviewTaskFormSchema>) {
     setOpen(false);
-    const result = editableTaskData ? await reviewTaskAction(organisation_id, values, editableTaskData.task_id) : await createNewTask(organisation_id, values, assigned_by!);
+    const result = editableTaskData ? await reviewTaskAction(organisation_id, values, editableTaskData.task_id) : await createNewTask(organisation_id, values, assigned_by);
 
     if (!result.success) {
       toast({

@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { ColumnDef, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, TableMeta, RowData } from "@tanstack/react-table";
+import { useState } from "react";
 
 import { usePathname } from "next/navigation";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { exportProjectReport } from "@/utils/exportProjectReport";
 import { ProjectListType } from "@/components/columns";
 import { useEmployeeContext } from "@/context/employeeContext";
-import { Loader2 } from "lucide-react";
 
 interface DataTableProps<TData extends ProjectListType, TValue> {
   columns: ColumnDef<ProjectListType, any>[];
@@ -22,8 +21,8 @@ interface DataTableProps<TData extends ProjectListType, TValue> {
 export function DataTable<TData extends ProjectListType, TValue>({ columns, dataTableHeading, className }: DataTableProps<TData, TValue>) {
   const { isLoading, project } = useEmployeeContext();
   const pathname = usePathname();
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = React.useState<string>("");
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = useState<string>("");
 
   const customFilterFunction = (row: any, columnId: string, filterValue: string) => {
     const projectName = row.original.project_name.toLowerCase();
