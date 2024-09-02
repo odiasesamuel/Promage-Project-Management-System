@@ -3,6 +3,8 @@
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useEmployeeContext } from "@/context/employeeContext";
+import { Skeleton } from "./ui/skeleton";
+import { ProgressTabSkeleton } from "./dashboardSkeleton";
 
 export type ProgressDataType = {
   id: number;
@@ -13,7 +15,9 @@ export type ProgressDataType = {
 };
 
 const OverallProgress: React.FC<{}> = () => {
-  const { progress } = useEmployeeContext();
+  const { isLoading, progress } = useEmployeeContext();
+
+  if (isLoading) return;
 
   const total_project = progress[0]?.total_project === null ? 0 : progress[0]?.total_project;
   const completed_project = progress[0]?.completed_project === null ? 0 : progress[0]?.completed_project;

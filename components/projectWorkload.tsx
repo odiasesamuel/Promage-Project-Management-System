@@ -11,7 +11,9 @@ export type ProjectWorkloadDataType = {
 };
 
 const ProjectWorkload: React.FC<{}> = () => {
-  const { projectWorkloadList } = useEmployeeContext();
+  const { isLoading, projectWorkloadList } = useEmployeeContext();
+
+  if (isLoading) return;
 
   const maxProjects = projectWorkloadList.reduce((max, employee) => (employee.no_of_project > max ? employee.no_of_project : max), -Infinity);
 

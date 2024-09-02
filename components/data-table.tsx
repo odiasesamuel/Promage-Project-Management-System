@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { exportProjectReport } from "@/utils/exportProjectReport";
 import { ProjectListType } from "@/components/columns";
 import { useEmployeeContext } from "@/context/employeeContext";
+import { Loader2 } from "lucide-react";
 
 interface DataTableProps<TData extends ProjectListType, TValue> {
   columns: ColumnDef<ProjectListType, any>[];
@@ -19,7 +20,7 @@ interface DataTableProps<TData extends ProjectListType, TValue> {
 }
 
 export function DataTable<TData extends ProjectListType, TValue>({ columns, dataTableHeading, className }: DataTableProps<TData, TValue>) {
-  const { project } = useEmployeeContext();
+  const { isLoading, project } = useEmployeeContext();
   const pathname = usePathname();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
@@ -91,21 +92,23 @@ export function DataTable<TData extends ProjectListType, TValue>({ columns, data
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  {isLoading ? "Loading..." : "No results."}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-          Previous
-        </Button>
-        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-          Next
-        </Button>
-      </div>
+      {!isLoading && (
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+            Previous
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

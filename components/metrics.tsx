@@ -12,7 +12,7 @@ import resourceIcon from "@/assets/Frame 1171275858.svg";
 import incrementArrow from "@/assets/incrementArrow.svg";
 import decrementArrow from "@/assets/decrementArrow.svg";
 import { useEmployeeContext } from "@/context/employeeContext";
-import { OverviewTab } from "./dashboardSkeleton";
+import { OverviewTabSkeleton } from "./dashboardSkeleton";
 
 export type MetricsType = {
   metric_id: number;
@@ -30,7 +30,9 @@ const Metrics: React.FC<{}> = () => {
   // const metricsRouteHandler = await response.json();
   // console.log(metricsRouteHandler);
 
-  const { metrics } = useEmployeeContext();
+  const { isLoading, metrics } = useEmployeeContext();
+
+  if (isLoading) return <OverviewTabSkeleton />;
 
   const currentDate = new Date();
   const currentQuarter = getQuarter(currentDate);
@@ -39,7 +41,7 @@ const Metrics: React.FC<{}> = () => {
   const currentQuarterMetrics = metrics.find((metric) => metric.quarter === currentQuarter);
   const previousQuarterMetrics = metrics.find((metric) => metric.quarter === previousQuarter);
 
-  if (!currentQuarterMetrics || !previousQuarterMetrics) return <OverviewTab />;
+  if (!currentQuarterMetrics || !previousQuarterMetrics) return <div>No data available for the current or previous quarters.</div>;
 
   const formatCurrency = (number: number) => {
     return new Intl.NumberFormat("en-US", {

@@ -28,11 +28,13 @@ type EmployeeContextProps = {
   organisationId: string;
   employeeDetails: EmployeeSignInDetailsType;
   note: NoteDataType;
+  isLoading: boolean;
 };
 
 const EmployeeContext = createContext<EmployeeContextProps | undefined>(undefined);
 
 export const EmployeeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [employeeList, setEmployeeList] = useState<EmployeeListType[]>([]);
   const [project, setProject] = useState<ProjectListType[]>([]);
   const [metrics, setMetrics] = useState<MetricsType[]>([]);
@@ -71,6 +73,8 @@ export const EmployeeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
       // Fetch all necessary data in parallel
       const [employeeList, metrics, project, progress, taskListAssignedByMe, taskListAssignedToMe, projectWorkload, note] = await Promise.all([getEmployeeList(organisation_id), getMetricsAction(organisation_id), getProjectAction(organisation_id), getProgressAction(organisation_id), getTaskListAssignedByMeAction(organisation_id, employee_id), getTaskListAssignedToMeAction(organisation_id, employee_id), getProjectWorkloadAction(organisation_id), getNoteContentAction(organisation_id, employee_id)]);
+
+      setIsLoading(false);
 
       // Update state
       setEmployeeId(employee_id);
@@ -258,6 +262,7 @@ export const EmployeeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   return (
     <EmployeeContext.Provider
       value={{
+        isLoading,
         employeeList,
         project,
         metrics,

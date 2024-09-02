@@ -19,7 +19,9 @@ export type TaskListType = {
 };
 
 const TaskList: React.FC<{}> = ({}) => {
-  const { taskList, organisationId: organisation_id, employeeId: employee_id } = useEmployeeContext();
+  const { isLoading, taskList, organisationId: organisation_id, employeeId: employee_id } = useEmployeeContext();
+
+  if (isLoading) return;
 
   const rowsPerPage = 5;
   const [startIndex, setStartIndex] = useState(0);
