@@ -16,7 +16,6 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employeeListData }) => {
     const channel = supabase
       .channel("resource-mgt-channel")
       .on("postgres_changes", { event: "*", schema: "public", table: "employee" }, (payload) => {
-        console.log(payload);
         const newEmployee = payload.new as EmployeeListType;
 
         setEmployeeList((prevEmployee) => {

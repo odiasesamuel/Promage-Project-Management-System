@@ -21,15 +21,24 @@ const ProjectWorkload: React.FC<ProjectWorkloadProps> = ({ projectWorkloadData }
   useEffect(() => {
     const channel = supabase
       .channel("projectWorkload-channel")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "project_workload" }, (payload) => {
+      .on("postgres_changes", { event: "*", schema: "public", table: "project_workload" }, (payload) => {
         const newProjectWorkload = payload.new as ProjectWorkloadDataType;
 
         setProjectWorkloadList((prevProjectWorload) => {
-          let projectWorkload;
+          let updatedProjectWorkload;
 
-          projectWorkload = prevProjectWorload.map((projectWorkload) => (projectWorkload.id === newProjectWorkload.id ? newProjectWorkload : projectWorkload));
+          switch (payload.eventType) {
+            case "INSERT":
+              updatedProjectWorkload = [...prevProjectWorload, newProjectWorkload];
+              break;
+            case "UPDATE":
+              updatedProjectWorkload = prevProjectWorload.map((projectWorkload) => (projectWorkload.id === newProjectWorkload.id ? newProjectWorkload : projectWorkload));
+              break;
+            default:
+              updatedProjectWorkload = prevProjectWorload;
+          }
 
-          return projectWorkload;
+          return updatedProjectWorkload;
         });
       })
       .subscribe();

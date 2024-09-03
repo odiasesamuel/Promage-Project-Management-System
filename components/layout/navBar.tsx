@@ -39,8 +39,8 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeListData, employeeDe
     const channel = supabase
       .channel("create-project-form-channel")
       .on("postgres_changes", { event: "*", schema: "public", table: "employee" }, (payload) => {
-        console.log(payload);
         const newEmployee = payload.new as EmployeeListType;
+        console.log(newEmployee)
 
         setEmployeeList((prevEmployee) => {
           let updatedEmployeeList;
@@ -48,12 +48,15 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeListData, employeeDe
           switch (payload.eventType) {
             case "INSERT":
               updatedEmployeeList = [newEmployee, ...prevEmployee];
+              console.log("Insert")
               break;
             case "UPDATE":
               updatedEmployeeList = prevEmployee.map((project) => (project.id === newEmployee.id ? newEmployee : project));
+              console.log("update")
               break;
             case "DELETE":
               updatedEmployeeList = prevEmployee.filter((project) => project.id !== payload.old.id);
+              console.log("delete")
               break;
             default:
               updatedEmployeeList = prevEmployee;
