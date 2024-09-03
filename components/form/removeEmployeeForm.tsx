@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { removeEmployeeFormSchema } from "@/lib/formSchema";
 import { removeExistingEmployee } from "@/actions/employee";
-import { EmployeeListType } from "@/app/(application)/layout";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -15,15 +14,13 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+import { useEmployeeContext } from "@/context/employeeContext";
 
-type RemoveEmployeeFormType = {
-  organisation_id: string;
-  employeeList: EmployeeListType[];
-};
-
-const RemoveEmployeeForm: React.FC<RemoveEmployeeFormType> = ({ organisation_id, employeeList }) => {
+const RemoveEmployeeForm: React.FC<{}> = () => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { organisationId: organisation_id, employeeList } = useEmployeeContext();
 
   const form = useForm<z.infer<typeof removeEmployeeFormSchema>>({
     resolver: zodResolver(removeEmployeeFormSchema),

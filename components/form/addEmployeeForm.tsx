@@ -13,14 +13,14 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+import { useEmployeeContext } from "@/context/employeeContext";
 
-type AddEmployeeFormType = {
-  organisation_id: string;
-};
 
-const AddEmployeeForm: React.FC<AddEmployeeFormType> = ({ organisation_id }) => {
+const AddEmployeeForm: React.FC<{}> = () => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { organisationId: organisation_id } = useEmployeeContext();
 
   const form = useForm<z.infer<typeof employeeInfoSignUpFormSchema>>({
     resolver: zodResolver(employeeInfoSignUpFormSchema),

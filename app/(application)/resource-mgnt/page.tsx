@@ -1,31 +1,25 @@
-import { redirect } from "next/navigation";
-import { verifyAuth } from "@/lib/auth";
-import { getEmployeeByEmployeeId, getAllEmployee } from "@/lib/employee";
-import { EmployeeSignInDetailsType } from "@/actions/auth-action";
-import { EmployeeListType } from "../layout";
+"use client";
+
 import AddEmployeeForm from "@/components/form/addEmployeeForm";
 import RemoveEmployeeForm from "@/components/form/removeEmployeeForm";
 import EmployeeList from "@/components/employeeList";
+import { useEmployeeContext } from "@/context/employeeContext";
+import { useRouter } from "next/navigation";
 
-const ResourceMgnt: React.FC<{}> = async () => {
-  const result = await verifyAuth();
-  if (!result.user) {
-    return redirect("/");
-  }
-  const employeeDetails: EmployeeSignInDetailsType = await getEmployeeByEmployeeId(result.user.id);
-  const organisation_id = employeeDetails.organisation_id;
-  const employeeList: EmployeeListType[] = await getAllEmployee(organisation_id);
-  if (employeeDetails.job_title !== "Administrator") {
-    redirect("/dashboard");
-  }
+const ResourceMgnt: React.FC<{}> = () => {
+  const { employeeDetails } = useEmployeeContext();
+
+  const router = useRouter();
+
+  if (employeeDetails.job_title !== "Administrator") router.push("/dashboard");
 
   return (
     <>
       <div className="flex flex-col mt-10">
-        <EmployeeList employeeListData={employeeList} />
+        <EmployeeList />
         <div className="my-20 ml-auto">
-          <AddEmployeeForm organisation_id={organisation_id} />
-          <RemoveEmployeeForm organisation_id={organisation_id} employeeList={employeeList} />
+          <AddEmployeeForm />
+          <RemoveEmployeeForm />
         </div>
       </div>
     </>
