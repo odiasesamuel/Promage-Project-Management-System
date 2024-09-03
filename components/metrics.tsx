@@ -95,8 +95,8 @@ const Metrics: React.FC<MetricsProps> = ({ metricsData }) => {
   const resourceArrow = currentQuarterResource > previousQuarterResource ? incrementArrow : decrementArrow;
 
   return (
-    <div className="flex justify-between">
-      <Card className="w-[32%] h-[200px] bg-[#F2EAE5]">
+    <div className="flex flex-wrap gap-4">
+      <Card className="w-[32%] xl:w-[100%] h-[200px] bg-[#F2EAE5]">
         <CardHeader className="pt-4 pb-2">
           <CardDescription>
             <Image src={revenueIcon} alt="revenue icon" />
@@ -116,7 +116,7 @@ const Metrics: React.FC<MetricsProps> = ({ metricsData }) => {
           </div>
         </CardContent>
       </Card>
-      <Card className="w-[32%] h-[200px] bg-[#F2EAE5]">
+      <Card className="w-[32%] xl:w-[100%] h-[200px] bg-[#F2EAE5]">
         <CardHeader className="pt-4 pb-2">
           <CardDescription>
             <Image src={projectIcon} alt="project icon" />
@@ -157,7 +157,7 @@ const Metrics: React.FC<MetricsProps> = ({ metricsData }) => {
           </div>
         </CardContent>
       </Card> */}
-      <Card className="w-[32%] h-[200px] bg-[#F2EAE5]">
+      <Card className="w-[32%] xl:w-[100%] h-[200px] bg-[#F2EAE5]">
         <CardHeader className="pt-4 pb-2">
           <CardDescription>
             <Image src={resourceIcon} alt="resource icon" />

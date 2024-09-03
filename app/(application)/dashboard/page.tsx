@@ -31,16 +31,16 @@ const Home = async () => {
   const projectWorkload: ProjectWorkloadDataType[] = await getProjectWorkLoad(organisation_id);
 
   return (
-    <div className="text-black">
-      <h3 className="scroll-m-20 text-xl font-semibold tracking-tight my-5">Overview</h3>
+    <div className="text-black  max-w-[1535px] mx-auto">
+      <h3 className="scroll-m-20 text-xl font-medium tracking-tight my-5">Overview</h3>
       <Metrics metricsData={metrics} />
-      <div className="flex justify-between my-6">
-        <Card className="w-[64%] bg-[#F2EAE5]">
+      <div className="flex flex-wrap gap-4 my-6">
+        <Card className="w-[64%] overflow-x-auto xl:w-[100%] bg-[#F2EAE5]">
           <CardContent>
-            <DataTable columns={columns} data={projectList} dataTableHeading={"Project summary"} className="" />
+            <DataTable columns={columns} data={projectList} dataTableHeading={"Project summary"} className="sm:w-[800px] sm:pr-3" />
           </CardContent>
         </Card>
-        <Card className="w-[34%] h-[330px] bg-[#F2EAE5]">
+        <Card className="w-[34%] h-[330px] xl:w-[48%] xl:h-[380px] lg:w-[58%] lg:h-[450px] md:w-[100%] sm:h-[400px] xs:h-[350px] 2xs:h-[300px]  3xl:h-[430px] bg-[#F2EAE5]">
           <CardHeader className="py-8">
             <CardTitle>Overall Progress</CardTitle>
           </CardHeader>
@@ -49,8 +49,8 @@ const Home = async () => {
           </CardContent>
         </Card>
       </div>
-      <div className="flex justify-between my-6">
-        <Card className="w-[64%] bg-[#F2EAE5] self-start min-h-[300px]">
+      <div className="flex flex-wrap gap-4 my-6">
+        <Card className="w-[64%] xl:w-[100%] bg-[#F2EAE5] self-start min-h-[300px]">
           <CardHeader className="pt-6 pb-4">
             <CardTitle>Task</CardTitle>
           </CardHeader>
@@ -58,7 +58,7 @@ const Home = async () => {
             <TabContent taskList={taskList} organisation_id={organisation_id} employee_id={employee_id} />
           </CardContent>
         </Card>
-        <Card className="w-[34%] min-h-[330px] bg-[#F2EAE5]">
+        <Card className="w-[34%] xl:w-[100%] min-h-[330px] bg-[#F2EAE5]">
           <CardHeader className="py-8">
             <CardTitle>Project Workload</CardTitle>
           </CardHeader>

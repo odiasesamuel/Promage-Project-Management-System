@@ -124,7 +124,7 @@ export function DataTable<TData extends TaskListType, TValue>({ columns, data, e
         <ReviewTaskForm employeeList={employeeList!} assigned_by={assigned_by} />
       </div>
       <div className="rounded-md">
-        <Table className="w-full">
+        <Table className="w-full hide-last-3-th hide-last-3-td">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="border-b-2 border-[#D8D1CD]">

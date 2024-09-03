@@ -135,11 +135,11 @@ export function DataTable<TData extends ProjectListType, TValue>({ columns, data
         <h1 className="font-semibold">{dataTableHeading}</h1>
         <div className="flex items-center">
           {pathname === "/project" && <Button onClick={exportReportHandler}>Export</Button>}
-          <Input placeholder="Filter project..." value={globalFilter} onChange={handleFilterChange} className="h-10 w-[300px] pl-12 ml-8 pr-5 text-sm placeholder:text-sm rounded-full bg-white focus:outline-none" />
+          <Input placeholder="Filter project..." value={globalFilter} onChange={handleFilterChange} className="h-10 max-w-[300px] pl-12 pr-5 ml-8 sm:mr-3 text-sm placeholder:text-sm rounded-full bg-white focus:outline-none" />
         </div>
       </div>
       <div className="rounded-md">
-        <Table className="w-full">
+        <Table className="w-full hide-last-4-th hide-last-4-td">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="border-b-2 border-[#D8D1CD]">

@@ -66,7 +66,7 @@ const OverallProgress: React.FC<OverallProgressType> = ({ progressData }) => {
           <p style={{ fontSize: "0.73rem", color: "#9A9A9A" }}>Completed</p>
         </div>
       </CircularProgressbarWithChildren>
-      <div className="absolute top-[150px] w-full flex items-center justify-between mt-6">
+      <div className="absolute top-[150px] 2xs:top-[130px] xs:top-[180px] sm:top-[200px] lg:top-[250px] xl:top-[200px] 3xl:top-[200px] w-full flex items-center justify-between mt-6">
         <div className="h-[100px] w-[23%] text-center">
           <p className="font-semibold text-xl">{total_project}</p>
           <p className="text-[0.73rem] text-[#9A9A9A]">Total projects</p>

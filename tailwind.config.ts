@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import type { PluginAPI } from "tailwindcss/types/config";
 
 const config = {
   darkMode: ["class"],
@@ -13,9 +14,11 @@ const config = {
       },
     },
     screens: {
+      "4xl": { min: "2175px" },
+      "3xl": { min: "1791px" },
       "2xl": { max: "1535px" }, // Desktop-first: max-width 1535px and below
       xl: { max: "1279px" }, // Desktop-first: max-width 1279px and below
-      lg: { max: "1023px" }, // Desktop-first: max-width 1023px and below
+      lg: { max: "1024px" }, // Desktop-first: max-width 1024px and below
       md: { max: "767px" }, // Desktop-first: max-width 767px and below
       sm: { max: "639px" }, // Desktop-first: max-width 639px and below
       xs: { max: "479px" }, // Extra small: max-width 479px and below
@@ -79,7 +82,33 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    function ({ addUtilities }: PluginAPI) {
+      addUtilities({
+        ".hide-last-4-th": {
+          "thead th:nth-last-child(-n+4):not(:last-child)": {
+            display: "none",
+          },
+        },
+        ".hide-last-4-td": {
+          "tbody td:nth-last-child(-n+4):not(:last-child)": {
+            display: "none",
+          },
+        },
+        ".hide-last-3-th": {
+          "thead th:nth-last-child(-n+3):not(:last-child)": {
+            display: "none",
+          },
+        },
+        ".hide-last-3-td": {
+          "tbody td:nth-last-child(-n+3):not(:last-child)": {
+            display: "none",
+          },
+        },
+      });
+    },
+  ],
 } satisfies Config;
 
 export default config;

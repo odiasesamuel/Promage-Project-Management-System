@@ -40,7 +40,7 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeListData, employeeDe
       .channel("create-project-form-channel")
       .on("postgres_changes", { event: "*", schema: "public", table: "employee" }, (payload) => {
         const newEmployee = payload.new as EmployeeListType;
-        console.log(newEmployee)
+        console.log(newEmployee);
 
         setEmployeeList((prevEmployee) => {
           let updatedEmployeeList;
@@ -48,15 +48,15 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeListData, employeeDe
           switch (payload.eventType) {
             case "INSERT":
               updatedEmployeeList = [newEmployee, ...prevEmployee];
-              console.log("Insert")
+              console.log("Insert");
               break;
             case "UPDATE":
               updatedEmployeeList = prevEmployee.map((project) => (project.id === newEmployee.id ? newEmployee : project));
-              console.log("update")
+              console.log("update");
               break;
             case "DELETE":
               updatedEmployeeList = prevEmployee.filter((project) => project.id !== payload.old.id);
-              console.log("delete")
+              console.log("delete");
               break;
             default:
               updatedEmployeeList = prevEmployee;
@@ -73,13 +73,10 @@ const NavBar: React.FC<NavBarProps> = ({ className, employeeListData, employeeDe
 
   return (
     <>
-      <div className={`${className} relative`}>
+      <div className={`${className} relative max-w-[300px]`}>
         <div className="flex items-center ml-4 mt-8 relative">
           <Image src={logoIcon} alt="Logo of promage" priority />
           <h1 className="ml-1 text-2xl font-medium text-[#F1F1F1]">Promage</h1>
-          <div className="w-8 h-8 rounded-full bg-white absolute right-[-16px] flex items-center justify-center">
-            <Image src={sidebarBavArrow} alt="navigation sidebar icon" />
-          </div>
         </div>
         <CreatNewProject employeeList={employeeList} projectFormHeading="Create a new project">
           <div className="bg-white w-[85%] h-[50px] ml-4 mt-16 mb-12 rounded-full flex items-center cursor-pointer">
