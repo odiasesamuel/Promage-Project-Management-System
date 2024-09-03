@@ -29,14 +29,25 @@ const TaskList: React.FC<TasklistProps> = ({ data, organisation_id, employee_id 
 
   useEffect(() => {
     const channel = supabase
-      .channel("task-channel")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "task_list" }, (payload) => {
-        const newTask = payload.new as TaskListType;
+      .channel("task-assigned-to-me-channel")
+      .on("postgres_changes", { event: "*", schema: "public", table: "task_list" }, (payload) => {
+        let newTask = payload.new as TaskListType;
 
         setTaskList((prevTask) => {
           let updatedTaskList;
-
-          updatedTaskList = prevTask.map((task) => (task.task_id === newTask.task_id ? newTask : task));
+          switch (payload.eventType) {
+            case "INSERT":
+              updatedTaskList = [newTask, ...prevTask];
+              break;
+            case "UPDATE":
+              updatedTaskList = prevTask.map((task) => (task.task_id === newTask.task_id ? newTask : task));
+              break;
+            case "DELETE":
+              updatedTaskList = prevTask.filter((task) => task.task_id !== payload.old.task_id);
+              break;
+            default:
+              updatedTaskList = prevTask;
+          }
 
           return updatedTaskList;
         });
