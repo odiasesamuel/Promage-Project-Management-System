@@ -39,6 +39,10 @@ const NoteTabContent: React.FC<NoteTabContentType> = ({ organisation_id, employe
         duration: 3000,
       });
     }
+
+    if (textareaRef.current && result.success) {
+      textareaRef.current.value = "";
+    }
   };
 
   return (
