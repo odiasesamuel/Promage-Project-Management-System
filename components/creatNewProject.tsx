@@ -19,7 +19,7 @@ const CreatNewProject: React.FC<CreatNewProjectProps> = ({ children, employeeLis
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-xl">
+      <DialogContent className="max-w-xl sm:rounded-none">
         <DialogHeader>
           <DialogTitle>{projectFormHeading}</DialogTitle>
         </DialogHeader>

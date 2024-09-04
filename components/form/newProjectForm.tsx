@@ -165,7 +165,7 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
           control={form.control}
           name="projectName"
           render={({ field }) => (
-            <FormItem className="text-black w-[48%]">
+            <FormItem className="text-black w-[48%] sm:w-full">
               <FormLabel>Project Name</FormLabel>
               <FormControl>
                 <Input placeholder="Nesla Web Application" {...field} className="p-3" />
@@ -178,7 +178,7 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
           control={form.control}
           name="projectManager"
           render={({ field }) => (
-            <FormItem className="w-[48%]">
+            <FormItem className="w-[48%] sm:w-full">
               <FormLabel>Project Manager</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
@@ -202,7 +202,7 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
           control={form.control}
           name="revenue"
           render={({ field }) => (
-            <FormItem className="text-black w-[48%]">
+            <FormItem className="text-black w-[48%] sm:w-full">
               <FormLabel>Revenue in dollars</FormLabel>
               <FormControl>
                 <Input placeholder="60000000" {...field} className="p-3" onInput={revenueValidation} />
@@ -216,7 +216,7 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
           control={form.control}
           name="status"
           render={({ field }) => (
-            <FormItem className="w-[48%]">
+            <FormItem className="w-[48%] sm:w-full">
               <FormLabel>Status</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
@@ -240,7 +240,7 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
           control={form.control}
           name="progress"
           render={({ field }) => (
-            <FormItem className="text-black w-[48%]">
+            <FormItem className="text-black w-[48%] sm:w-full">
               <FormLabel>Progress</FormLabel>
               <FormControl>
                 <Input placeholder="70" {...field} className="p-3" onInput={progressValidation} disabled={progressDisabled} />
@@ -253,12 +253,12 @@ export function NewProjectForm({ employeeList, setOpen, editableProjectData }: N
           control={form.control}
           name="dueDate"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Due Date</FormLabel>
+            <FormItem className="flex flex-col w-[48%] sm:w-full">
+              <FormLabel className="mt-2">Due Date</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
-                    <Button variant={"outline"} className={cn("w-[240px] pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                    <Button variant={"outline"} className={cn("w-[240px] sm:w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                       {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
