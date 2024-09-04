@@ -6,7 +6,29 @@ import Introduction from "@/components/introduction";
 
 export const metadata: Metadata = {
   title: "Promage",
-  description: "Project management application used to effectively organise and manage task accross teams",
+  description: "Promage is a project management application that helps streamline your workflows and elevate your team's productivity through real-time collaboration.",
+  openGraph: {
+    title: "Promage-Project-Management-System",
+    description: "Streamline your workflows, and elevate your team's productivity with intuitive tools and real-time collaboration.",
+    url: "https://promage-project-management-system.onrender.com/",
+    siteName: "Promage",
+    images: [
+      {
+        url: "https://rkmrzjsjtgpmcacoafpq.supabase.co/storage/v1/object/public/promage_img/promage_thumbnail_2.png",
+        width: 800,
+        height: 600,
+        alt: "Streamline your workflows, and elevate your team's productivity with intuitive tools and real-time collaboration.",
+      },
+    ],
+    locale: "en_GB",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Promage-Project-Management-System",
+    description: "Streamline your workflows, and elevate your team's productivity with intuitive tools and real-time collaboration.",
+    images: ["https://rkmrzjsjtgpmcacoafpq.supabase.co/storage/v1/object/public/promage_img/promage_thumbnail_2.png"],
+  },
 };
 
 export default function RootLayout({

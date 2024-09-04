@@ -106,7 +106,7 @@ const Metrics: React.FC<MetricsProps> = ({ metricsData }) => {
         <CardContent>
           <p className="text-2xl font-semibold mb-3">
             {total_revenue}
-            <span className="text-base ml-1">/{previousQuarterRevenue}</span>
+            <span className="text-base ml-1">/{formatCurrency(previousQuarterRevenue)}</span>
           </p>
           <div className="flex gap-x-1">
             <Image src={revenueArrow} alt="arrow" />
