@@ -14,14 +14,14 @@ const ResourceMgnt: React.FC<{}> = async () => {
   }
   const employeeDetails: EmployeeSignInDetailsType = await getEmployeeByEmployeeId(result.user.id);
   const organisation_id = employeeDetails.organisation_id;
-  const employeeList: EmployeeListType[] = await getAllEmployee(organisation_id);
+  const employeeList: EmployeeListType[] = await getAllEmployee(organisation_id); 
   if (employeeDetails.job_title !== "Administrator") {
     redirect("/dashboard");
   }
 
   return (
     <>
-      <div className="flex flex-col mt-10">
+      <div className="flex flex-col mt-10 max-w-[1535px] mx-auto">
         <EmployeeList employeeListData={employeeList} />
         <div className="my-20 ml-auto">
           <AddEmployeeForm organisation_id={organisation_id} />
