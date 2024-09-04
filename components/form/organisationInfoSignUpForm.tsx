@@ -21,7 +21,13 @@ const OrganisationInfoSignUpForm: React.FC<{ changeToEmployeeInfoHandler: () => 
   }, [form]);
 
   async function onSubmit(values: z.infer<typeof organisationInfoSignUpFormSchema>) {
-    sessionStorage.setItem("organisation_information", JSON.stringify(values));
+    const trimValues = {
+      organisation_name: values.organisation_name.trim(),
+      organisation_email: values.organisation_email.trim(),
+      administrator_name: values.administrator_name.trim(),
+      administrator_email: values.administrator_email.trim(),
+    };
+    sessionStorage.setItem("organisation_information", JSON.stringify(trimValues));
 
     changeToEmployeeInfoHandler();
   }

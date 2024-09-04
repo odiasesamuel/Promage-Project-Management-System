@@ -44,11 +44,16 @@ const EmployeeInfoSignUpForm = () => {
 
   async function onSubmit(values: z.infer<typeof employeeInfoSignUpFormSchema>) {
     const existingEmployees = JSON.parse(sessionStorage.getItem("employee_information") || "[]");
+    const trimValues = {
+      employee_name: values.employee_name.trim(),
+      employee_email: values.employee_email.trim(),
+      job_title: values.job_title.trim(),
+    };
 
     if (editIndex !== null) {
-      existingEmployees[editIndex] = values;
+      existingEmployees[editIndex] = trimValues;
     } else {
-      existingEmployees.push(values);
+      existingEmployees.push(trimValues);
     }
 
     sessionStorage.setItem("employee_information", JSON.stringify(existingEmployees));
