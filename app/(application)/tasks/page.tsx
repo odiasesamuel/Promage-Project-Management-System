@@ -33,7 +33,7 @@ const TaskPage = async () => {
 
   return (
     <>
-      <Card className="bg-[#F2EAE5] mt-12 overflow-x-auto">
+      <Card className="bg-[#F2EAE5] mt-12 overflow-x-auto max-w-[1535px] mx-auto">
         <CardContent>
           <DataTable columns={columns} data={updateTaskListWithEmployeeName} employeeListData={employeeList} assigned_by={employee_id} className="sm:w-[800px] sm:pr-3" />
         </CardContent>

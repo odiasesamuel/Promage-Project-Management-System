@@ -45,7 +45,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employeeListData }) => {
   }, []);
 
   return (
-    <div className="flex flex-wrap gap-10">
+    <div className="flex flex-wrap gap-10 w-full mx-auto">
       {employeeList.map((employee) => (
         <div key={employee.id} className="flex items-center justify-center bg-[#F2EAE5] text-[#E65F2B] text-6xl w-[200px] h-[200px] rounded-full">
           {getEmployeeInitials(employee.employee_name)}
