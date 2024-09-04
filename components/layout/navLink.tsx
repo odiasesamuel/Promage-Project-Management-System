@@ -11,13 +11,14 @@ type NavLinkType = {
   href: string;
   alt: string;
   children: React.ReactNode;
+  onClick: () => void;
 };
 
-const NavLink: React.FC<NavLinkType> = ({ activeIcon, notActiveIcon, href, alt, children }) => {
+const NavLink: React.FC<NavLinkType> = ({ activeIcon, notActiveIcon, href, alt, children, onClick }) => {
   const path = usePathname();
 
   return (
-    <Link href={href}>
+    <Link href={href} onClick={onClick}>
       <div className={`${path === href && "bg-white rounded-full"} w-[90%] h-[50px] flex items-center`}>
         <Image src={path == href ? activeIcon : notActiveIcon} alt={alt} className="mx-4" priority />
         <span className={`${path === href ? "text-[#E65F2B]" : "text-[#F1F1F1]"} text-sm`}>{children}</span>

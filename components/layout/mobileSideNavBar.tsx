@@ -37,6 +37,8 @@ type MobileSideNavBar = {
 
 const MobileSideNavBar: React.FC<MobileSideNavBar> = ({ className, employeeListData, employeeDetails, children }) => {
   const [employeeList, setEmployeeList] = useState(employeeListData);
+  const [openSheet, setOpenSheet] = useState(false);
+  const closeSheetHandler = () => setOpenSheet(false);
 
   useEffect(() => {
     const channel = supabase
@@ -77,10 +79,10 @@ const MobileSideNavBar: React.FC<MobileSideNavBar> = ({ className, employeeListD
   return (
     <>
       <div className={`${className} `}>
-        <Sheet>
+        <Sheet open={openSheet} onOpenChange={setOpenSheet}>
           <SheetTrigger asChild>{children}</SheetTrigger>
           <SheetContent className="bg-[#060606] max-w-[350px] border-none" side="left">
-          <SheetHeader>
+            <SheetHeader>
               <SheetTitle>
                 {" "}
                 <div className="flex items-center ml-4 mt-8 relative">
@@ -98,13 +100,13 @@ const MobileSideNavBar: React.FC<MobileSideNavBar> = ({ className, employeeListD
               </div>
             </CreatNewProject>
             <nav className="ml-4 flex flex-col gap-3">
-              <NavLink activeIcon={dashboardIconActive} notActiveIcon={dashboardIconNotActive} href="/dashboard" alt="dashboard icon">
+              <NavLink activeIcon={dashboardIconActive} notActiveIcon={dashboardIconNotActive} href="/dashboard" alt="dashboard icon" onClick={closeSheetHandler}>
                 Dashboard
               </NavLink>
-              <NavLink activeIcon={projectIconAcvtive} notActiveIcon={projectIconNotActive} href="/project" alt="project icon">
+              <NavLink activeIcon={projectIconAcvtive} notActiveIcon={projectIconNotActive} href="/project" alt="project icon" onClick={closeSheetHandler}>
                 Projects
               </NavLink>
-              <NavLink activeIcon={taskIconActive} notActiveIcon={taskIconNotActive} href="/tasks" alt="task icon">
+              <NavLink activeIcon={taskIconActive} notActiveIcon={taskIconNotActive} href="/tasks" alt="task icon" onClick={closeSheetHandler}>
                 Tasks
               </NavLink>
               {/* Implement time sheet at a later date */}
@@ -112,7 +114,7 @@ const MobileSideNavBar: React.FC<MobileSideNavBar> = ({ className, employeeListD
             Time log
           </NavLink> */}
               {employeeDetails.job_title === "Administrator" && (
-                <NavLink activeIcon={resourceMgtIconActive} notActiveIcon={resourceMgtIconNotActive} href="/resource-mgnt" alt="time log icon">
+                <NavLink activeIcon={resourceMgtIconActive} notActiveIcon={resourceMgtIconNotActive} href="/resource-mgnt" alt="time log icon" onClick={closeSheetHandler}>
                   Resource mgnt
                 </NavLink>
               )}
