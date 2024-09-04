@@ -11,7 +11,7 @@ type NavLinkType = {
   href: string;
   alt: string;
   children: React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 const NavLink: React.FC<NavLinkType> = ({ activeIcon, notActiveIcon, href, alt, children, onClick }) => {
