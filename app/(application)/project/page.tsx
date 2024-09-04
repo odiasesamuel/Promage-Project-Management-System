@@ -21,9 +21,9 @@ const ProjectPage = async () => {
 
   return (
     <>
-      <Card className="bg-[#F2EAE5] mt-12">
+      <Card className="bg-[#F2EAE5] mt-12 overflow-x-auto">
         <CardContent>
-          <DataTable columns={columns} data={projectList} employeeListData={employeeList} className="" />
+          <DataTable columns={columns} data={projectList} employeeListData={employeeList} className="sm:w-[800px] sm:pr-3" />
         </CardContent>
       </Card>
     </>
