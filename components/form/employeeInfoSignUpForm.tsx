@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
-const EmployeeInfoSignUpForm = () => {
+const EmployeeInfoSignUpForm: React.FC<{ changeToOrganisationInfoHandler: () => void; changeToMetricInfoHandler: () => void }> = ({ changeToOrganisationInfoHandler, changeToMetricInfoHandler }) => {
   const [employeeInformation, setEmployeeInformation] = useState<z.infer<typeof employeeInfoSignUpFormSchema>[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const form = useForm<z.infer<typeof employeeInfoSignUpFormSchema>>({
@@ -118,9 +118,13 @@ const EmployeeInfoSignUpForm = () => {
           </div>
         </div>
 
-        <Button type="submit" className="w-full">
-          Submit
-        </Button>
+        <div className="flex items-center justify-between text-black">
+          <ChevronLeft className="w-10 h-8 cursor-pointer" onClick={changeToOrganisationInfoHandler} />
+          <Button type="submit" className="w-2/3">
+            Submit
+          </Button>
+          <ChevronRight className="w-10 h-8 cursor-pointer" onClick={changeToMetricInfoHandler} />
+        </div>
       </form>
     </Form>
   );

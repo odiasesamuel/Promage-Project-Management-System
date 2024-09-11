@@ -9,6 +9,7 @@ import { organisationInfoSignUpFormSchema } from "@/lib/formSchema";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const OrganisationInfoSignUpForm: React.FC<{ changeToEmployeeInfoHandler: () => void }> = ({ changeToEmployeeInfoHandler }) => {
   const form = useForm<z.infer<typeof organisationInfoSignUpFormSchema>>({
@@ -93,9 +94,13 @@ const OrganisationInfoSignUpForm: React.FC<{ changeToEmployeeInfoHandler: () => 
           />
         </div>
 
-        <Button type="submit" className="w-full">
-          Submit
-        </Button>
+        <div className="flex items-center text-black">
+          <ChevronLeft className="w-10 h-8 invisible" />
+          <Button type="submit" className="w-2/3 mx-auto">
+            Submit
+          </Button>
+          <ChevronRight className="w-10 h-8 cursor-pointer" onClick={changeToEmployeeInfoHandler} />
+        </div>
       </form>
     </Form>
   );

@@ -36,9 +36,9 @@ const SignUpForm: React.FC<{}> = () => {
 
       {formStep === "organisation_info" && <OrganisationInfoSignUpForm changeToEmployeeInfoHandler={changeToEmployeeInfoHandler} />}
 
-      {formStep === "employee_info" && <EmployeeInfoSignUpForm />}
+    {formStep === "employee_info" && <EmployeeInfoSignUpForm changeToOrganisationInfoHandler={changeToOrganisationInfoHandler} changeToMetricInfoHandler={changeToMetricInfoHandler} />}
 
-      {formStep === "metric_info" && <MetricInfoSignUpForm />}
+      {formStep === "metric_info" && <MetricInfoSignUpForm changeToEmployeeInfoHandler={changeToEmployeeInfoHandler} />}
     </>
   );
 };

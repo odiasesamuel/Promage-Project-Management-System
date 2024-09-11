@@ -13,9 +13,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { getQuarter, getPreviousQuarter } from "@/utils/dateUtils";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 
-const MetricInfoSignUpForm = () => {
+const MetricInfoSignUpForm: React.FC<{ changeToEmployeeInfoHandler: () => void }> = ({ changeToEmployeeInfoHandler }) => {
   const router = useRouter();
   const form = useForm<z.infer<typeof metricInfoSignUpFormSchema>>({
     resolver: zodResolver(metricInfoSignUpFormSchema),
@@ -126,10 +126,14 @@ const MetricInfoSignUpForm = () => {
           />
         </div>
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          Submit
-          {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
-        </Button>
+        <div className="flex items-center text-black">
+          <ChevronLeft className="w-10 h-8 cursor-pointer" onClick={changeToEmployeeInfoHandler} />
+          <Button type="submit" className="w-2/3 mx-auto" disabled={isLoading}>
+            Submit
+            {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+          </Button>
+          <ChevronRight className="w-10 h-8 cursor-pointer invisible" />
+        </div>
       </form>
     </Form>
   );
